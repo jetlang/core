@@ -71,6 +71,7 @@ public abstract class FiberBaseTest extends Assert {
             }
         };
         channel.subscribe(_bus, onReceive);
+        assertEquals(1, channel.subscriberCount());
         assertTrue(channel.publish("hello"));
         assertTrue(reset.await(10, TimeUnit.SECONDS));
         assertEquals(1, received.size());
@@ -78,6 +79,20 @@ public abstract class FiberBaseTest extends Assert {
 
         channel.clearSubscribers();
         assertFalse(channel.publish("hello"));
+    }
+
+    @Test
+    public void UnsubOnStop() throws InterruptedException {
+        _bus.start();
+        Channel<String> channel = new Channel<String>();
+        Callback<String> onReceive = new Callback<String>() {
+            public void onMessage(String data) {
+            }
+        };
+        channel.subscribe(_bus, onReceive);
+        assertEquals(1, channel.subscriberCount());
+        _bus.stop();
+        assertEquals(0, channel.subscriberCount());
     }
 
 //        @Test

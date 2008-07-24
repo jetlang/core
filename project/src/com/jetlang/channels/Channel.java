@@ -2,6 +2,7 @@ package com.jetlang.channels;
 
 import com.jetlang.core.Callback;
 import com.jetlang.core.ICommandQueue;
+import com.jetlang.core.Unsubscriber;
 
 import java.util.ArrayList;
 
@@ -10,9 +11,15 @@ import java.util.ArrayList;
  * Date: Jul 22, 2008
  * Time: 3:57:21 PM
  */
-public class Channel<T> {
+public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
 
     private final ArrayList<Callback<T>> _subscribers = new ArrayList<Callback<T>>();
+
+    public int subscriberCount() {
+        synchronized (_subscribers) {
+            return _subscribers.size();
+        }
+    }
 
     public boolean publish(T s) {
         boolean published = false;
@@ -25,7 +32,7 @@ public class Channel<T> {
         return published;
     }
 
-    public void subscribe(final ICommandQueue queue, final Callback<T> onReceive) {
+    public Unsubscriber subscribe(final ICommandQueue queue, final Callback<T> onReceive) {
         final Callback<T> callbackOnQueue = new Callback<T>() {
             public void onMessage(final T message) {
                 final Runnable toExecute = new Runnable() {
@@ -45,6 +52,7 @@ public class Channel<T> {
             }
         };
         queue.onStop(unSub);
+        return new Unsubscriber(unSub);
     }
 
     private void Remove(Callback<T> callbackOnQueue) {

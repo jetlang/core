@@ -83,9 +83,9 @@ public class ChannelTests extends Assert {
 //            IUnsubscriber unsub = channel.subscribe(queue, onReceive);
 //            Assert.IsTrue(channel.Publish("hello"));
 //            Assert.IsTrue(received);
-//            unsub.Unsubscribe();
+//            unsub.unsubscribe();
 //            Assert.IsFalse(channel.Publish("hello"));
-//            unsub.Unsubscribe();
+//            unsub.unsubscribe();
 //        }
 //
 //        [Test]
