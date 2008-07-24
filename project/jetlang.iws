@@ -16,9 +16,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/PoolQueueTests.java" />
+      <change type="MOVED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ProcessThread.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/ThreadFiber.java" />
+      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IProcessThread.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/PerfTimer.java" afterPath="$PROJECT_DIR$/tests/PerfTimer.java" />
+      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\SubstitutabilityBaseTest.java" afterPath="$PROJECT_DIR$/tests/FiberBaseTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jetlang.iws" afterPath="$PROJECT_DIR$/jetlang.iws" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/SubstitutabilityBaseTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jetlang/core/SynchronousCommandQueue.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/SynchronousCommandQueue.java" />
+      <change type="MOVED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IDisposable.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/Stopable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/ThreadFiberTests.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/ChannelTests.java" afterPath="$PROJECT_DIR$/tests/ChannelTests.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/jetlang/core/PoolFiber.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/PoolFiber.java" />
+      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\PoolQueueTests.java" afterPath="$PROJECT_DIR$/tests/PoolFiberTests.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/jetlang/core/ProcessFiber.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/ProcessFiber.java" />
     </list>
     <ignored path="jetlang.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -81,39 +90,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ChannelTests.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ChannelTests.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/ChannelTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="1" selection-start="760" selection-end="1479" vertical-scroll-proportion="0.9260274">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Channel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/Channel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="0" selection-start="104" selection-end="104" vertical-scroll-proportion="0.087671235">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SubstitutabilityBaseTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/SubstitutabilityBaseTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="67" column="7" selection-start="1741" selection-end="1741" vertical-scroll-proportion="0.33972603">
-              <folding>
-                <marker date="1216863113625" expanded="true" signature="7:346" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PoolQueueTests.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/PoolQueueTests.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="0" selection-start="264" selection-end="264" vertical-scroll-proportion="0.51232874">
+            <state line="20" column="46" selection-start="622" selection-end="622" vertical-scroll-proportion="0.7917808">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -121,43 +101,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PoolQueue.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/PoolQueue.java">
+      <file leaf-file-name="PerfTimer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/PerfTimer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="136" column="24" selection-start="4191" selection-end="4191" vertical-scroll-proportion="0.5150685">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ICommandQueue.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ICommandQueue.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="36" selection-start="302" selection-end="302" vertical-scroll-proportion="0.6054795">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SynchronousCommandQueue.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/SynchronousCommandQueue.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="22" selection-start="940" selection-end="940" vertical-scroll-proportion="1.1205479">
+            <state line="2" column="13" selection-start="48" selection-end="48" vertical-scroll-proportion="0.09315068">
               <folding>
-                <element signature="imports" expanded="true" />
-                <marker date="1216863063843" expanded="true" signature="481:549" placeholder="{...}" />
-                <marker date="1216863063843" expanded="true" signature="594:633" placeholder="{...}" />
-                <marker date="1216863063843" expanded="true" signature="726:758" placeholder="{...}" />
-                <marker date="1216863063843" expanded="true" signature="851:956" placeholder="{...}" />
+                <marker date="1216864369843" expanded="true" signature="172:252" placeholder="{...}" />
+                <marker date="1216864369843" expanded="true" signature="277:494" placeholder="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProcessThread.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ProcessThread.java">
+      <file leaf-file-name="FiberBaseTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/FiberBaseTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="0" selection-start="244" selection-end="244" vertical-scroll-proportion="0.33150685">
+            <state line="20" column="59" selection-start="556" selection-end="556" vertical-scroll-proportion="-2.9315069">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -165,20 +124,71 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CommandQueue.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/CommandQueue.java">
+      <file leaf-file-name="Stopable.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/Stopable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="5" selection-start="2152" selection-end="2152" vertical-scroll-proportion="0.37534246">
+            <state line="6" column="0" selection-start="90" selection-end="90" vertical-scroll-proportion="0.27945206">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IProcessQueue.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/IProcessQueue.java">
+      <file leaf-file-name="PoolFiberTests.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/PoolFiberTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="13" selection-start="208" selection-end="208" vertical-scroll-proportion="0.3260274">
+            <state line="16" column="20" selection-start="380" selection-end="380" vertical-scroll-proportion="0.7013699">
+              <folding>
+                <marker date="1216864369843" expanded="true" signature="7:198" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ProcessFiber.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ProcessFiber.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="2" column="17" selection-start="44" selection-end="44" vertical-scroll-proportion="0.09315068">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ThreadFiberTests.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/ThreadFiberTests.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="9" column="43" selection-start="224" selection-end="224" vertical-scroll-proportion="0.41917807">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PoolFiber.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/PoolFiber.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="58" selection-start="295" selection-end="295" vertical-scroll-proportion="-1.7561644">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExecutionState.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ExecutionState.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="2" column="12" selection-start="39" selection-end="39" vertical-scroll-proportion="0.09315068">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ThreadFiber.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ThreadFiber.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="14" column="51" selection-start="361" selection-end="361" vertical-scroll-proportion="0.5178082">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -255,28 +265,6 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang\src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang\src\com\jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
     </subPane>
   </component>
   <component name="ProjectReloadState">
@@ -304,15 +292,15 @@
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
   </component>
-  <component name="RunManager" selected="JUnit.PoolQueueTests">
-    <tempConfiguration default="false" name="PoolQueueTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+  <component name="RunManager" selected="JUnit.All in Jetlang">
+    <tempConfiguration default="false" name="All in Jetlang" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <module name="Jetlang" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="PoolQueueTests" />
+      <option name="MAIN_CLASS_NAME" />
       <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="package" />
       <option name="VM_PARAMETERS" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -320,7 +308,7 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="ADDITIONAL_CLASS_PATH" />
       <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
+        <value defaultName="singleModule" />
       </option>
       <envs />
       <RunnerSettings RunnerId="Run" />
@@ -413,7 +401,7 @@
       </method>
     </configuration>
     <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.PoolQueueTests" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.All in Jetlang" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -473,7 +461,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998747" order="1" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32961783" order="1" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="3" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
@@ -555,46 +543,9 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/IChannelSubscriber.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="17" selection-start="353" selection-end="353" vertical-scroll-proportion="0.23517786">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ICommandRunner.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="12" selection-start="180" selection-end="180" vertical-scroll-proportion="0.11758893">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/IDisposable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="19" selection-start="239" selection-end="239" vertical-scroll-proportion="0.51232874">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/IPendingCommandRegistry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="20" selection-start="429" selection-end="429" vertical-scroll-proportion="0.82258064">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/PerfTimer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="13" selection-start="51" selection-end="51" vertical-scroll-proportion="0.09139785">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/IProcessThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="44" selection-start="71" selection-end="71" vertical-scroll-proportion="0.09139785">
           <folding />
         </state>
       </provider>
@@ -611,18 +562,11 @@
         <state line="40" column="22" selection-start="940" selection-end="940" vertical-scroll-proportion="1.1205479">
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1216863063843" expanded="true" signature="481:549" placeholder="{...}" />
-            <marker date="1216863063843" expanded="true" signature="594:633" placeholder="{...}" />
-            <marker date="1216863063843" expanded="true" signature="726:758" placeholder="{...}" />
-            <marker date="1216863063843" expanded="true" signature="851:956" placeholder="{...}" />
+            <marker date="1216863313625" expanded="true" signature="481:549" placeholder="{...}" />
+            <marker date="1216863313625" expanded="true" signature="594:633" placeholder="{...}" />
+            <marker date="1216863313625" expanded="true" signature="726:758" placeholder="{...}" />
+            <marker date="1216863313625" expanded="true" signature="851:956" placeholder="{...}" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/CommandQueue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="5" selection-start="2152" selection-end="2152" vertical-scroll-proportion="0.37534246">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -633,48 +577,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/IProcessQueue.java">
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/CommandQueue.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="208" selection-end="208" vertical-scroll-proportion="0.3260274">
+        <state line="84" column="5" selection-start="2152" selection-end="2152" vertical-scroll-proportion="0.37534246">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/PoolQueue.java">
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ExecutionState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="24" selection-start="4191" selection-end="4191" vertical-scroll-proportion="0.5150685">
+        <state line="2" column="12" selection-start="39" selection-end="39" vertical-scroll-proportion="0.09315068">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/ChannelTests.java">
+    <entry file="file://$PROJECT_DIR$/tests/PerfTimer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="1" selection-start="760" selection-end="1479" vertical-scroll-proportion="0.9260274">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/SubstitutabilityBaseTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="7" selection-start="1741" selection-end="1741" vertical-scroll-proportion="0.33972603">
+        <state line="2" column="13" selection-start="48" selection-end="48" vertical-scroll-proportion="0.09315068">
           <folding>
-            <marker date="1216863113625" expanded="true" signature="7:346" placeholder="..." />
+            <marker date="1216864369843" expanded="true" signature="172:252" placeholder="{...}" />
+            <marker date="1216864369843" expanded="true" signature="277:494" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ProcessThread.java">
+    <entry file="file://$PROJECT_DIR$/tests/PoolFiberTests.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="244" selection-end="244" vertical-scroll-proportion="0.33150685">
+        <state line="16" column="20" selection-start="380" selection-end="380" vertical-scroll-proportion="0.7013699">
+          <folding>
+            <marker date="1216864369843" expanded="true" signature="7:198" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ProcessFiber.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="17" selection-start="44" selection-end="44" vertical-scroll-proportion="0.09315068">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/PoolFiber.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="58" selection-start="295" selection-end="295" vertical-scroll-proportion="-1.7561644">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/PoolQueueTests.java">
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/ThreadFiber.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="264" selection-end="264" vertical-scroll-proportion="0.51232874">
+        <state line="14" column="51" selection-start="361" selection-end="361" vertical-scroll-proportion="0.5178082">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ThreadFiberTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="43" selection-start="224" selection-end="224" vertical-scroll-proportion="0.41917807">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/FiberBaseTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="59" selection-start="556" selection-end="556" vertical-scroll-proportion="-2.9315069">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/Stopable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="0" selection-start="90" selection-end="90" vertical-scroll-proportion="0.27945206">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ChannelTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="46" selection-start="622" selection-end="622" vertical-scroll-proportion="0.7917808">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

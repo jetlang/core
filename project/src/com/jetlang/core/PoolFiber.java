@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
 /// Process Queue that uses a thread pool for execution.
 
 /// </summary>
-public class PoolQueue implements IProcessQueue {
+public class PoolFiber implements ProcessFiber {
     private boolean _flushPending = false;
     private final Object _lock = new Object();
     private final List<Runnable> _queue = new ArrayList<Runnable>();
@@ -22,7 +22,7 @@ public class PoolQueue implements IProcessQueue {
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="executor"></param>
-    public PoolQueue(Executor pool, ICommandExecutor executor) {
+    public PoolFiber(Executor pool, ICommandExecutor executor) {
         _pool = pool;
         _executor = executor;
     }
@@ -109,10 +109,10 @@ public class PoolQueue implements IProcessQueue {
 //        }
 
     /// <summary>
-    /// Start consuming events.
+    /// start consuming events.
     /// </summary>
 
-    public void Start() {
+    public void start() {
         if (_started == ExecutionState.Running) {
             throw new RuntimeException("Already Started");
         }
@@ -129,20 +129,13 @@ public class PoolQueue implements IProcessQueue {
     /// <summary>
     /// Stop consuming events.
     /// </summary>
-    public void Stop() {
-        //_timer.Dispose();
+    public void stop() {
+        //_timer.stop();
         _started = ExecutionState.Stopped;
         synchronized (_onStop) {
             for (Runnable r : _onStop)
                 r.run();
         }
-    }
-
-    /// <summary>
-    /// Stops the queue.
-    /// </summary>
-    public void Dispose() {
-        Stop();
     }
 
     public void onStop(Runnable runOnStop) {

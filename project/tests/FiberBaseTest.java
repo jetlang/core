@@ -1,6 +1,6 @@
 import com.jetlang.channels.Channel;
 import com.jetlang.core.Callback;
-import com.jetlang.core.IProcessQueue;
+import com.jetlang.core.ProcessFiber;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public abstract class SubstitutabilityBaseTest extends Assert {
-    public abstract IProcessQueue CreateBus();
+public abstract class FiberBaseTest extends Assert {
+    public abstract ProcessFiber CreateBus();
 
     public abstract void DoSetup();
 
     public abstract void DoTearDown();
 
-    protected IProcessQueue _bus;
+    protected ProcessFiber _bus;
 
     @Before
     public void Setup() {
@@ -29,7 +29,7 @@ public abstract class SubstitutabilityBaseTest extends Assert {
     @After
     public void TearDown() {
         if (_bus != null) {
-            _bus.Stop();
+            _bus.stop();
         }
         DoTearDown();
     }
@@ -41,17 +41,17 @@ public abstract class SubstitutabilityBaseTest extends Assert {
 //
 //            Ru onReset = delegate { reset.Set(); };
 //            _bus.Schedule(onReset, 1);
-//            _bus.Start();
+//            _bus.start();
 //
 //            Assert.IsTrue(reset.WaitOne(5000, false));
 //        }
 
     @Test
     public void DoubleStartResultsInException() {
-        _bus.Start();
+        _bus.start();
         try {
-            _bus.Start();
-            Assert.fail("Should not Start");
+            _bus.start();
+            Assert.fail("Should not start");
         }
         catch (Exception e) {
         }
@@ -59,7 +59,7 @@ public abstract class SubstitutabilityBaseTest extends Assert {
 
     @Test
     public void PubSub() throws InterruptedException {
-        _bus.Start();
+        _bus.start();
         Channel<String> channel = new Channel<String>();
         Assert.assertFalse(channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
@@ -85,7 +85,7 @@ public abstract class SubstitutabilityBaseTest extends Assert {
 //        {
 //            CountDownLatch reset = new CountDownLatch(1);
 //            Command onTimeout = delegate { reset.Set(); };
-//            _bus.Start();
+//            _bus.start();
 //            OnMessage<string> reply = delegate { Assert.Fail("Should not be called"); };
 //            _bus.SendAsyncRequest(new object(), "msg", reply, onTimeout, 1);
 //            Assert.IsTrue(reset.WaitOne(5000, false));
@@ -95,13 +95,13 @@ public abstract class SubstitutabilityBaseTest extends Assert {
 //        public void AsyncRequestWithReply()
 //        {
 //            IProcessBus replyBus = CreateBus(_contextFactory);
-//            replyBus.Start();
+//            replyBus.start();
 //            string requestTopic = "request";
 //            OnMessage<string> onMsg =
 //                delegate(IMessageHeader header, string msg) { replyBus.Publish(header.ReplyTo, msg); };
 //            replyBus.Subscribe(new TopicEquals(requestTopic), onMsg);
 //            Command onTimeout = delegate { Assert.Fail("Should not timeout"); };
-//            _bus.Start();
+//            _bus.start();
 //            ManualResetEvent reset = new ManualResetEvent(false);
 //            OnMessage<string> reply = delegate { reset.Set(); };
 //            _bus.SendAsyncRequest("request", "msg", reply, onTimeout, 100);

@@ -26,7 +26,7 @@ public class SynchronousCommandQueue implements ICommandQueue, ICommandRunner {
     }
 
     /// <summary>
-    /// Start Consuming events.
+    /// start Consuming events.
     /// </summary>
     public void Run() {
         _running = true;

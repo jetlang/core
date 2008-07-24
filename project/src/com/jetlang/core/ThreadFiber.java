@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /// <summary>
-/// Default implementation for IProcessThread.
-/// <see cref="IProcessThread"/>
+/// Default implementation for ThreadFiber.
+/// <see cref="ThreadFiber"/>
 
 /// </summary>
-public class ProcessThread implements IProcessThread {
+public class ThreadFiber implements ProcessFiber {
 
     private final Thread _thread;
     private final ICommandRunner _queue;
@@ -22,7 +22,7 @@ public class ProcessThread implements IProcessThread {
     /// <param name="threadName"></param>
     /// <param name="isBackground"></param>
 
-    public ProcessThread(ICommandRunner queue, String threadName, boolean isBackground) {
+    public ThreadFiber(ICommandRunner queue, String threadName, boolean isBackground) {
         _queue = queue;
         Runnable runThread = new Runnable() {
             public void run() {
@@ -35,7 +35,7 @@ public class ProcessThread implements IProcessThread {
     }
 
     /// <summary>
-    /// <see cref="IProcessThread.Thread"/>
+    /// <see cref="ThreadFiber.Thread"/>
     /// </summary>
     public Thread getThread() {
         return _thread;
@@ -82,11 +82,11 @@ public class ProcessThread implements IProcessThread {
 //        }
 
     /// <summary>
-    /// <see cref="IProcessQueue.Stop"/>
+    /// <see cref="ProcessFiber.Stop"/>
     /// </summary>
 
-    public void Stop() {
-//            _scheduler.Dispose();
+    public void stop() {
+//            _scheduler.stop();
         _queue.Stop();
         synchronized (_onStop) {
             for (Runnable r : _onStop) {
@@ -96,14 +96,14 @@ public class ProcessThread implements IProcessThread {
     }
 
     /// <summary>
-    /// <see cref="IProcessQueue.Start"/>
+    /// <see cref="ProcessFiber.start"/>
     /// </summary>
-    public void Start() {
+    public void start() {
         _thread.start();
     }
 
     /// <summary>
-    /// <see cref="IProcessThread.Join"/>
+    /// <see cref="ThreadFiber.Join"/>
     /// </summary>
     public void Join() {
         try {
@@ -111,12 +111,5 @@ public class ProcessThread implements IProcessThread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /// <summary>
-    /// Stops the thread.
-    /// </summary>
-    public void Dispose() {
-        Stop();
     }
 }

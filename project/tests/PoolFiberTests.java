@@ -1,6 +1,6 @@
 import com.jetlang.core.CommandExecutor;
-import com.jetlang.core.IProcessQueue;
-import com.jetlang.core.PoolQueue;
+import com.jetlang.core.PoolFiber;
+import com.jetlang.core.ProcessFiber;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,12 +10,12 @@ import java.util.concurrent.Executors;
  * Date: Jul 23, 2008
  * Time: 8:04:04 PM
  */
-public class PoolQueueTests extends SubstitutabilityBaseTest {
+public class PoolFiberTests extends FiberBaseTest {
 
     private ExecutorService _executor;
 
-    public IProcessQueue CreateBus() {
-        return new PoolQueue(_executor, new CommandExecutor());
+    public ProcessFiber CreateBus() {
+        return new PoolFiber(_executor, new CommandExecutor());
     }
 
     public void DoSetup() {

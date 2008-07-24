@@ -1,24 +1,24 @@
-import org.junit.Test;
-import org.junit.Assert;
-import com.jetlang.core.*;
 import com.jetlang.channels.Channel;
+import com.jetlang.core.*;
+import org.junit.Assert;
+import org.junit.Test;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-class PerfCommandExecutor implements ICommandExecutor{
+class PerfCommandExecutor implements ICommandExecutor {
 
     public void executeAll(Runnable[] toExecute) {
-        for(Runnable runnable: toExecute){
+        for (Runnable runnable : toExecute) {
             runnable.run();
         }
-        if(toExecute.length < 1000 ){
+        if (toExecute.length < 1000) {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                throw new RuntimeException(e);
             }
         }
     }
@@ -213,10 +213,10 @@ public class ChannelTests extends Assert {
 //        [Test]
 //        public void AsyncRequestReplyWithPrivateChannelUsingThreads()
 //        {
-//            IProcessQueue responder = new ProcessThread();
-//            responder.Start();
-//            IProcessQueue receiver = new ProcessThread();
-//            receiver.Start();
+//            ProcessFiber responder = new ThreadFiber();
+//            responder.start();
+//            ProcessFiber receiver = new ThreadFiber();
+//            receiver.start();
 //
 //            Channel<Channel<string>> requestChannel = new Channel<Channel<string>>();
 //            Channel<string> replyChannel = new Channel<string>();
@@ -238,12 +238,13 @@ public class ChannelTests extends Assert {
 //
 
     //
+
     @Test
     public void PointToPointPerfTest() throws InterruptedException {
         Channel<Integer> channel = new Channel<Integer>();
         CommandQueue queue = new CommandQueue(new PerfCommandExecutor());
-        ProcessThread bus = new ProcessThread(queue, "testThread", true);
-        bus.Start();
+        ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
+        bus.start();
         final Integer max = 5000000;
         final CountDownLatch reset = new CountDownLatch(1);
         Callback<Integer> onMsg = new Callback<Integer>() {
@@ -265,16 +266,16 @@ public class ChannelTests extends Assert {
             boolean result = reset.await(30, TimeUnit.SECONDS);
             assertTrue(result);
         } finally {
-            timer.Dispose();
-            bus.Dispose();
+            timer.stop();
+            bus.stop();
         }
     }
 
 //        [Test]
 //        public void BasicPubSubWithPoolQueue()
 //        {
-//            IProcessQueue queue = new PoolQueue();
-//            queue.Start();
+//            ProcessFiber queue = new PoolFiber();
+//            queue.start();
 //            Channel<string> hello = new Channel<string>();
 //            Channel<string> hello2 = new Channel<string>();
 //
