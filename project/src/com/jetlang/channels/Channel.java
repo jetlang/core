@@ -12,7 +12,6 @@ import java.util.ArrayList;
  */
 public class Channel<T> {
 
-    //TODO optimize threading
     private final ArrayList<Callback<T>> _subscribers = new ArrayList<Callback<T>>();
 
     public boolean publish(T s) {
@@ -27,19 +26,32 @@ public class Channel<T> {
     }
 
     public void subscribe(final ICommandQueue queue, final Callback<T> onReceive) {
+        final Callback<T> callbackOnQueue = new Callback<T>() {
+            public void onMessage(final T message) {
+                final Runnable toExecute = new Runnable() {
+                    public void run() {
+                        onReceive.onMessage(message);
+                    }
+                };
+                queue.queue(toExecute);
+            }
+        };
         synchronized (_subscribers) {
-            Callback<T> callbackOnQueue = new Callback<T>() {
-                public void onMessage(final T message) {
-                    final Runnable toExecute = new Runnable() {
-                        public void run() {
-                            onReceive.onMessage(message);
-                        }
-                    };
-                    queue.queue(toExecute);
-                }
-            };
             _subscribers.add(callbackOnQueue);
         }
+        final Runnable unSub = new Runnable() {
+            public void run() {
+                Remove(callbackOnQueue);
+            }
+        };
+        queue.onStop(unSub);
+    }
+
+    private void Remove(Callback<T> callbackOnQueue) {
+        synchronized (_subscribers) {
+            _subscribers.remove(callbackOnQueue);
+        }
+
     }
 
     public void clearSubscribers() {
