@@ -1,6 +1,7 @@
 import com.jetlang.channels.Channel;
 import com.jetlang.core.Callback;
 import com.jetlang.core.ProcessFiber;
+import com.jetlang.core.Unsubscriber;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -92,6 +93,20 @@ public abstract class FiberBaseTest extends Assert {
         channel.subscribe(_bus, onReceive);
         assertEquals(1, channel.subscriberCount());
         _bus.stop();
+        assertEquals(0, channel.subscriberCount());
+    }
+
+    @Test
+    public void Unsub() throws InterruptedException {
+        _bus.start();
+        Channel<String> channel = new Channel<String>();
+        Callback<String> onReceive = new Callback<String>() {
+            public void onMessage(String data) {
+            }
+        };
+        Unsubscriber unsub = channel.subscribe(_bus, onReceive);
+        assertEquals(1, channel.subscriberCount());
+        unsub.unsubscribe();
         assertEquals(0, channel.subscriberCount());
     }
 

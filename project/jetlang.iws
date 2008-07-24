@@ -16,15 +16,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\IChannelPublisher.java" afterPath="$PROJECT_DIR$/src/com/jetlang/channels/ChannelPublisher.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IQueueChannel.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/FiberBaseTest.java" afterPath="$PROJECT_DIR$/tests/FiberBaseTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/ChannelTests.java" afterPath="$PROJECT_DIR$/tests/ChannelTests.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IThreadPool.java" afterPath="" />
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IUnsubscriber.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/Unsubscriber.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jetlang/channels/Channel.java" afterPath="$PROJECT_DIR$/src/com/jetlang/channels/Channel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jetlang.iws" afterPath="$PROJECT_DIR$/jetlang.iws" />
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\IChannelSubscriber.java" afterPath="$PROJECT_DIR$/src/com/jetlang/channels/ChannelSubscriber.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jetlang/core/Unsubscriber.java" afterPath="$PROJECT_DIR$/src/com/jetlang/core/Unsubscriber.java" />
     </list>
     <ignored path="jetlang.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -90,7 +83,7 @@
       <file leaf-file-name="ChannelTests.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/ChannelTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="43" selection-start="438" selection-end="438" vertical-scroll-proportion="0.56438357">
+            <state line="10" column="81" selection-start="302" selection-end="302" vertical-scroll-proportion="0.45698926">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -101,7 +94,7 @@
       <file leaf-file-name="ThreadFiberTests.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/ThreadFiberTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="13" selection-start="194" selection-end="194" vertical-scroll-proportion="0.3260274">
+            <state line="9" column="13" selection-start="194" selection-end="194" vertical-scroll-proportion="0.31989247">
               <folding />
             </state>
           </provider>
@@ -110,7 +103,7 @@
       <file leaf-file-name="PoolFiberTests.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/PoolFiberTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="58" selection-start="456" selection-end="456" vertical-scroll-proportion="0.5589041">
+            <state line="12" column="13" selection-start="280" selection-end="280" vertical-scroll-proportion="0.31989247">
               <folding>
                 <marker date="1216864369843" expanded="true" signature="7:198" placeholder="..." />
               </folding>
@@ -121,7 +114,7 @@
       <file leaf-file-name="PerfTimer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/PerfTimer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="13" selection-start="48" selection-end="48" vertical-scroll-proportion="0.09315068">
+            <state line="2" column="13" selection-start="48" selection-end="48" vertical-scroll-proportion="0.09139785">
               <folding>
                 <marker date="1216864369843" expanded="true" signature="172:252" placeholder="{...}" />
                 <marker date="1216864369843" expanded="true" signature="277:494" placeholder="{...}" />
@@ -133,7 +126,7 @@
       <file leaf-file-name="Channel.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/Channel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="39" selection-start="518" selection-end="518" vertical-scroll-proportion="0.61095893">
+            <state line="19" column="39" selection-start="518" selection-end="518" vertical-scroll-proportion="0.5994624">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -141,10 +134,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FiberBaseTest.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="FiberBaseTest.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/FiberBaseTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="22" selection-start="369" selection-end="369" vertical-scroll-proportion="-3.2">
+            <state line="99" column="16" selection-start="2768" selection-end="2768" vertical-scroll-proportion="0.33333334">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -155,16 +148,16 @@
       <file leaf-file-name="Unsubscriber.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/Unsubscriber.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="3" selection-start="93" selection-end="93" vertical-scroll-proportion="0.27945206">
+            <state line="18" column="11" selection-start="298" selection-end="298" vertical-scroll-proportion="0.82258064">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChannelPublisher.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ChannelPublisher.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelPublisher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="98" selection-end="98" vertical-scroll-proportion="0.3260274">
+            <state line="7" column="0" selection-start="98" selection-end="98" vertical-scroll-proportion="0.31989247">
               <folding />
             </state>
           </provider>
@@ -173,7 +166,7 @@
       <file leaf-file-name="ChannelSubscriber.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelSubscriber.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="17" selection-start="261" selection-end="261" vertical-scroll-proportion="0.33142856">
+            <state line="11" column="17" selection-start="261" selection-end="261" vertical-scroll-proportion="0.32492998">
               <folding>
                 <marker date="1216865605015" expanded="true" signature="38:141" placeholder="..." />
               </folding>
@@ -184,7 +177,7 @@
       <file leaf-file-name="ChannelSubscription.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelSubscription.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="17" selection-start="246" selection-end="246" vertical-scroll-proportion="0.33150685">
+            <state line="9" column="17" selection-start="246" selection-end="246" vertical-scroll-proportion="0.3252688">
               <folding />
             </state>
           </provider>
@@ -511,7 +504,7 @@
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32961783" order="8" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32961783" order="8" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3998691" order="0" />
@@ -522,7 +515,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31847134" order="2" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31847134" order="2" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="5" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
@@ -620,7 +613,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelSubscriber.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="17" selection-start="261" selection-end="261" vertical-scroll-proportion="0.33142856">
+        <state line="11" column="17" selection-start="261" selection-end="261" vertical-scroll-proportion="0.32492998">
           <folding>
             <marker date="1216865605015" expanded="true" signature="38:141" placeholder="..." />
           </folding>
@@ -629,33 +622,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelSubscription.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="17" selection-start="246" selection-end="246" vertical-scroll-proportion="0.33150685">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/ThreadFiberTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="194" selection-end="194" vertical-scroll-proportion="0.3260274">
+        <state line="9" column="17" selection-start="246" selection-end="246" vertical-scroll-proportion="0.3252688">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/PerfTimer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="13" selection-start="48" selection-end="48" vertical-scroll-proportion="0.09315068">
+        <state line="2" column="13" selection-start="48" selection-end="48" vertical-scroll-proportion="0.09139785">
           <folding>
             <marker date="1216864369843" expanded="true" signature="172:252" placeholder="{...}" />
             <marker date="1216864369843" expanded="true" signature="277:494" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/ChannelTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="43" selection-start="438" selection-end="438" vertical-scroll-proportion="0.56438357">
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -671,7 +648,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/Channel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="39" selection-start="518" selection-end="518" vertical-scroll-proportion="0.61095893">
+        <state line="19" column="39" selection-start="518" selection-end="518" vertical-scroll-proportion="0.5994624">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelPublisher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="0" selection-start="98" selection-end="98" vertical-scroll-proportion="0.31989247">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/Unsubscriber.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="11" selection-start="298" selection-end="298" vertical-scroll-proportion="0.82258064">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/PoolFiberTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="13" selection-start="280" selection-end="280" vertical-scroll-proportion="0.31989247">
+          <folding>
+            <marker date="1216864369843" expanded="true" signature="7:198" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ThreadFiberTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="13" selection-start="194" selection-end="194" vertical-scroll-proportion="0.31989247">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ChannelTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="81" selection-start="302" selection-end="302" vertical-scroll-proportion="0.45698926">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -680,33 +696,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/FiberBaseTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="22" selection-start="369" selection-end="369" vertical-scroll-proportion="-3.2">
+        <state line="99" column="16" selection-start="2768" selection-end="2768" vertical-scroll-proportion="0.33333334">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/PoolFiberTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="58" selection-start="456" selection-end="456" vertical-scroll-proportion="0.5589041">
-          <folding>
-            <marker date="1216864369843" expanded="true" signature="7:198" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/core/Unsubscriber.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="3" selection-start="93" selection-end="93" vertical-scroll-proportion="0.27945206">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jetlang/channels/ChannelPublisher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="98" selection-end="98" vertical-scroll-proportion="0.3260274">
-          <folding />
         </state>
       </provider>
     </entry>

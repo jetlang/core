@@ -16,7 +16,7 @@ public class Unsubscriber {
     /// <summary>
     /// unsubscribe.
     /// </summary>
-    void unsubscribe() {
+    public void unsubscribe() {
         this.unsub.run();
     }
 }
