@@ -7,14 +7,14 @@ package org.jetlang.core;
  */ /// <summary>
 /// Methods for schedule events that will be executed in the future.
 /// </summary>
-public interface ICommandTimer {
+public interface RunnableScheduler {
     /// <summary>
     /// Schedules an event to be executes once.
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <returns>a controller to cancel the event.</returns>
-    //ITimerControl Schedule(Runnable command, long firstIntervalInMs);
+    TimerControl schedule(Runnable command, long firstIntervalInMs);
 
     /// <summary>
     /// Schedule an event on a recurring interval.
@@ -23,5 +23,5 @@ public interface ICommandTimer {
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
     /// <returns>controller to cancel timer.</returns>
-    //ITimerControl ScheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs);
+    TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs);
 }

@@ -13,7 +13,7 @@ public class ThreadFiber implements ProcessFiber {
     private final Thread _thread;
     private final ICommandRunner _queue;
     private final List<Runnable> _onStop = new ArrayList<Runnable>();
-    //private final CommandTimer _scheduler;
+    private final CommandTimer _scheduler;
 
     /// <summary>
     /// Create process thread.
@@ -31,7 +31,7 @@ public class ThreadFiber implements ProcessFiber {
         };
         _thread = new Thread(runThread, threadName);
         _thread.setDaemon(!isBackground);
-        //_scheduler = new CommandTimer(this);
+        _scheduler = new CommandTimer(this);
     }
 
     /// <summary>
@@ -60,25 +60,25 @@ public class ThreadFiber implements ProcessFiber {
     }
 
     /// <summary>
-    /// <see cref="ICommandTimer.Schedule(Command,long)"/>
+    /// <see cref="RunnableScheduler.Schedule(Command,long)"/>
     /// </summary>
     /// <param name="command"></param>
     /// <param name="intervalInMs"></param>
     /// <returns></returns>
-//        public ITimerControl Schedule(Command command, long intervalInMs)
+//        public TimerControl Schedule(Command command, long intervalInMs)
 //        {
 //            //return _scheduler.Schedule(command, intervalInMs);
 //        }
 
     /// <summary>
-    /// <see cref="ICommandTimer.ScheduleOnInterval(Command,long,long)"/>
+    /// <see cref="RunnableScheduler.scheduleOnInterval(Command,long,long)"/>
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstInMs"></param>
     /// <param name="intervalInMs"></param>
-//        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long intervalInMs)
+//        public TimerControl scheduleOnInterval(Command command, long firstInMs, long intervalInMs)
 //        {
-//            return _scheduler.ScheduleOnInterval(command, firstInMs, intervalInMs);
+//            return _scheduler.scheduleOnInterval(command, firstInMs, intervalInMs);
 //        }
 
     /// <summary>
@@ -111,5 +111,25 @@ public class ThreadFiber implements ProcessFiber {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /// <summary>
+    /// Schedules an event to be executes once.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="firstIntervalInMs"></param>
+    /// <returns>a controller to cancel the event.</returns>
+    public TimerControl schedule(Runnable command, long firstIntervalInMs) {
+        return _scheduler.schedule(command, firstIntervalInMs);
+    }/// <summary>
+
+    /// Schedule an event on a recurring interval.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="firstIntervalInMs"></param>
+    /// <param name="regularIntervalInMs"></param>
+    /// <returns>controller to cancel timer.</returns>
+    public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+        return _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
     }
 }

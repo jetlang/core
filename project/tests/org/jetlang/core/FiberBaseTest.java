@@ -34,20 +34,50 @@ public abstract class FiberBaseTest extends Assert {
         DoTearDown();
     }
 
-//        @Test
-//        public void ScheduleBeforeStart()
-//        {
-//            CountDownLatch reset = new CountDownLatch(1);
-//
-//            Ru onReset = delegate { reset.Set(); };
-//            _bus.Schedule(onReset, 1);
-//            _bus.start();
-//
-//            Assert.IsTrue(reset.WaitOne(5000, false));
-//        }
+    @Test
+    public void ScheduleBeforeStart() throws InterruptedException {
+        final CountDownLatch reset = new CountDownLatch(1);
+
+        Runnable onReset = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        _bus.schedule(onReset, 1);
+        _bus.start();
+
+        assertTrue(reset.await(10, TimeUnit.SECONDS));
+    }
 
     @Test
-    public void DoubleStartResultsInException() {
+    public void ScheduleOne() throws InterruptedException {
+        final CountDownLatch reset = new CountDownLatch(1);
+        _bus.start();
+        Runnable onReset = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        _bus.schedule(onReset, 1);
+        assertTrue(reset.await(10, TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void ScheduleInterval() throws InterruptedException {
+        final CountDownLatch reset = new CountDownLatch(5);
+        _bus.start();
+        Runnable onReset = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        _bus.scheduleOnInterval(onReset, 15, 15);
+        assertTrue(reset.await(10, TimeUnit.SECONDS));
+    }
+
+
+    @Test
+    public void testDoubleStartResultsInException() {
         _bus.start();
         try {
             _bus.start();

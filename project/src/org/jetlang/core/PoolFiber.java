@@ -16,6 +16,7 @@ public class PoolFiber implements ProcessFiber {
     private ExecutionState _started = ExecutionState.Created;
     private final ICommandExecutor _executor;
     private final ArrayList<Runnable> _onStop = new ArrayList<Runnable>();
+    private final CommandTimer _scheduler;
 
     /// <summary>
     /// Construct new instance.
@@ -25,6 +26,7 @@ public class PoolFiber implements ProcessFiber {
     public PoolFiber(Executor pool, ICommandExecutor executor) {
         _pool = pool;
         _executor = executor;
+        _scheduler = new CommandTimer(this);
     }
 
     /// <summary>
@@ -86,26 +88,26 @@ public class PoolFiber implements ProcessFiber {
     }
 
     /// <summary>
-    /// <see cref="ICommandTimer.Schedule(Command,long)"/>
+    /// <see cref="RunnableScheduler.Schedule(Command,long)"/>
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <returns></returns>
-//        public ITimerControl Schedule(Runnable command, long firstIntervalInMs)
+//        public TimerControl Schedule(Runnable command, long firstIntervalInMs)
 //        {
 //            return _timer.Schedule(command, firstIntervalInMs);
 //        }
 
     /// <summary>
-    /// <see cref="ICommandTimer.ScheduleOnInterval(Command,long,long)"/>
+    /// <see cref="RunnableScheduler.scheduleOnInterval(Command,long,long)"/>
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
     /// <returns></returns>
-//        public ITimerControl ScheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs)
+//        public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs)
 //        {
-//            return _timer.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+//            return _timer.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
 //        }
 
     /// <summary>
@@ -142,5 +144,25 @@ public class PoolFiber implements ProcessFiber {
         synchronized (_onStop) {
             _onStop.add(runOnStop);
         }
+    }
+
+    /// <summary>
+    /// Schedules an event to be executes once.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="firstIntervalInMs"></param>
+    /// <returns>a controller to cancel the event.</returns>
+    public TimerControl schedule(Runnable command, long firstIntervalInMs) {
+        return _scheduler.schedule(command, firstIntervalInMs);
+    }/// <summary>
+
+    /// Schedule an event on a recurring interval.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="firstIntervalInMs"></param>
+    /// <param name="regularIntervalInMs"></param>
+    /// <returns>controller to cancel timer.</returns>
+    public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+        return _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
     }
 }

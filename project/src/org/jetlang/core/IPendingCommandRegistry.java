@@ -12,7 +12,7 @@ public interface IPendingCommandRegistry {
     /// Remove timer
     /// </summary>
     /// <param name="timer"></param>
-    void Remove(ITimerControl timer);
+    void Remove(TimerControl timer);
 
     /// <summary>
     /// Queue event to target queue.

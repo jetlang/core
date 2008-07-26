@@ -16,17 +16,17 @@ public class PerfCommandExecutor implements ICommandExecutor {
     }
 }
 
-//    public class StubCommandContext : ICommandTimer
+//    public class StubCommandContext : RunnableScheduler
 //    {
 //        public List<Command> Scheduled = new List<Command>();
 //
-//        public ITimerControl Schedule(Command command, long firstIntervalInMs)
+//        public TimerControl Schedule(Command command, long firstIntervalInMs)
 //        {
 //            Scheduled.Add(command);
 //            return null;
 //        }
 //
-//        public ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
+//        public TimerControl scheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
 //        {
 //            Scheduled.Add(command);
 //            return null;

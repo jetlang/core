@@ -31,7 +31,7 @@ public interface ChannelSubscriber<T> {
     /// <param name="receive"></param>
     /// <param name="intervalInMs">Time in Ms to batch events. If 0 events will be delivered as fast as consumer can process</param>
     /// <returns></returns>
-    //IUnsubscriber SubscribeToBatch(ICommandTimer queue, Callback<List<T>> receive, int intervalInMs);
+    //IUnsubscriber SubscribeToBatch(RunnableScheduler queue, Callback<List<T>> receive, int intervalInMs);
 
     ///<summary>
     /// Batches events based upon keyed values allowing for duplicates to be dropped.
@@ -42,7 +42,7 @@ public interface ChannelSubscriber<T> {
     ///<param name="intervalInMs"></param>
     ///<typeparam name="K"></typeparam>
     ///<returns></returns>
-    //<K> IUnsubscriber SubscribeToKeyedBatch(ICommandTimer queue, Converter<T, K> keyResolver, Callback<Dictionary<K, T>> receive, int intervalInMs);
+    //<K> IUnsubscriber SubscribeToKeyedBatch(RunnableScheduler queue, Converter<T, K> keyResolver, Callback<Dictionary<K, T>> receive, int intervalInMs);
 
     /// <summary>
     /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
@@ -52,7 +52,7 @@ public interface ChannelSubscriber<T> {
     /// <param name="receive"></param>
     /// <param name="intervalInMs"></param>
     /// <returns></returns>
-    //IUnsubscriber SubscribeToLast(ICommandTimer queue, Callback<T> receive, int intervalInMs);
+    //IUnsubscriber SubscribeToLast(RunnableScheduler queue, Callback<T> receive, int intervalInMs);
 
     /// <summary>
     /// Subscribes to messages on producer threads. Action will be invoked on producer thread. Action must

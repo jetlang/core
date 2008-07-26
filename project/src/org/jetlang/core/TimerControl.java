@@ -4,9 +4,9 @@ package org.jetlang.core;
 /// Controller to cancel event timer.
 
 /// </summary>
-public interface ITimerControl {
+public interface TimerControl {
     /// <summary>
     /// Cancels scheduled timer.
     /// </summary>
-    void Cancel();
+    void cancel();
 }
