@@ -14,19 +14,19 @@ public class PoolFiber implements ProcessFiber {
     private final List<Runnable> _queue = new ArrayList<Runnable>();
     private final Executor _pool;
     private ExecutionState _started = ExecutionState.Created;
-    private final ICommandExecutor _executor;
+    private final RunnableInvoker _executor;
     private final ArrayList<Runnable> _onStop = new ArrayList<Runnable>();
-    private final CommandTimer _scheduler;
+    private final RunnableSchedulerImpl _scheduler;
 
     /// <summary>
     /// Construct new instance.
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="executor"></param>
-    public PoolFiber(Executor pool, ICommandExecutor executor) {
+    public PoolFiber(Executor pool, RunnableInvoker executor) {
         _pool = pool;
         _executor = executor;
-        _scheduler = new CommandTimer(this);
+        _scheduler = new RunnableSchedulerImpl(this);
     }
 
     /// <summary>

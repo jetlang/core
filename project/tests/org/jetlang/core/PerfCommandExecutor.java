@@ -1,6 +1,6 @@
 package org.jetlang.core;
 
-public class PerfCommandExecutor implements ICommandExecutor {
+public class PerfCommandExecutor implements RunnableInvoker {
 
     public void executeAll(Runnable[] toExecute) {
         for (Runnable runnable : toExecute) {

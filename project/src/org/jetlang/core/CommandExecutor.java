@@ -4,11 +4,11 @@ package org.jetlang.core;
 /// Default command executor.
 
 /// </summary>
-public class CommandExecutor implements ICommandExecutor {
+public class CommandExecutor implements RunnableInvoker {
     private boolean _running = true;
 
     /// <summary>
-    /// <see cref="ICommandExecutor.ExecuteAll(Command[])"/>
+    /// <see cref="RunnableInvoker.ExecuteAll(Command[])"/>
     /// </summary>
     /// <param name="toExecute"></param>
     public void executeAll(Runnable[] toExecute) {

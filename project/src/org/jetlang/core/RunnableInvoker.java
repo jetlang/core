@@ -4,7 +4,7 @@ package org.jetlang.core;
 /// Executes the pending events on for the process bus.
 
 /// </summary>
-public interface ICommandExecutor {
+public interface RunnableInvoker {
     /// <summary>
     /// Execute all pending events for the process bus.
     /// </summary>

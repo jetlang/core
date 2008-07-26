@@ -11,9 +11,9 @@ import java.util.List;
 public class ThreadFiber implements ProcessFiber {
 
     private final Thread _thread;
-    private final ICommandRunner _queue;
+    private final RunnableExecutor _queue;
     private final List<Runnable> _onStop = new ArrayList<Runnable>();
-    private final CommandTimer _scheduler;
+    private final RunnableSchedulerImpl _scheduler;
 
     /// <summary>
     /// Create process thread.
@@ -22,7 +22,7 @@ public class ThreadFiber implements ProcessFiber {
     /// <param name="threadName"></param>
     /// <param name="isBackground"></param>
 
-    public ThreadFiber(ICommandRunner queue, String threadName, boolean isDaemonThread) {
+    public ThreadFiber(RunnableExecutor queue, String threadName, boolean isDaemonThread) {
         _queue = queue;
         Runnable runThread = new Runnable() {
             public void run() {
@@ -31,7 +31,7 @@ public class ThreadFiber implements ProcessFiber {
         };
         _thread = new Thread(runThread, threadName);
         _thread.setDaemon(isDaemonThread);
-        _scheduler = new CommandTimer(this);
+        _scheduler = new RunnableSchedulerImpl(this);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class ThreadFiber implements ProcessFiber {
     }
 
     private void RunThread() {
-        _queue.Run();
+        _queue.run();
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class ThreadFiber implements ProcessFiber {
 
     public void stop() {
         _scheduler.stop();
-        _queue.Stop();
+        _queue.stop();
         synchronized (_onStop) {
             for (Runnable r : _onStop) {
                 r.run();

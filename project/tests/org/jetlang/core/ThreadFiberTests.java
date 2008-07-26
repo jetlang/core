@@ -8,7 +8,7 @@ package org.jetlang.core;
 public class ThreadFiberTests extends FiberBaseTest {
 
     public ProcessFiber CreateBus() {
-        return new ThreadFiber(new CommandQueue(), System.currentTimeMillis() + "", true);
+        return new ThreadFiber(new RunnableExecutorImpl(), System.currentTimeMillis() + "", true);
     }
 
     public void DoSetup() {

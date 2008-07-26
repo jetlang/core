@@ -3,11 +3,11 @@ package org.jetlang.core;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CommandTimer implements RunnableScheduler, Stopable {
+public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
     private final Timer _timer = new Timer(true);
-    private final ICommandQueue _queue;
+    private final RunnableQueue _queue;
 
-    public CommandTimer(ICommandQueue queue) {
+    public RunnableSchedulerImpl(RunnableQueue queue) {
         _queue = queue;
     }
 

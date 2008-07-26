@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.ICommandQueue;
+import org.jetlang.core.RunnableQueue;
 import org.jetlang.core.Unsubscriber;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         return published;
     }
 
-    public Unsubscriber subscribe(final ICommandQueue queue, final Callback<T> onReceive) {
+    public Unsubscriber subscribe(final RunnableQueue queue, final Callback<T> onReceive) {
         final Callback<T> callbackOnQueue = new Callback<T>() {
             public void onMessage(final T message) {
                 final Runnable toExecute = new Runnable() {

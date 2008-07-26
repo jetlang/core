@@ -4,7 +4,7 @@ package org.jetlang.core;
 /// Queue for command objects.
 
 /// </summary>
-public interface ICommandQueue {
+public interface RunnableQueue {
     /// <summary>
     /// Enqueue a single command.
     /// </summary>

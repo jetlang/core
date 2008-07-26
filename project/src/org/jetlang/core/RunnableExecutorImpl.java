@@ -7,20 +7,20 @@ import java.util.List;
 /// Default implementation.
 
 /// </summary>
-public class CommandQueue implements ICommandRunner {
+public class RunnableExecutorImpl implements RunnableExecutor {
     private final Object _lock = new Object();
     private boolean _running = true;
 
     private final List<Runnable> _commands = new ArrayList<Runnable>();
     private final List<Runnable> _onStop = new ArrayList<Runnable>();
 
-    private final ICommandExecutor _commandRunner;
+    private final RunnableInvoker _commandRunner;
 
-    public CommandQueue() {
+    public RunnableExecutorImpl() {
         _commandRunner = new CommandExecutor();
     }
 
-    public CommandQueue(ICommandExecutor executor) {
+    public RunnableExecutorImpl(RunnableInvoker executor) {
         _commandRunner = executor;
     }
 
@@ -79,7 +79,7 @@ public class CommandQueue implements ICommandRunner {
     /// <summary>
     /// Execute commands until stopped.
     /// </summary>
-    public void Run() {
+    public void run() {
         while (ExecuteNextBatch()) {
         }
     }
@@ -87,7 +87,7 @@ public class CommandQueue implements ICommandRunner {
     /// <summary>
     /// Stop consuming events.
     /// </summary>
-    public void Stop() {
+    public void stop() {
         synchronized (_lock) {
             for (Runnable r : _onStop)
                 r.run();

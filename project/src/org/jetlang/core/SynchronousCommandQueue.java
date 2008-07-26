@@ -7,7 +7,7 @@ import java.util.List;
 /// A synchronous queue typically used for testing.
 
 /// </summary>
-public class SynchronousCommandQueue implements ICommandQueue, ICommandRunner {
+public class SynchronousCommandQueue implements RunnableQueue, RunnableExecutor {
     private boolean _running = true;
     private List<Runnable> _onStop = new ArrayList<Runnable>();
 
@@ -28,14 +28,14 @@ public class SynchronousCommandQueue implements ICommandQueue, ICommandRunner {
     /// <summary>
     /// start Consuming events.
     /// </summary>
-    public void Run() {
+    public void run() {
         _running = true;
     }
 
     /// <summary>
     /// Stop consuming events.
     /// </summary>
-    public void Stop() {
+    public void stop() {
         _running = false;
         for (Runnable run : _onStop) {
             run.run();

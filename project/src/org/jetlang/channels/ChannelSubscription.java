@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.ICommandQueue;
+import org.jetlang.core.RunnableQueue;
 
 /// <summary>
 /// Subscription for events on a channel.
@@ -10,14 +10,14 @@ import org.jetlang.core.ICommandQueue;
 /// <typeparam name="T"></typeparam>
 public class ChannelSubscription<T> {
     private final Callback<T> _receiveMethod;
-    private final ICommandQueue _targetQueue;
+    private final RunnableQueue _targetQueue;
 
     /// <summary>
     /// Construct the subscription
     /// </summary>
     /// <param name="queue"></param>
     /// <param name="receiveMethod"></param>
-    public ChannelSubscription(ICommandQueue queue, Callback<T> receiveMethod) {
+    public ChannelSubscription(RunnableQueue queue, Callback<T> receiveMethod) {
         _receiveMethod = receiveMethod;
         _targetQueue = queue;
     }

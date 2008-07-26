@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.ICommandQueue;
+import org.jetlang.core.RunnableQueue;
 import org.jetlang.core.Unsubscriber;
 
 /// <summary>
@@ -16,7 +16,7 @@ public interface ChannelSubscriber<T> {
     ///<param name="queue">the target context to receive the message</param>
     ///<param name="receive"></param>
     ///<returns>Unsubscriber object</returns>
-    Unsubscriber subscribe(ICommandQueue queue, Callback<T> receive);
+    Unsubscriber subscribe(RunnableQueue queue, Callback<T> receive);
 
     /// <summary>
     /// Removes all subscribers.

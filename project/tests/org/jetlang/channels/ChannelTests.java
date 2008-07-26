@@ -232,7 +232,7 @@ public class ChannelTests extends Assert {
     @Test
     public void PointToPointPerfTest() throws InterruptedException {
         Channel<Integer> channel = new Channel<Integer>();
-        CommandQueue queue = new CommandQueue(new PerfCommandExecutor());
+        RunnableExecutorImpl queue = new RunnableExecutorImpl(new PerfCommandExecutor());
         ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
         bus.start();
         final Integer max = 5000000;
