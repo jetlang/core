@@ -22,7 +22,7 @@ public class ThreadFiber implements ProcessFiber {
     /// <param name="threadName"></param>
     /// <param name="isBackground"></param>
 
-    public ThreadFiber(ICommandRunner queue, String threadName, boolean isBackground) {
+    public ThreadFiber(ICommandRunner queue, String threadName, boolean isDaemonThread) {
         _queue = queue;
         Runnable runThread = new Runnable() {
             public void run() {
@@ -30,7 +30,7 @@ public class ThreadFiber implements ProcessFiber {
             }
         };
         _thread = new Thread(runThread, threadName);
-        _thread.setDaemon(!isBackground);
+        _thread.setDaemon(isDaemonThread);
         _scheduler = new CommandTimer(this);
     }
 
