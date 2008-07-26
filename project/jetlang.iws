@@ -16,66 +16,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\PoolFiberTests.java" afterPath="$PROJECT_DIR$/tests/org/jetlang/core/PoolFiberTests.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/jetlang/core" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/IPendingCommandRegistry.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/IPendingCommandRegistry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ThreadFiber.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ThreadFiber.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ITimerControl.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ITimerControl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/CommandQueue.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/CommandQueue.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/IThreadController.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/IThreadController.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jetlang.iws" afterPath="$PROJECT_DIR$/jetlang.iws" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ProcessFiber.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\Channel.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\CommandQueue.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/jetlang/channels" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/CommandExecutor.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/CommandExecutor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/Stopable.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/Stopable.java" />
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\FiberBaseTest.java" afterPath="$PROJECT_DIR$/tests/org/jetlang/core/FiberBaseTest.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ICommandExecutor.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/channels/Channel.java" afterPath="$PROJECT_DIR$/src/org/jetlang/channels/Channel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/org" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/channels/ChannelSubscription.java" afterPath="$PROJECT_DIR$/src/org/jetlang/channels/ChannelSubscription.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\SynchronousCommandQueue.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/org/jetlang/channels/ChannelTests.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/channels/Converter.java" afterPath="$PROJECT_DIR$/src/org/jetlang/channels/Converter.java" />
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\ChannelTests.java" afterPath="$PROJECT_DIR$/tests/org/jetlang/core/PerfCommandExecutor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/PoolFiber.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/PoolFiber.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ICommandRunner.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ICommandRunner.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\CommandExecutor.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/Callback.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/Callback.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ICommandTimer.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ICommandTimer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/SynchronousCommandQueue.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/SynchronousCommandQueue.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\ChannelSubscription.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ITimerControl.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/jetlang" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/channels/ChannelSubscriber.java" afterPath="$PROJECT_DIR$/src/org/jetlang/channels/ChannelSubscriber.java" />
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\PerfTimer.java" afterPath="$PROJECT_DIR$/tests/org/jetlang/core/PerfTimer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ExecutionState.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ExecutionState.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\Callback.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ICommandQueue.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ICommandQueue.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/org/jetlang/core" />
-      <change type="MOVED" beforePath="C:\Workspace\jetlang\tests\ThreadFiberTests.java" afterPath="$PROJECT_DIR$/tests/org/jetlang/core/ThreadFiberTests.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IPendingCommandRegistry.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/org/jetlang/channels" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\Unsubscriber.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ThreadFiber.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\Stopable.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ICommandTimer.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\Converter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/jetlang" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\ChannelPublisher.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/channels/ChannelPublisher.java" afterPath="$PROJECT_DIR$/src/org/jetlang/channels/ChannelPublisher.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\channels\ChannelSubscriber.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ICommandQueue.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ExecutionState.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/org/jetlang" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\PoolFiber.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\ICommandRunner.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ICommandExecutor.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ICommandExecutor.java" />
-      <change type="DELETED" beforePath="C:\Workspace\jetlang\src\com\jetlang\core\IThreadController.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/ProcessFiber.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/ProcessFiber.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/jetlang/core/Unsubscriber.java" afterPath="$PROJECT_DIR$/src/org/jetlang/core/Unsubscriber.java" />
     </list>
     <ignored path="jetlang.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -231,13 +173,13 @@
       <file leaf-file-name="ChannelSubscription.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/jetlang/channels/ChannelSubscription.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="13" selection-start="226" selection-end="226" vertical-scroll-proportion="0.04931507">
+            <state line="10" column="13" selection-start="227" selection-end="227" vertical-scroll-proportion="0.04931507">
               <folding>
-                <marker date="1217082417015" expanded="false" signature="38:103" placeholder="..." />
-                <marker date="1217082417015" expanded="true" signature="577:654" placeholder="{...}" />
-                <marker date="1217082417015" expanded="true" signature="859:1055" placeholder="{...}" />
-                <marker date="1217082417015" expanded="true" signature="905:1009" placeholder="{...}" />
-                <marker date="1217082417015" expanded="true" signature="937:999" placeholder="{...}" />
+                <marker date="1217082456875" expanded="false" signature="38:103" placeholder="..." />
+                <marker date="1217082456875" expanded="true" signature="578:655" placeholder="{...}" />
+                <marker date="1217082456875" expanded="true" signature="860:1056" placeholder="{...}" />
+                <marker date="1217082456875" expanded="true" signature="906:1010" placeholder="{...}" />
+                <marker date="1217082456875" expanded="true" signature="938:1000" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -364,28 +306,6 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang\src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang\src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:C:\Workspace\jetlang\src\com\jetlang" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -732,13 +652,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/jetlang/channels/ChannelSubscription.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="226" selection-end="226" vertical-scroll-proportion="0.04931507">
+        <state line="10" column="13" selection-start="227" selection-end="227" vertical-scroll-proportion="0.04931507">
           <folding>
-            <marker date="1217082417015" expanded="false" signature="38:103" placeholder="..." />
-            <marker date="1217082417015" expanded="true" signature="577:654" placeholder="{...}" />
-            <marker date="1217082417015" expanded="true" signature="859:1055" placeholder="{...}" />
-            <marker date="1217082417015" expanded="true" signature="905:1009" placeholder="{...}" />
-            <marker date="1217082417015" expanded="true" signature="937:999" placeholder="{...}" />
+            <marker date="1217082456875" expanded="false" signature="38:103" placeholder="..." />
+            <marker date="1217082456875" expanded="true" signature="578:655" placeholder="{...}" />
+            <marker date="1217082456875" expanded="true" signature="860:1056" placeholder="{...}" />
+            <marker date="1217082456875" expanded="true" signature="906:1010" placeholder="{...}" />
+            <marker date="1217082456875" expanded="true" signature="938:1000" placeholder="{...}" />
           </folding>
         </state>
       </provider>
