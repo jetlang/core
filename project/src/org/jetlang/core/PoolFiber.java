@@ -87,33 +87,6 @@ public class PoolFiber implements ProcessFiber {
         }
     }
 
-    /// <summary>
-    /// <see cref="RunnableScheduler.Schedule(Command,long)"/>
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="firstIntervalInMs"></param>
-    /// <returns></returns>
-//        public TimerControl Schedule(Runnable command, long firstIntervalInMs)
-//        {
-//            return _timer.Schedule(command, firstIntervalInMs);
-//        }
-
-    /// <summary>
-    /// <see cref="RunnableScheduler.scheduleOnInterval(Command,long,long)"/>
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="firstIntervalInMs"></param>
-    /// <param name="regularIntervalInMs"></param>
-    /// <returns></returns>
-//        public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs)
-//        {
-//            return _timer.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
-//        }
-
-    /// <summary>
-    /// start consuming events.
-    /// </summary>
-
     public void start() {
         if (_started == ExecutionState.Running) {
             throw new RuntimeException("Already Started");
@@ -132,7 +105,7 @@ public class PoolFiber implements ProcessFiber {
     /// Stop consuming events.
     /// </summary>
     public void stop() {
-        //_timer.stop();
+        _scheduler.stop();
         _started = ExecutionState.Stopped;
         synchronized (_onStop) {
             for (Runnable r : _onStop)

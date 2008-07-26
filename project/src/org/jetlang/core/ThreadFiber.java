@@ -86,7 +86,7 @@ public class ThreadFiber implements ProcessFiber {
     /// </summary>
 
     public void stop() {
-//            _scheduler.stop();
+        _scheduler.stop();
         _queue.Stop();
         synchronized (_onStop) {
             for (Runnable r : _onStop) {

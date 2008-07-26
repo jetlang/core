@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CommandTimer implements RunnableScheduler, Stopable {
-    private Timer _timer = new Timer(true);
+    private final Timer _timer = new Timer(true);
     private final ICommandQueue _queue;
 
     public CommandTimer(ICommandQueue queue) {
