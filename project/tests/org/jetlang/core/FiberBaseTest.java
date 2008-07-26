@@ -50,6 +50,29 @@ public abstract class FiberBaseTest extends Assert {
     }
 
     @Test
+    public void ScheduleAndCancelBeforeStart() throws InterruptedException {
+        final CountDownLatch reset = new CountDownLatch(1);
+        final boolean[] executed = new boolean[1];
+        Runnable toCancel = new Runnable() {
+            public void run() {
+                executed[0] = true;
+            }
+        };
+        TimerControl control = _bus.schedule(toCancel, 0);
+        Runnable toRun = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        _bus.schedule(toRun, 0);
+        control.cancel();
+        _bus.start();
+        assertTrue(reset.await(10, TimeUnit.SECONDS));
+        assertFalse(executed[0]);
+    }
+
+
+    @Test
     public void ScheduleOne() throws InterruptedException {
         final CountDownLatch reset = new CountDownLatch(1);
         _bus.start();
