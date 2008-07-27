@@ -1,6 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
+import org.jetlang.core.Filter;
 import org.jetlang.core.RunnableQueue;
 
 /// <summary>
@@ -8,9 +9,10 @@ import org.jetlang.core.RunnableQueue;
 /// </summary>
 
 /// <typeparam name="T"></typeparam>
-public class ChannelSubscription<T> {
+public class ChannelSubscription<T> implements Callback<T> {
     private final Callback<T> _receiveMethod;
     private final RunnableQueue _targetQueue;
+    private Filter<T> _filter;
 
     /// <summary>
     /// Construct the subscription
@@ -26,12 +28,18 @@ public class ChannelSubscription<T> {
     /// Receives the event and queues the execution on the target execute.
     /// </summary>
     /// <param name="msg"></param>
-    protected void OnMessageOnProducerThread(final T msg) {
-        Runnable asyncExec = new Runnable() {
-            public void run() {
-                _receiveMethod.onMessage(msg);
-            }
-        };
-        _targetQueue.execute(asyncExec);
+    public void onMessage(final T msg) {
+        if (_filter == null || _filter.passes(msg)) {
+            Runnable asyncExec = new Runnable() {
+                public void run() {
+                    _receiveMethod.onMessage(msg);
+                }
+            };
+            _targetQueue.execute(asyncExec);
+        }
+    }
+
+    public void setFilterOnProducerThread(Filter<T> filter) {
+        _filter = filter;
     }
 }

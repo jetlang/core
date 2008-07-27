@@ -43,6 +43,10 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
                 queue.execute(toExecute);
             }
         };
+        return subscribeOnProducerThread(queue, callbackOnQueue);
+    }
+
+    public Unsubscriber subscribeOnProducerThread(RunnableQueue queue, final Callback<T> callbackOnQueue) {
         synchronized (_subscribers) {
             _subscribers.add(callbackOnQueue);
         }

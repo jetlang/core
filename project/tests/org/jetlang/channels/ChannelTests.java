@@ -37,29 +37,33 @@ public class ChannelTests {
 
     }
 
-//        [Test]
-//        public void PubSubFilterTest()
-//        {
-//            Channel<Integer> channel = new Channel<Integer>();
-//            SynchronousRunnableQueue execute = new SynchronousRunnableQueue();
-//            int received = 0;
-//            Callback<int> onReceive = delegate(int data)
-//                                        {
-//                                            Assert.IsTrue(data%2 == 0);
-//                                            received++;
-//                                        };
-//            ChannelSubscription<int> subber = new ChannelSubscription<int>(execute, onReceive);
-//            subber.FilterOnProducerThread = delegate(int msg) { return msg%2 == 0; };
-//            channel.SubscribeOnProducerThreads(subber);
-//            for (int i = 0; i <= 4; i++)
-//            {
-//                channel.Publish(i);
-//            }
-//            Assert.AreEqual(3, received);
-//        }
-//
+    @Test
+    public void pubSubFilterTest() {
+        Channel<Integer> channel = new Channel<Integer>();
+        SynchronousRunnableQueue execute = new SynchronousRunnableQueue();
+        final List<Integer> received = new ArrayList<Integer>();
+        Callback<Integer> onReceive = new Callback<Integer>() {
+            public void onMessage(Integer num) {
+                received.add(num);
+            }
+        };
+        ChannelSubscription<Integer> subber = new ChannelSubscription<Integer>(execute, onReceive);
+        Filter<Integer> filter = new Filter<Integer>() {
+            public boolean passes(Integer msg) {
+                return msg % 2 == 0;
+            }
+        };
+        subber.setFilterOnProducerThread(filter);
+        channel.subscribeOnProducerThread(execute, subber);
+        for (int i = 0; i <= 4; i++) {
+            channel.publish(i);
+        }
+        assertEquals(3, received.size());
+        assertEquals(0, received.get(0).intValue());
+        assertEquals(2, received.get(1).intValue());
+        assertEquals(4, received.get(2).intValue());
 
-    //
+    }
 
     @Test
     public void pubSubUnsubscribe() {
