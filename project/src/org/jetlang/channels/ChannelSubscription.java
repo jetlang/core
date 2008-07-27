@@ -15,7 +15,7 @@ public class ChannelSubscription<T> {
     /// <summary>
     /// Construct the subscription
     /// </summary>
-    /// <param name="queue"></param>
+    /// <param name="execute"></param>
     /// <param name="receiveMethod"></param>
     public ChannelSubscription(RunnableQueue queue, Callback<T> receiveMethod) {
         _receiveMethod = receiveMethod;
@@ -23,7 +23,7 @@ public class ChannelSubscription<T> {
     }
 
     /// <summary>
-    /// Receives the event and queues the execution on the target queue.
+    /// Receives the event and queues the execution on the target execute.
     /// </summary>
     /// <param name="msg"></param>
     protected void OnMessageOnProducerThread(final T msg) {
@@ -32,6 +32,6 @@ public class ChannelSubscription<T> {
                 _receiveMethod.onMessage(msg);
             }
         };
-        _targetQueue.queue(asyncExec);
+        _targetQueue.execute(asyncExec);
     }
 }

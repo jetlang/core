@@ -28,7 +28,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// Queue command.
     /// </summary>
     /// <param name="command"></param>
-    public void queue(Runnable command) {
+    public void execute(Runnable command) {
         synchronized (_lock) {
             _commands.add(command);
             _lock.notifyAll();

@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.*;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Date: Jul 26, 2008
  * Time: 9:19:23 AM
  */
-public class ChannelTests extends Assert {
+public class ChannelTests {
     @Test
     public void PubSub() {
         Channel<String> channel = new Channel<String>();
@@ -41,14 +41,14 @@ public class ChannelTests extends Assert {
 //        public void PubSubFilterTest()
 //        {
 //            Channel<Integer> channel = new Channel<Integer>();
-//            SynchronousCommandQueue queue = new SynchronousCommandQueue();
+//            SynchronousCommandQueue execute = new SynchronousCommandQueue();
 //            int received = 0;
 //            Callback<int> onReceive = delegate(int data)
 //                                        {
 //                                            Assert.IsTrue(data%2 == 0);
 //                                            received++;
 //                                        };
-//            ChannelSubscription<int> subber = new ChannelSubscription<int>(queue, onReceive);
+//            ChannelSubscription<int> subber = new ChannelSubscription<int>(execute, onReceive);
 //            subber.FilterOnProducerThread = delegate(int msg) { return msg%2 == 0; };
 //            channel.SubscribeOnProducerThreads(subber);
 //            for (int i = 0; i <= 4; i++)
@@ -58,31 +58,32 @@ public class ChannelTests extends Assert {
 //            Assert.AreEqual(3, received);
 //        }
 //
-//
-//        [Test]
-//        public void PubSubUnsubscribe()
-//        {
-//            Channel<string> channel = new Channel<string>();
-//            SynchronousCommandQueue queue = new SynchronousCommandQueue();
-//            bool received = false;
-//            Action<string> onReceive = delegate(string data)
-//                                           {
-//                                               Assert.AreEqual("hello", data);
-//                                               received = true;
-//                                           };
-//            IUnsubscriber unsub = channel.subscribe(queue, onReceive);
-//            Assert.IsTrue(channel.Publish("hello"));
-//            Assert.IsTrue(received);
-//            unsub.unsubscribe();
-//            Assert.IsFalse(channel.Publish("hello"));
-//            unsub.unsubscribe();
-//        }
+
+    //
+    @Test
+    public void pubSubUnsubscribe() {
+        Channel<String> channel = new Channel<String>();
+        SynchronousCommandQueue execute = new SynchronousCommandQueue();
+        final boolean[] received = new boolean[1];
+        Callback<String> onReceive = new Callback<String>() {
+            public void onMessage(String message) {
+                assertEquals("hello", message);
+                received[0] = true;
+            }
+        };
+        Unsubscriber unsub = channel.subscribe(execute, onReceive);
+        assertTrue(channel.publish("hello"));
+        assertTrue(received[0]);
+        unsub.unsubscribe();
+        assertFalse(channel.publish("hello"));
+        unsub.unsubscribe();
+    }
 //
 //        [Test]
 //        public void SubToBatch()
 //        {
 //            Channel<string> channel = new Channel<string>();
-//            StubCommandContext queue = new StubCommandContext();
+//            StubCommandContext execute = new StubCommandContext();
 //            bool received = false;
 //            Action<IList<string>> onReceive = delegate(IList<string> data)
 //                                                  {
@@ -91,28 +92,28 @@ public class ChannelTests extends Assert {
 //                                                      Assert.AreEqual("4", data[4]);
 //                                                      received = true;
 //                                                  };
-//            channel.SubscribeToBatch(queue, onReceive, 0);
+//            channel.SubscribeToBatch(execute, onReceive, 0);
 //
 //            for (int i = 0; i < 5; i++)
 //            {
 //                channel.Publish(i.ToString());
 //            }
-//            Assert.AreEqual(1, queue.Scheduled.Count);
-//            queue.Scheduled[0]();
+//            Assert.AreEqual(1, execute.Scheduled.Count);
+//            execute.Scheduled[0]();
 //            Assert.IsTrue(received);
-//            queue.Scheduled.Clear();
+//            execute.Scheduled.Clear();
 //            received = false;
 //
 //            channel.Publish("5");
 //            Assert.IsFalse(received);
-//            Assert.AreEqual(1, queue.Scheduled.Count);
+//            Assert.AreEqual(1, execute.Scheduled.Count);
 //        }
 //
 //        [Test]
 //        public void SubToKeyedBatch()
 //        {
 //            Channel<KeyValuePair<string, string>> channel = new Channel<KeyValuePair<string, string>>();
-//            StubCommandContext queue = new StubCommandContext();
+//            StubCommandContext execute = new StubCommandContext();
 //            bool received = false;
 //            Action<IDictionary<string, KeyValuePair<string, string>>> onReceive =
 //                delegate(IDictionary<string, KeyValuePair<string, string>> data)
@@ -124,21 +125,21 @@ public class ChannelTests extends Assert {
 //                    };
 //            Converter<KeyValuePair<string, string>, string> key =
 //                delegate(KeyValuePair<string, string> pair) { return pair.Key; };
-//            channel.SubscribeToKeyedBatch(queue, key, onReceive, 0);
+//            channel.SubscribeToKeyedBatch(execute, key, onReceive, 0);
 //
 //            for (int i = 0; i < 5; i++)
 //            {
 //                channel.Publish(new KeyValuePair<string, string>((i%2).ToString(), i.ToString()));
 //            }
-//            Assert.AreEqual(1, queue.Scheduled.Count);
-//            queue.Scheduled[0]();
+//            Assert.AreEqual(1, execute.Scheduled.Count);
+//            execute.Scheduled[0]();
 //            Assert.IsTrue(received);
-//            queue.Scheduled.Clear();
+//            execute.Scheduled.Clear();
 //            received = false;
 //
 //            channel.Publish(new KeyValuePair<string, string>("1", "1"));
 //            Assert.IsFalse(received);
-//            Assert.AreEqual(1, queue.Scheduled.Count);
+//            Assert.AreEqual(1, execute.Scheduled.Count);
 //        }
 //
 //
@@ -146,7 +147,7 @@ public class ChannelTests extends Assert {
 //        public void SubscribeToLast()
 //        {
 //            Channel<int> channel = new Channel<int>();
-//            StubCommandContext queue = new StubCommandContext();
+//            StubCommandContext execute = new StubCommandContext();
 //            bool received = false;
 //            int lastReceived = -1;
 //            Action<int> onReceive = delegate(int data)
@@ -154,25 +155,25 @@ public class ChannelTests extends Assert {
 //                                            lastReceived = data;
 //                                            received = true;
 //                                        };
-//            channel.SubscribeToLast(queue, onReceive, 0);
+//            channel.SubscribeToLast(execute, onReceive, 0);
 //
 //            for (int i = 0; i < 5; i++)
 //            {
 //                channel.Publish(i);
 //            }
-//            Assert.AreEqual(1, queue.Scheduled.Count);
+//            Assert.AreEqual(1, execute.Scheduled.Count);
 //            Assert.IsFalse(received);
 //            Assert.AreEqual(-1, lastReceived);
-//            queue.Scheduled[0]();
+//            execute.Scheduled[0]();
 //            Assert.IsTrue(received);
 //            Assert.AreEqual(4, lastReceived);
-//            queue.Scheduled.Clear();
+//            execute.Scheduled.Clear();
 //            received = false;
 //            lastReceived = -1;
 //            channel.Publish(5);
 //            Assert.IsFalse(received);
-//            Assert.AreEqual(1, queue.Scheduled.Count);
-//            queue.Scheduled[0]();
+//            Assert.AreEqual(1, execute.Scheduled.Count);
+//            execute.Scheduled[0]();
 //            Assert.IsTrue(received);
 //            Assert.AreEqual(5, lastReceived);
 //        }
@@ -264,8 +265,8 @@ public class ChannelTests extends Assert {
 //        [Test]
 //        public void BasicPubSubWithPoolQueue()
 //        {
-//            ProcessFiber queue = new PoolFiber();
-//            queue.start();
+//            ProcessFiber execute = new PoolFiber();
+//            execute.start();
 //            Channel<string> hello = new Channel<string>();
 //            Channel<string> hello2 = new Channel<string>();
 //
@@ -275,10 +276,10 @@ public class ChannelTests extends Assert {
 //                                                  Assert.AreEqual("hello", str);
 //                                                  reset.Set();
 //                                              };
-//            hello.subscribe(queue, receiveHello);
-//            hello2.subscribe(queue, receiveHello);
+//            hello.subscribe(execute, receiveHello);
+//            hello2.subscribe(execute, receiveHello);
 //            Assert.IsTrue(hello.Publish("hello"));
 //            Assert.IsTrue(reset.WaitOne(10000, false));
-//            queue.Stop();
+//            execute.Stop();
 //        }
 }

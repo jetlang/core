@@ -40,7 +40,7 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
                         onReceive.onMessage(message);
                     }
                 };
-                queue.queue(toExecute);
+                queue.execute(toExecute);
             }
         };
         synchronized (_subscribers) {

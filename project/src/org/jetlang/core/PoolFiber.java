@@ -33,7 +33,7 @@ public class PoolFiber implements ProcessFiber {
     /// Queue command.
     /// </summary>
     /// <param name="commands"></param>
-    public void queue(Runnable commands) {
+    public void execute(Runnable commands) {
         if (_started == ExecutionState.Stopped) {
             return;
         }
@@ -92,13 +92,13 @@ public class PoolFiber implements ProcessFiber {
             throw new RuntimeException("Already Started");
         }
         _started = ExecutionState.Running;
-        //flush any pending events in queue
+        //flush any pending events in execute
         Runnable flushPending = new Runnable() {
             public void run() {
 
             }
         };
-        queue(flushPending);
+        execute(flushPending);
     }
 
     /// <summary>

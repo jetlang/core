@@ -1,15 +1,11 @@
 package org.jetlang.core;
 
+import java.util.concurrent.Executor;
+
 /// <summary>
 /// Queue for command objects.
 
 /// </summary>
-public interface RunnableQueue {
-    /// <summary>
-    /// Enqueue a single command.
-    /// </summary>
-    /// <param name="command"></param>
-    void queue(Runnable command);
-
+public interface RunnableQueue extends Executor {
     void onStop(Runnable runOnStop);
 }

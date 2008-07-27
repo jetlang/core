@@ -14,12 +14,12 @@ public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
     public TimerControl schedule(final Runnable comm, long timeTillEnqueueInMs) {
         if (timeTillEnqueueInMs <= 0) {
             PendingCommand pending = new PendingCommand(comm);
-            _queue.queue(pending);
+            _queue.execute(pending);
             return pending;
         } else {
             TimerTask task = new TimerTask() {
                 public void run() {
-                    _queue.queue(comm);
+                    _queue.execute(comm);
                 }
             };
             _timer.schedule(task, timeTillEnqueueInMs);
@@ -31,7 +31,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
 
         TimerTask task = new TimerTask() {
             public void run() {
-                _queue.queue(comm);
+                _queue.execute(comm);
             }
         };
         _timer.schedule(task, firstInMs, intervalInMs);

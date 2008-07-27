@@ -18,7 +18,7 @@ public class ThreadFiber implements ProcessFiber {
     /// <summary>
     /// Create process thread.
     /// </summary>
-    /// <param name="queue"></param>
+    /// <param name="execute"></param>
     /// <param name="threadName"></param>
     /// <param name="isBackground"></param>
 
@@ -49,8 +49,8 @@ public class ThreadFiber implements ProcessFiber {
     /// Queue command.
     /// </summary>
     /// <param name="command"></param>
-    public void queue(Runnable command) {
-        _queue.queue(command);
+    public void execute(Runnable command) {
+        _queue.execute(command);
     }
 
     public void onStop(Runnable runOnStop) {

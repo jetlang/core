@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /// <summary>
-/// A synchronous queue typically used for testing.
+/// A synchronous execute typically used for testing.
 
 /// </summary>
 public class SynchronousCommandQueue implements RunnableQueue, RunnableExecutor {
@@ -15,7 +15,7 @@ public class SynchronousCommandQueue implements RunnableQueue, RunnableExecutor 
     /// Queue command
     /// </summary>
     /// <param name="command"></param>
-    public void queue(Runnable command) {
+    public void execute(Runnable command) {
         if (_running) {
             command.run();
         }
