@@ -21,15 +21,13 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         }
     }
 
-    public boolean publish(T s) {
-        boolean published = false;
+    public int publish(T s) {
         synchronized (_subscribers) {
             for (Callback<T> callback : _subscribers) {
                 callback.onMessage(s);
-                published = true;
             }
+            return _subscribers.size();
         }
-        return published;
     }
 
     public Unsubscriber subscribe(final RunnableQueue queue, final Callback<T> onReceive) {

@@ -114,7 +114,7 @@ public abstract class FiberBaseTest extends Assert {
     public void PubSub() throws InterruptedException {
         _bus.start();
         Channel<String> channel = new Channel<String>();
-        Assert.assertFalse(channel.publish("hello"));
+        Assert.assertEquals(0, channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
         final CountDownLatch reset = new CountDownLatch(1);
         Callback<String> onReceive = new Callback<String>() {
@@ -125,13 +125,13 @@ public abstract class FiberBaseTest extends Assert {
         };
         channel.subscribe(_bus, onReceive);
         assertEquals(1, channel.subscriberCount());
-        assertTrue(channel.publish("hello"));
+        assertEquals(1, channel.publish("hello"));
         assertTrue(reset.await(10, TimeUnit.SECONDS));
         assertEquals(1, received.size());
         assertEquals("hello", received.get(0));
 
         channel.clearSubscribers();
-        assertFalse(channel.publish("hello"));
+        assertEquals(0, channel.publish("hello"));
     }
 
     @Test

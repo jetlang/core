@@ -11,5 +11,5 @@ public interface ChannelPublisher<T> {
     /// </summary>
     /// <param name="msg"></param>
     /// <returns></returns>
-    boolean publish(T msg);
+    int publish(T msg);
 }

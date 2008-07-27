@@ -20,7 +20,7 @@ public class ChannelTests {
     public void PubSub() {
         Channel<String> channel = new Channel<String>();
         SynchronousRunnableQueue queue = new SynchronousRunnableQueue();
-        assertFalse(channel.publish("hello"));
+        assertEquals(0, channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
         Callback<String> onReceive = new Callback<String>() {
             public void onMessage(String data) {
@@ -28,12 +28,12 @@ public class ChannelTests {
             }
         };
         channel.subscribe(queue, onReceive);
-        assertTrue(channel.publish("hello"));
+        assertEquals(1, channel.publish("hello"));
         assertEquals(1, received.size());
         assertEquals("hello", received.get(0));
 
         channel.clearSubscribers();
-        assertFalse(channel.publish("hello"));
+        assertEquals(0, channel.publish("hello"));
 
 
     }
@@ -78,10 +78,10 @@ public class ChannelTests {
             }
         };
         Unsubscriber unsub = channel.subscribe(execute, onReceive);
-        assertTrue(channel.publish("hello"));
+        assertEquals(1, channel.publish("hello"));
         assertTrue(received[0]);
         unsub.unsubscribe();
-        assertFalse(channel.publish("hello"));
+        assertEquals(0, channel.publish("hello"));
         unsub.unsubscribe();
     }
 //
