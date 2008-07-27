@@ -1,5 +1,7 @@
 package org.jetlang.core;
 
+import org.junit.Test;
+
 /**
  * User: mrettig
  * Date: Jul 23, 2008
@@ -17,5 +19,8 @@ public class ThreadFiberTests extends FiberBaseTest {
     public void DoTearDown() {
     }
 
+    @Test
+    public void nothing() {
 
+    }
 }

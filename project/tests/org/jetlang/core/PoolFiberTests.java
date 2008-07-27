@@ -1,5 +1,7 @@
 package org.jetlang.core;
 
+import org.junit.Test;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,5 +25,10 @@ public class PoolFiberTests extends FiberBaseTest {
     public void DoTearDown() {
         if (_executor != null)
             _executor.shutdown();
+    }
+
+    @Test
+    public void nothing() {
+
     }
 }
