@@ -18,7 +18,7 @@ public class ChannelTests {
     @Test
     public void PubSub() {
         Channel<String> channel = new Channel<String>();
-        SynchronousCommandQueue queue = new SynchronousCommandQueue();
+        SynchronousRunnableQueue queue = new SynchronousRunnableQueue();
         assertFalse(channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
         Callback<String> onReceive = new Callback<String>() {
@@ -41,7 +41,7 @@ public class ChannelTests {
 //        public void PubSubFilterTest()
 //        {
 //            Channel<Integer> channel = new Channel<Integer>();
-//            SynchronousCommandQueue execute = new SynchronousCommandQueue();
+//            SynchronousRunnableQueue execute = new SynchronousRunnableQueue();
 //            int received = 0;
 //            Callback<int> onReceive = delegate(int data)
 //                                        {
@@ -60,10 +60,11 @@ public class ChannelTests {
 //
 
     //
+
     @Test
     public void pubSubUnsubscribe() {
         Channel<String> channel = new Channel<String>();
-        SynchronousCommandQueue execute = new SynchronousCommandQueue();
+        SynchronousRunnableQueue execute = new SynchronousRunnableQueue();
         final boolean[] received = new boolean[1];
         Callback<String> onReceive = new Callback<String>() {
             public void onMessage(String message) {

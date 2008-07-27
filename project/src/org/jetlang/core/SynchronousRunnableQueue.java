@@ -7,7 +7,7 @@ import java.util.List;
 /// A synchronous execute typically used for testing.
 
 /// </summary>
-public class SynchronousCommandQueue implements RunnableQueue, RunnableExecutor {
+public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor {
     private boolean _running = true;
     private List<Runnable> _onStop = new ArrayList<Runnable>();
 
