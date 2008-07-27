@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -113,40 +114,44 @@ public class ChannelTests {
 //            Assert.IsFalse(received);
 //            Assert.AreEqual(1, execute.Scheduled.Count);
 //        }
-//
-//        [Test]
-//        public void SubToKeyedBatch()
-//        {
-//            Channel<KeyValuePair<string, string>> channel = new Channel<KeyValuePair<string, string>>();
-//            StubCommandContext execute = new StubCommandContext();
-//            bool received = false;
-//            Action<IDictionary<string, KeyValuePair<string, string>>> onReceive =
-//                delegate(IDictionary<string, KeyValuePair<string, string>> data)
-//                    {
-//                        Assert.AreEqual(2, data.Keys.Count);
-//                        Assert.AreEqual(data["0"], new KeyValuePair<string, string>("0", "4"));
-//                        Assert.AreEqual(data["1"], new KeyValuePair<string, string>("1", "3"));
-//                        received = true;
-//                    };
-//            Converter<KeyValuePair<string, string>, string> key =
-//                delegate(KeyValuePair<string, string> pair) { return pair.Key; };
-//            channel.SubscribeToKeyedBatch(execute, key, onReceive, 0);
-//
-//            for (int i = 0; i < 5; i++)
-//            {
-//                channel.Publish(new KeyValuePair<string, string>((i%2).ToString(), i.ToString()));
-//            }
-//            Assert.AreEqual(1, execute.Scheduled.Count);
-//            execute.Scheduled[0]();
-//            Assert.IsTrue(received);
-//            execute.Scheduled.Clear();
-//            received = false;
-//
-//            channel.Publish(new KeyValuePair<string, string>("1", "1"));
-//            Assert.IsFalse(received);
-//            Assert.AreEqual(1, execute.Scheduled.Count);
-//        }
-//
+
+    //
+
+    @Test
+    public void subToKeyedBatch() {
+        Channel<Integer> channel = new Channel<Integer>();
+        final StubCommandContext execute = new StubCommandContext();
+        final boolean[] received = new boolean[1];
+        final Callback<Map<String, Integer>> onReceive = new Callback<Map<String, Integer>>() {
+            public void onMessage(Map<String, Integer> data) {
+                assertEquals(2, data.keySet().size());
+                assertEquals(data.get("0"), new Integer(0));
+                received[0] = true;
+            }
+        };
+        Converter<Integer, String> key = new Converter<Integer, String>() {
+            public String Convert(Integer msg) {
+                return msg.toString();
+            }
+        };
+        KeyedBatchSubscriber<String, Integer> subscriber
+                = new KeyedBatchSubscriber<String, Integer>(key, onReceive, execute, 0);
+        channel.subscribe(subscriber);
+
+        for (int i = 0; i < 5; i++) {
+            channel.publish(i % 2);
+        }
+
+        assertEquals(1, execute.Scheduled.size());
+        execute.Scheduled.get(0).run();
+        assertTrue(received[0]);
+        execute.Scheduled.clear();
+        received[0] = false;
+        channel.publish(999);
+        assertFalse(received[0]);
+        assertEquals(1, execute.Scheduled.size());
+    }
+
 //
 //        [Test]
 //        public void SubscribeToLast()
@@ -236,7 +241,8 @@ public class ChannelTests {
     //
 
     @Test
-    public void PointToPointPerfTest() throws InterruptedException {
+    public void PointToPointPerfTest
+            () throws InterruptedException {
         Channel<Integer> channel = new Channel<Integer>();
         RunnableExecutorImpl queue = new RunnableExecutorImpl(new PerfCommandExecutor());
         ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
@@ -287,4 +293,34 @@ public class ChannelTests {
 //            Assert.IsTrue(reset.WaitOne(10000, false));
 //            execute.Stop();
 //        }
+}
+
+class StubCommandContext implements ProcessFiber {
+    public List<Runnable> Scheduled = new ArrayList<Runnable>();
+
+    public TimerControl schedule(Runnable command, long firstIntervalInMs) {
+        Scheduled.add(command);
+        return null;
+    }
+
+    public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+        Scheduled.add(command);
+        return null;
+    }
+
+    /// <summary>
+    /// start consuming events.
+    /// </summary>
+    public void start() {
+    }
+
+    public void onStop(Runnable runOnStop) {
+    }
+
+    public void execute(Runnable command) {
+        throw new RuntimeException("no impl");
+    }
+
+    public void stop() {
+    }
 }
