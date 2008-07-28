@@ -103,7 +103,7 @@ public class PoolFiber implements ProcessFiber {
     public void stop() {
         _started = ExecutionState.Stopped;
         synchronized (_onStop) {
-            for (Stopable r : _onStop)
+            for (Stopable r : _onStop.toArray(new Stopable[_onStop.size()]))
                 r.stop();
         }
     }
@@ -114,6 +114,12 @@ public class PoolFiber implements ProcessFiber {
         }
     }
 
+    public boolean removeOnStop(Stopable stopable) {
+        synchronized (_onStop) {
+            return _onStop.remove(stopable);
+        }
+    }
+
     /// <summary>
     /// Schedules an event to be executes once.
     /// </summary>
@@ -121,7 +127,7 @@ public class PoolFiber implements ProcessFiber {
     /// <param name="firstIntervalInMs"></param>
     /// <returns>a controller to stop the event.</returns>
     public Stopable schedule(Runnable command, long firstIntervalInMs) {
-        return addOnStop(_scheduler.schedule(command, firstIntervalInMs));
+        return _scheduler.schedule(command, firstIntervalInMs);
     }/// <summary>
 
     private Stopable addOnStop(Stopable stopable) {
@@ -136,6 +142,7 @@ public class PoolFiber implements ProcessFiber {
     /// <param name="regularIntervalInMs"></param>
     /// <returns>controller to stop timer.</returns>
     public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+        //the timer object is shared so interval timers must be shut down manually.
         return addOnStop(_scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs));
     }
 }

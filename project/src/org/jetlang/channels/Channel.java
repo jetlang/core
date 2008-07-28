@@ -48,13 +48,14 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         return subscribeOnProducerThread(sub.getQueue(), sub);
     }
 
-    public Stopable subscribeOnProducerThread(RunnableQueue queue, final Callback<T> callbackOnQueue) {
+    public Stopable subscribeOnProducerThread(final RunnableQueue queue, final Callback<T> callbackOnQueue) {
         synchronized (_subscribers) {
             _subscribers.add(callbackOnQueue);
         }
         final Stopable unSub = new Stopable() {
             public void stop() {
                 Remove(callbackOnQueue);
+                queue.removeOnStop(this);
             }
         };
         queue.onStop(unSub);

@@ -31,7 +31,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     public void execute(Runnable command) {
         synchronized (_lock) {
             _commands.add(command);
-            _lock.notifyAll();
+            _lock.notify();
         }
     }
 
@@ -44,7 +44,6 @@ public class RunnableExecutorImpl implements RunnableExecutor {
             if (ReadyToDequeue()) {
                 Runnable[] toReturn = _commands.toArray(new Runnable[_commands.size()]);
                 _commands.clear();
-                _lock.notifyAll();
                 return toReturn;
             } else {
                 return null;
@@ -92,13 +91,19 @@ public class RunnableExecutorImpl implements RunnableExecutor {
             for (Stopable r : _onStop)
                 r.stop();
             _running = false;
-            _lock.notifyAll();
+            _lock.notify();
         }
     }
 
     public void onStop(Stopable r) {
         synchronized (_lock) {
             _onStop.add(r);
+        }
+    }
+
+    public boolean removeOnStop(Stopable stopable) {
+        synchronized (_lock) {
+            return _onStop.remove(stopable);
         }
     }
 }

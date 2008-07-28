@@ -59,6 +59,12 @@ public class ThreadFiber implements ProcessFiber {
         }
     }
 
+    public boolean removeOnStop(Stopable stopable) {
+        synchronized (_onStop) {
+            return _onStop.remove(stopable);
+        }
+    }
+
     /// <summary>
     /// <see cref="ProcessFiber.Stop"/>
     /// </summary>
@@ -67,7 +73,7 @@ public class ThreadFiber implements ProcessFiber {
         _scheduler.stop();
         _queue.stop();
         synchronized (_onStop) {
-            for (Stopable r : _onStop) {
+            for (Stopable r : _onStop.toArray(new Stopable[_onStop.size()])) {
                 r.stop();
             }
         }

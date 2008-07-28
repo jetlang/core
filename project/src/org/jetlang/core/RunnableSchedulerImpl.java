@@ -34,7 +34,6 @@ public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
     }
 
     public Stopable scheduleOnInterval(final Runnable comm, long firstInMs, long intervalInMs) {
-
         TimerTask task = new TimerTask() {
             public void run() {
                 _queue.execute(comm);

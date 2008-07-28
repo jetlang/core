@@ -275,6 +275,10 @@ class StubCommandContext implements ProcessFiber {
     public void onStop(Stopable runOnStop) {
     }
 
+    public boolean removeOnStop(Stopable stopable) {
+        return false;
+    }
+
     public void execute(Runnable command) {
         throw new RuntimeException("no impl");
     }

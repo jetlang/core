@@ -25,6 +25,10 @@ public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor
         _onStop.add(runOnStop);
     }
 
+    public boolean removeOnStop(Stopable stopable) {
+        return _onStop.remove(stopable);
+    }
+
     /// <summary>
     /// start Consuming events.
     /// </summary>

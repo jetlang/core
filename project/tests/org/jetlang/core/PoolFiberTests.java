@@ -27,6 +27,9 @@ public class PoolFiberTests extends FiberBaseTest {
     public void DoTearDown() {
         if (_executor != null)
             _executor.shutdown();
+        if (_fiberFactory != null) {
+            _fiberFactory.stop();
+        }
     }
 
     @Test
