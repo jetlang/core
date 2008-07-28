@@ -17,7 +17,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     private final RunnableInvoker _commandRunner;
 
     public RunnableExecutorImpl() {
-        _commandRunner = new CommandExecutor();
+        _commandRunner = new RunnableInvokerImpl();
     }
 
     public RunnableExecutorImpl(RunnableInvoker executor) {

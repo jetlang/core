@@ -1,6 +1,6 @@
 package org.jetlang.core;
 
-public enum ExecutionState {
+enum ExecutionState {
     Created,
     Running,
     Stopped

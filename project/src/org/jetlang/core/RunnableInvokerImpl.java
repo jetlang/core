@@ -4,7 +4,16 @@ package org.jetlang.core;
 /// Default command executor.
 
 /// </summary>
-public class CommandExecutor implements RunnableInvoker {
+public class RunnableInvokerImpl implements RunnableInvoker {
+
+    public boolean isRunning() {
+        return _running;
+    }
+
+    public void setRunning(boolean _running) {
+        this._running = _running;
+    }
+
     private boolean _running = true;
 
     /// <summary>

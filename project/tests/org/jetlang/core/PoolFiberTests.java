@@ -15,7 +15,7 @@ public class PoolFiberTests extends FiberBaseTest {
     private ExecutorService _executor;
 
     public ProcessFiber CreateBus() {
-        return new PoolFiber(_executor, new CommandExecutor());
+        return new PoolFiber(_executor, new RunnableInvokerImpl());
     }
 
     public void DoSetup() {

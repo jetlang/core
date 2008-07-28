@@ -60,28 +60,6 @@ public class ThreadFiber implements ProcessFiber {
     }
 
     /// <summary>
-    /// <see cref="RunnableScheduler.Schedule(Command,long)"/>
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="intervalInMs"></param>
-    /// <returns></returns>
-//        public TimerControl Schedule(Command command, long intervalInMs)
-//        {
-//            //return _scheduler.Schedule(command, intervalInMs);
-//        }
-
-    /// <summary>
-    /// <see cref="RunnableScheduler.scheduleOnInterval(Command,long,long)"/>
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="firstInMs"></param>
-    /// <param name="intervalInMs"></param>
-//        public TimerControl scheduleOnInterval(Command command, long firstInMs, long intervalInMs)
-//        {
-//            return _scheduler.scheduleOnInterval(command, firstInMs, intervalInMs);
-//        }
-
-    /// <summary>
     /// <see cref="ProcessFiber.Stop"/>
     /// </summary>
 
@@ -103,9 +81,9 @@ public class ThreadFiber implements ProcessFiber {
     }
 
     /// <summary>
-    /// <see cref="ThreadFiber.Join"/>
+    /// <see cref="ThreadFiber.join"/>
     /// </summary>
-    public void Join() {
+    public void join() {
         try {
             _thread.join();
         } catch (InterruptedException e) {
