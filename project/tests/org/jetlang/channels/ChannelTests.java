@@ -99,7 +99,7 @@ public class ChannelTests {
             }
         };
 
-        ChannelBatchSubscriber<String> subscriber = new ChannelBatchSubscriber<String>(execute, onReceive, 10);
+        BatchSubscriber<String> subscriber = new BatchSubscriber<String>(execute, onReceive, 10);
         channel.subscribe(subscriber);
 
         for (int i = 0; i < 5; i++) {
@@ -151,41 +151,37 @@ public class ChannelTests {
         assertEquals(1, execute.Scheduled.size());
     }
 
-//
-//        [Test]
-//        public void SubscribeToLast()
-//        {
-//            Channel<int> channel = new Channel<int>();
-//            StubCommandContext execute = new StubCommandContext();
-//            bool received = false;
-//            int lastReceived = -1;
-//            Action<int> onReceive = delegate(int data)
-//                                        {
-//                                            lastReceived = data;
-//                                            received = true;
-//                                        };
-//            channel.SubscribeToLast(execute, onReceive, 0);
-//
-//            for (int i = 0; i < 5; i++)
-//            {
-//                channel.Publish(i);
-//            }
-//            Assert.AreEqual(1, execute.Scheduled.Count);
-//            Assert.IsFalse(received);
-//            Assert.AreEqual(-1, lastReceived);
-//            execute.Scheduled[0]();
-//            Assert.IsTrue(received);
-//            Assert.AreEqual(4, lastReceived);
-//            execute.Scheduled.Clear();
-//            received = false;
-//            lastReceived = -1;
-//            channel.Publish(5);
-//            Assert.IsFalse(received);
-//            Assert.AreEqual(1, execute.Scheduled.Count);
-//            execute.Scheduled[0]();
-//            Assert.IsTrue(received);
-//            Assert.AreEqual(5, lastReceived);
-//        }
+
+    @Test
+    public void SubscribeToLast() {
+        Channel<Integer> channel = new Channel<Integer>();
+        StubCommandContext execute = new StubCommandContext();
+        final List<Integer> received = new ArrayList<Integer>();
+        Callback<Integer> onReceive = new Callback<Integer>() {
+            public void onMessage(Integer data)
+
+            {
+                received.add(data);
+            }
+        };
+        LastSubscriber<Integer> lastSub = new LastSubscriber<Integer>(onReceive, execute, 3);
+        channel.subscribe(lastSub);
+        for (int i = 0; i < 5; i++) {
+            channel.publish(i);
+        }
+        assertEquals(1, execute.Scheduled.size());
+        assertEquals(0, received.size());
+        execute.Scheduled.get(0).run();
+        assertEquals(1, received.size());
+        assertEquals(4, received.get(0).intValue());
+
+        received.clear();
+        execute.Scheduled.clear();
+        channel.publish(5);
+        assertEquals(1, execute.Scheduled.size());
+        execute.Scheduled.get(0).run();
+        assertEquals(5, received.get(0).intValue());
+    }
 
     //
 

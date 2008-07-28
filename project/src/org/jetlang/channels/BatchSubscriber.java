@@ -9,7 +9,7 @@ import org.jetlang.core.ProcessFiber;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelBatchSubscriber<T> extends BaseSubscription<T> {
+public class BatchSubscriber<T> extends BaseSubscription<T> {
     private final Object _lock = new Object();
     private final ProcessFiber _queue;
     private final Callback<List<T>> _receive;
@@ -24,7 +24,7 @@ public class ChannelBatchSubscriber<T> extends BaseSubscription<T> {
     /// <param name="channel"></param>
     /// <param name="receive"></param>
     /// <param name="interval"></param>
-    public ChannelBatchSubscriber(ProcessFiber queue, Callback<List<T>> receive, int interval) {
+    public BatchSubscriber(ProcessFiber queue, Callback<List<T>> receive, int interval) {
         super(queue);
         _queue = queue;
         _receive = receive;
