@@ -256,12 +256,12 @@ public class ChannelTests {
 class StubCommandContext implements ProcessFiber {
     public List<Runnable> Scheduled = new ArrayList<Runnable>();
 
-    public TimerControl schedule(Runnable command, long firstIntervalInMs) {
+    public Stopable schedule(Runnable command, long firstIntervalInMs) {
         Scheduled.add(command);
         return null;
     }
 
-    public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+    public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         Scheduled.add(command);
         return null;
     }

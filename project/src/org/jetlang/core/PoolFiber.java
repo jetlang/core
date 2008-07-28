@@ -2,6 +2,7 @@ package org.jetlang.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.Executor;
 
 /// <summary>
@@ -17,16 +18,22 @@ public class PoolFiber implements ProcessFiber {
     private final RunnableInvoker _executor;
     private final ArrayList<Stopable> _onStop = new ArrayList<Stopable>();
     private final RunnableSchedulerImpl _scheduler;
+    private final Runnable _flushRunnable;
 
     /// <summary>
     /// Construct new instance.
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="executor"></param>
-    public PoolFiber(Executor pool, RunnableInvoker executor) {
+    public PoolFiber(Executor pool, RunnableInvoker executor, Timer timer) {
         _pool = pool;
         _executor = executor;
-        _scheduler = new RunnableSchedulerImpl(this);
+        _scheduler = new RunnableSchedulerImpl(this, timer);
+        _flushRunnable = new Runnable() {
+            public void run() {
+                flush();
+            }
+        };
     }
 
     /// <summary>
@@ -44,30 +51,20 @@ public class PoolFiber implements ProcessFiber {
                 return;
             }
             if (!_flushPending) {
-                Runnable flushRunnable = new Runnable() {
-                    public void run() {
-                        Flush();
-                    }
-                };
-                _pool.execute(flushRunnable);
+                _pool.execute(_flushRunnable);
                 _flushPending = true;
             }
         }
     }
 
-    private void Flush() {
+    private void flush() {
         Runnable[] toExecute = ClearCommands();
         if (toExecute != null) {
             _executor.executeAll(toExecute);
             synchronized (_lock) {
                 if (_queue.size() > 0) {
                     // don't monopolize thread.
-                    Runnable flushRunnable = new Runnable() {
-                        public void run() {
-                            Flush();
-                        }
-                    };
-                    _pool.execute(flushRunnable);
+                    _pool.execute(_flushRunnable);
                 } else {
                     _flushPending = false;
                 }
@@ -95,7 +92,6 @@ public class PoolFiber implements ProcessFiber {
         //flush any pending events in execute
         Runnable flushPending = new Runnable() {
             public void run() {
-
             }
         };
         execute(flushPending);
@@ -105,7 +101,6 @@ public class PoolFiber implements ProcessFiber {
     /// Stop consuming events.
     /// </summary>
     public void stop() {
-        _scheduler.stop();
         _started = ExecutionState.Stopped;
         synchronized (_onStop) {
             for (Stopable r : _onStop)
@@ -124,18 +119,23 @@ public class PoolFiber implements ProcessFiber {
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
-    /// <returns>a controller to cancel the event.</returns>
-    public TimerControl schedule(Runnable command, long firstIntervalInMs) {
-        return _scheduler.schedule(command, firstIntervalInMs);
+    /// <returns>a controller to stop the event.</returns>
+    public Stopable schedule(Runnable command, long firstIntervalInMs) {
+        return addOnStop(_scheduler.schedule(command, firstIntervalInMs));
     }/// <summary>
+
+    private Stopable addOnStop(Stopable stopable) {
+        onStop(stopable);
+        return stopable;
+    }
 
     /// Schedule an event on a recurring interval.
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
-    /// <returns>controller to cancel timer.</returns>
-    public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
-        return _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+    /// <returns>controller to stop timer.</returns>
+    public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+        return addOnStop(_scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs));
     }
 }

@@ -13,13 +13,15 @@ import java.util.concurrent.Executors;
 public class PoolFiberTests extends FiberBaseTest {
 
     private ExecutorService _executor;
+    private PoolFiberFactory _fiberFactory;
 
     public ProcessFiber CreateBus() {
-        return new PoolFiber(_executor, new RunnableInvokerImpl());
+        return _fiberFactory.create(new RunnableInvokerImpl());
     }
 
     public void DoSetup() {
         _executor = Executors.newCachedThreadPool();
+        _fiberFactory = new PoolFiberFactory(_executor);
     }
 
     public void DoTearDown() {

@@ -96,8 +96,8 @@ public class ThreadFiber implements ProcessFiber {
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
-    /// <returns>a controller to cancel the event.</returns>
-    public TimerControl schedule(Runnable command, long firstIntervalInMs) {
+    /// <returns>a controller to stop the event.</returns>
+    public Stopable schedule(Runnable command, long firstIntervalInMs) {
         return _scheduler.schedule(command, firstIntervalInMs);
     }/// <summary>
 
@@ -106,8 +106,8 @@ public class ThreadFiber implements ProcessFiber {
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
-    /// <returns>controller to cancel timer.</returns>
-    public TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+    /// <returns>controller to stop timer.</returns>
+    public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         return _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
     }
 }

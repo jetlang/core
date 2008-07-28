@@ -58,14 +58,14 @@ public abstract class FiberBaseTest extends Assert {
                 executed[0] = true;
             }
         };
-        TimerControl control = _bus.schedule(toCancel, 0);
+        Stopable control = _bus.schedule(toCancel, 0);
         Runnable toRun = new Runnable() {
             public void run() {
                 reset.countDown();
             }
         };
         _bus.schedule(toRun, 0);
-        control.cancel();
+        control.stop();
         _bus.start();
         assertTrue(reset.await(10, TimeUnit.SECONDS));
         assertFalse(executed[0]);

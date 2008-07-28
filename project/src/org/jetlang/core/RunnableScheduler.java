@@ -13,8 +13,8 @@ public interface RunnableScheduler {
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
-    /// <returns>a controller to cancel the event.</returns>
-    TimerControl schedule(Runnable command, long firstIntervalInMs);
+    /// <returns>a controller to stop the event.</returns>
+    Stopable schedule(Runnable command, long firstIntervalInMs);
 
     /// <summary>
     /// Schedule an event on a recurring interval.
@@ -22,6 +22,6 @@ public interface RunnableScheduler {
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
-    /// <returns>controller to cancel timer.</returns>
-    TimerControl scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs);
+    /// <returns>controller to stop timer.</returns>
+    Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs);
 }

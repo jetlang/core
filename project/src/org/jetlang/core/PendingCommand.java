@@ -1,6 +1,6 @@
 package org.jetlang.core;
 
-class PendingCommand implements TimerControl, Runnable {
+class PendingCommand implements Stopable, Runnable {
     private final Runnable _toExecute;
     private boolean _cancelled;
 
@@ -8,7 +8,7 @@ class PendingCommand implements TimerControl, Runnable {
         _toExecute = toExecute;
     }
 
-    public void cancel() {
+    public void stop() {
         _cancelled = true;
     }
 

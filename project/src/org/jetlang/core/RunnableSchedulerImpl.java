@@ -4,14 +4,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
-    private final Timer _timer = new Timer(true);
+    private final Timer _timer;
     private final RunnableQueue _queue;
 
     public RunnableSchedulerImpl(RunnableQueue queue) {
         _queue = queue;
+        _timer = new Timer(true);
     }
 
-    public TimerControl schedule(final Runnable comm, long timeTillEnqueueInMs) {
+    public RunnableSchedulerImpl(RunnableQueue queue, Timer timer) {
+        _queue = queue;
+        _timer = timer;
+    }
+
+    public Stopable schedule(final Runnable comm, long timeTillEnqueueInMs) {
         if (timeTillEnqueueInMs <= 0) {
             PendingCommand pending = new PendingCommand(comm);
             _queue.execute(pending);
@@ -27,7 +33,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
         }
     }
 
-    public TimerControl scheduleOnInterval(final Runnable comm, long firstInMs, long intervalInMs) {
+    public Stopable scheduleOnInterval(final Runnable comm, long firstInMs, long intervalInMs) {
 
         TimerTask task = new TimerTask() {
             public void run() {
@@ -43,7 +49,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
     }
 }
 
-class TimerTaskControl implements TimerControl {
+class TimerTaskControl implements Stopable {
     private TimerTask _task;
 
     public TimerTaskControl(TimerTask task) {
@@ -53,7 +59,7 @@ class TimerTaskControl implements TimerControl {
     /// <summary>
     /// Cancels scheduled timer.
     /// </summary>
-    public void cancel() {
+    public void stop() {
         _task.cancel();
     }
 }

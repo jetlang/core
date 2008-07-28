@@ -15,21 +15,3 @@ public class PerfCommandExecutor implements RunnableInvoker {
         }
     }
 }
-
-//    public class StubCommandContext : RunnableScheduler
-//    {
-//        public List<Command> Scheduled = new List<Command>();
-//
-//        public TimerControl Schedule(Command command, long firstIntervalInMs)
-//        {
-//            Scheduled.Add(command);
-//            return null;
-//        }
-//
-//        public TimerControl scheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
-//        {
-//            Scheduled.Add(command);
-//            return null;
-//        }
-//    }
-//}
