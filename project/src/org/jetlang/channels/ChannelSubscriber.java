@@ -2,7 +2,7 @@ package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
 import org.jetlang.core.RunnableQueue;
-import org.jetlang.core.Unsubscriber;
+import org.jetlang.core.Stopable;
 
 /// <summary>
 /// Channel subscription methods.
@@ -15,57 +15,12 @@ public interface ChannelSubscriber<T> {
     ///</summary>
     ///<param name="execute">the target context to receive the message</param>
     ///<param name="receive"></param>
-    ///<returns>Unsubscriber object</returns>
-    Unsubscriber subscribe(RunnableQueue queue, Callback<T> receive);
+    ///<returns>Stopable object</returns>
+    Stopable subscribe(RunnableQueue queue, Callback<T> receive);
 
     /// <summary>
     /// Removes all subscribers.
     /// </summary>
     void clearSubscribers();
 
-    /// <summary>
-    /// Subscribes to events on the channel in batch form. The events will be batched if the consumer is unable to process the events
-    /// faster than the arrival rate.
-    /// </summary>
-    /// <param name="execute">The target context to execute the action</param>
-    /// <param name="receive"></param>
-    /// <param name="intervalInMs">Time in Ms to batch events. If 0 events will be delivered as fast as consumer can process</param>
-    /// <returns></returns>
-    //IUnsubscriber SubscribeToBatch(RunnableScheduler execute, Callback<List<T>> receive, int intervalInMs);
-
-    ///<summary>
-    /// Batches events based upon keyed values allowing for duplicates to be dropped.
-    ///</summary>
-    ///<param name="execute"></param>
-    ///<param name="keyResolver"></param>
-    ///<param name="receive"></param>
-    ///<param name="intervalInMs"></param>
-    ///<typeparam name="K"></typeparam>
-    ///<returns></returns>
-    //<K> IUnsubscriber SubscribeToKeyedBatch(RunnableScheduler execute, Converter<T, K> keyResolver, Callback<Dictionary<K, T>> receive, int intervalInMs);
-
-    /// <summary>
-    /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
-    /// has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
-    /// </summary>
-    /// <param name="execute"></param>
-    /// <param name="receive"></param>
-    /// <param name="intervalInMs"></param>
-    /// <returns></returns>
-    //IUnsubscriber SubscribeToLast(RunnableScheduler execute, Callback<T> receive, int intervalInMs);
-
-    /// <summary>
-    /// Subscribes to messages on producer threads. Action will be invoked on producer thread. Action must
-    /// be thread safe.
-    /// </summary>
-    /// <param name="subscriber"></param>
-    /// <returns></returns>
-    //IUnsubscriber SubscribeOnProducerThreads(Callback<T> subscriber);
-
-    /// <summary>
-    /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
-    /// </summary>
-    /// <param name="subscriber"></param>
-    /// <returns></returns>
-    //IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber);
 }

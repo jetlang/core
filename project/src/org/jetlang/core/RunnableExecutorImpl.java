@@ -12,7 +12,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     private boolean _running = true;
 
     private final List<Runnable> _commands = new ArrayList<Runnable>();
-    private final List<Runnable> _onStop = new ArrayList<Runnable>();
+    private final List<Stopable> _onStop = new ArrayList<Stopable>();
 
     private final RunnableInvoker _commandRunner;
 
@@ -89,14 +89,14 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// </summary>
     public void stop() {
         synchronized (_lock) {
-            for (Runnable r : _onStop)
-                r.run();
+            for (Stopable r : _onStop)
+                r.stop();
             _running = false;
             _lock.notifyAll();
         }
     }
 
-    public void onStop(Runnable r) {
+    public void onStop(Stopable r) {
         synchronized (_lock) {
             _onStop.add(r);
         }

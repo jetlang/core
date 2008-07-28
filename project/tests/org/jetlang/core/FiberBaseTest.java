@@ -156,9 +156,9 @@ public abstract class FiberBaseTest extends Assert {
             public void onMessage(String data) {
             }
         };
-        Unsubscriber unsub = channel.subscribe(_bus, onReceive);
+        Stopable unsub = channel.subscribe(_bus, onReceive);
         assertEquals(1, channel.subscriberCount());
-        unsub.unsubscribe();
+        unsub.stop();
         assertEquals(0, channel.subscriberCount());
     }
 

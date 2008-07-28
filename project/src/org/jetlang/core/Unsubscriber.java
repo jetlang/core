@@ -6,6 +6,7 @@ package org.jetlang.core;
  * Time: 2:59:02 PM
  */
 public class Unsubscriber {
+
     private Runnable unsub;
 
     public Unsubscriber(Runnable unsub) {
@@ -14,9 +15,9 @@ public class Unsubscriber {
     }
 
     /// <summary>
-    /// unsubscribe.
+    /// stop.
     /// </summary>
-    public void unsubscribe() {
+    public void stop() {
         this.unsub.run();
     }
 }

@@ -77,12 +77,12 @@ public class ChannelTests {
                 received[0] = true;
             }
         };
-        Unsubscriber unsub = channel.subscribe(execute, onReceive);
+        Stopable unsub = channel.subscribe(execute, onReceive);
         assertEquals(1, channel.publish("hello"));
         assertTrue(received[0]);
-        unsub.unsubscribe();
+        unsub.stop();
         assertEquals(0, channel.publish("hello"));
-        unsub.unsubscribe();
+        unsub.stop();
     }
 //
 //        [Test]
@@ -277,7 +277,7 @@ class StubCommandContext implements ProcessFiber {
     public void start() {
     }
 
-    public void onStop(Runnable runOnStop) {
+    public void onStop(Stopable runOnStop) {
     }
 
     public void execute(Runnable command) {

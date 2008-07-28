@@ -9,7 +9,7 @@ import java.util.List;
 /// </summary>
 public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor {
     private boolean _running = true;
-    private List<Runnable> _onStop = new ArrayList<Runnable>();
+    private List<Stopable> _onStop = new ArrayList<Stopable>();
 
     /// <summary>
     /// Queue command
@@ -21,7 +21,7 @@ public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor
         }
     }
 
-    public void onStop(Runnable runOnStop) {
+    public void onStop(Stopable runOnStop) {
         _onStop.add(runOnStop);
     }
 
@@ -37,8 +37,8 @@ public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor
     /// </summary>
     public void stop() {
         _running = false;
-        for (Runnable run : _onStop) {
-            run.run();
+        for (Stopable run : _onStop) {
+            run.stop();
         }
     }
 }

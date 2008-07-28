@@ -12,7 +12,7 @@ public class ThreadFiber implements ProcessFiber {
 
     private final Thread _thread;
     private final RunnableExecutor _queue;
-    private final List<Runnable> _onStop = new ArrayList<Runnable>();
+    private final List<Stopable> _onStop = new ArrayList<Stopable>();
     private final RunnableSchedulerImpl _scheduler;
 
     /// <summary>
@@ -53,7 +53,7 @@ public class ThreadFiber implements ProcessFiber {
         _queue.execute(command);
     }
 
-    public void onStop(Runnable runOnStop) {
+    public void onStop(Stopable runOnStop) {
         synchronized (_onStop) {
             _onStop.add(runOnStop);
         }
@@ -67,8 +67,8 @@ public class ThreadFiber implements ProcessFiber {
         _scheduler.stop();
         _queue.stop();
         synchronized (_onStop) {
-            for (Runnable r : _onStop) {
-                r.run();
+            for (Stopable r : _onStop) {
+                r.stop();
             }
         }
     }

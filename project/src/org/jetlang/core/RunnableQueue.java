@@ -7,5 +7,5 @@ import java.util.concurrent.Executor;
 
 /// </summary>
 public interface RunnableQueue extends Executor {
-    void onStop(Runnable runOnStop);
+    void onStop(Stopable runOnStop);
 }

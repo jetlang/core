@@ -2,7 +2,7 @@ package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
 import org.jetlang.core.RunnableQueue;
-import org.jetlang.core.Unsubscriber;
+import org.jetlang.core.Stopable;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         }
     }
 
-    public Unsubscriber subscribe(final RunnableQueue queue, final Callback<T> onReceive) {
+    public Stopable subscribe(final RunnableQueue queue, final Callback<T> onReceive) {
         final Callback<T> callbackOnQueue = new Callback<T>() {
             public void onMessage(final T message) {
                 final Runnable toExecute = new Runnable() {
@@ -44,21 +44,21 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         return subscribeOnProducerThread(queue, callbackOnQueue);
     }
 
-    public Unsubscriber subscribe(final Subscribable<T> sub) {
+    public Stopable subscribe(final Subscribable<T> sub) {
         return subscribeOnProducerThread(sub.getQueue(), sub);
     }
 
-    public Unsubscriber subscribeOnProducerThread(RunnableQueue queue, final Callback<T> callbackOnQueue) {
+    public Stopable subscribeOnProducerThread(RunnableQueue queue, final Callback<T> callbackOnQueue) {
         synchronized (_subscribers) {
             _subscribers.add(callbackOnQueue);
         }
-        final Runnable unSub = new Runnable() {
-            public void run() {
+        final Stopable unSub = new Stopable() {
+            public void stop() {
                 Remove(callbackOnQueue);
             }
         };
         queue.onStop(unSub);
-        return new Unsubscriber(unSub);
+        return unSub;
     }
 
     private void Remove(Callback<T> callbackOnQueue) {
