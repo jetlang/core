@@ -187,62 +187,46 @@ public class ChannelTests {
 //            Assert.IsTrue(received);
 //            Assert.AreEqual(5, lastReceived);
 //        }
-//
-//        [Test]
-//        public void AsyncRequestReplyWithPrivateChannel()
-//        {
-//            using (ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart())
-//            {
-//                Channel<Channel<string>> requestChannel = new Channel<Channel<string>>();
-//                Channel<string> replyChannel = new Channel<string>();
-//                IProcessBus responder = factory.CreatePooledAndStart();
-//                IProcessBus receiver = factory.CreatePooledAndStart();
-//                AutoResetEvent reset = new AutoResetEvent(false);
-//                Action<Channel<string>> onRequest = delegate(Channel<string> reply) { reply.Publish("hello"); };
-//                requestChannel.subscribe(responder, onRequest);
-//                Action<string> onMsg = delegate(string msg)
-//                                           {
-//                                               Assert.AreEqual("hello", msg);
-//                                               reset.Set();
-//                                           };
-//                replyChannel.subscribe(receiver, onMsg);
-//                Assert.IsTrue(requestChannel.Publish(replyChannel));
-//                Assert.IsTrue(reset.WaitOne(10000, false));
-//            }
-//        }
-//
-//        [Test]
-//        public void AsyncRequestReplyWithPrivateChannelUsingThreads()
-//        {
-//            ProcessFiber responder = new ThreadFiber();
-//            responder.start();
-//            ProcessFiber receiver = new ThreadFiber();
-//            receiver.start();
-//
-//            Channel<Channel<string>> requestChannel = new Channel<Channel<string>>();
-//            Channel<string> replyChannel = new Channel<string>();
-//            AutoResetEvent reset = new AutoResetEvent(false);
-//            Action<Channel<string>> onRequest = delegate(Channel<string> reply) { reply.Publish("hello"); };
-//            requestChannel.subscribe(responder, onRequest);
-//            Action<string> onMsg = delegate(string msg)
-//                                       {
-//                                           Assert.AreEqual("hello", msg);
-//                                           reset.Set();
-//                                       };
-//            replyChannel.subscribe(receiver, onMsg);
-//            Assert.IsTrue(requestChannel.Publish(replyChannel));
-//            Assert.IsTrue(reset.WaitOne(10000, false));
-//
-//            responder.Stop();
-//            receiver.Stop();
-//        }
-//
 
     //
 
     @Test
-    public void PointToPointPerfTest
-            () throws InterruptedException {
+    public void AsyncRequestReplyWithPrivateChannel() throws InterruptedException {
+        Channel<Channel<String>> requestChannel = new Channel<Channel<String>>();
+        Channel<String> replyChannel = new Channel<String>();
+        ProcessFiber responder = startFiber();
+        ProcessFiber receiver = startFiber();
+        final CountDownLatch reset = new CountDownLatch(1);
+        Callback<Channel<String>> onRequest = new Callback<Channel<String>>() {
+            public void onMessage(Channel<String> message) {
+                message.publish("hello");
+            }
+        };
+
+        requestChannel.subscribe(responder, onRequest);
+        Callback<String> onMsg = new Callback<String>() {
+            public void onMessage(String message) {
+                assertEquals("hello", message);
+                reset.countDown();
+            }
+        };
+        replyChannel.subscribe(receiver, onMsg);
+        assertEquals(1, requestChannel.publish(replyChannel));
+        assertTrue(reset.await(10, TimeUnit.SECONDS));
+        responder.stop();
+        receiver.stop();
+    }
+
+    int count = 0;
+
+    private ProcessFiber startFiber() {
+        ProcessFiber responder = new ThreadFiber(new RunnableExecutorImpl(), "thread" + (count++), true);
+        responder.start();
+        return responder;
+    }
+
+    @Test
+    public void PointToPointPerfTest() throws InterruptedException {
         Channel<Integer> channel = new Channel<Integer>();
         RunnableExecutorImpl queue = new RunnableExecutorImpl(new PerfCommandExecutor());
         ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
@@ -272,27 +256,6 @@ public class ChannelTests {
             bus.stop();
         }
     }
-
-//        [Test]
-//        public void BasicPubSubWithPoolQueue()
-//        {
-//            ProcessFiber execute = new PoolFiber();
-//            execute.start();
-//            Channel<string> hello = new Channel<string>();
-//            Channel<string> hello2 = new Channel<string>();
-//
-//            AutoResetEvent reset = new AutoResetEvent(false);
-//            Action<string> receiveHello = delegate(string str)
-//                                              {
-//                                                  Assert.AreEqual("hello", str);
-//                                                  reset.Set();
-//                                              };
-//            hello.subscribe(execute, receiveHello);
-//            hello2.subscribe(execute, receiveHello);
-//            Assert.IsTrue(hello.Publish("hello"));
-//            Assert.IsTrue(reset.WaitOne(10000, false));
-//            execute.Stop();
-//        }
 }
 
 class StubCommandContext implements ProcessFiber {
