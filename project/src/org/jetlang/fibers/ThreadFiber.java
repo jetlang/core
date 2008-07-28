@@ -1,11 +1,9 @@
 package org.jetlang.fibers;
 
 import org.jetlang.core.RunnableExecutor;
+import org.jetlang.core.RunnableScheduler;
 import org.jetlang.core.RunnableSchedulerImpl;
 import org.jetlang.core.Stopable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /// <summary>
 /// Default implementation for ThreadFiber.
@@ -16,8 +14,7 @@ public class ThreadFiber implements ProcessFiber {
 
     private final Thread _thread;
     private final RunnableExecutor _queue;
-    private final List<Stopable> _onStop = new ArrayList<Stopable>();
-    private final RunnableSchedulerImpl _scheduler;
+    private final RunnableScheduler _scheduler;
 
     /// <summary>
     /// Create process thread.
@@ -58,15 +55,15 @@ public class ThreadFiber implements ProcessFiber {
     }
 
     public void addOnStop(Stopable runOnStop) {
-        synchronized (_onStop) {
-            _onStop.add(runOnStop);
-        }
+        _queue.addOnStop(runOnStop);
     }
 
     public boolean removeOnStop(Stopable stopable) {
-        synchronized (_onStop) {
-            return _onStop.remove(stopable);
-        }
+        return _queue.removeOnStop(stopable);
+    }
+
+    public int stoppableSize() {
+        return _queue.stoppableSize();
     }
 
     /// <summary>
@@ -76,11 +73,6 @@ public class ThreadFiber implements ProcessFiber {
     public void stop() {
         _scheduler.stop();
         _queue.stop();
-        synchronized (_onStop) {
-            for (Stopable r : _onStop.toArray(new Stopable[_onStop.size()])) {
-                r.stop();
-            }
-        }
     }
 
     /// <summary>

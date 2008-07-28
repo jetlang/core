@@ -88,8 +88,9 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// </summary>
     public void stop() {
         synchronized (_lock) {
-            for (Stopable r : _onStop)
+            for (Stopable r : _onStop.toArray(new Stopable[_onStop.size()])) {
                 r.stop();
+            }
             _running = false;
             _lock.notify();
         }
@@ -104,6 +105,12 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     public boolean removeOnStop(Stopable stopable) {
         synchronized (_lock) {
             return _onStop.remove(stopable);
+        }
+    }
+
+    public int stoppableSize() {
+        synchronized (_lock) {
+            return _onStop.size();
         }
     }
 }

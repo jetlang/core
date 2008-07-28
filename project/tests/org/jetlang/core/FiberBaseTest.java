@@ -31,6 +31,7 @@ public abstract class FiberBaseTest extends Assert {
     public void TearDown() {
         if (_bus != null) {
             _bus.stop();
+            assertEquals(0, _bus.stoppableSize());
         }
         DoTearDown();
     }
@@ -162,34 +163,5 @@ public abstract class FiberBaseTest extends Assert {
         unsub.stop();
         assertEquals(0, channel.subscriberCount());
     }
-
-//        @Test
-//        public void AsyncRequestTimeout()
-//        {
-//            CountDownLatch reset = new CountDownLatch(1);
-//            Command onTimeout = delegate { reset.Set(); };
-//            _bus.start();
-//            OnMessage<string> reply = delegate { Assert.Fail("Should not be called"); };
-//            _bus.SendAsyncRequest(new object(), "msg", reply, onTimeout, 1);
-//            Assert.IsTrue(reset.WaitOne(5000, false));
-//        }
-
-//        [Test]
-//        public void AsyncRequestWithReply()
-//        {
-//            IProcessBus replyBus = CreateBus(_contextFactory);
-//            replyBus.start();
-//            string requestTopic = "request";
-//            OnMessage<string> onMsg =
-//                delegate(IMessageHeader header, string msg) { replyBus.Publish(header.ReplyTo, msg); };
-//            replyBus.Subscribe(new TopicEquals(requestTopic), onMsg);
-//            Command onTimeout = delegate { Assert.Fail("Should not timeout"); };
-//            _bus.start();
-//            ManualResetEvent reset = new ManualResetEvent(false);
-//            OnMessage<string> reply = delegate { reset.Set(); };
-//            _bus.SendAsyncRequest("request", "msg", reply, onTimeout, 100);
-//            Assert.IsTrue(reset.WaitOne(5000, false));
-//            replyBus.Stop();
-//        }
 
 }

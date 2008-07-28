@@ -35,7 +35,17 @@ public class PoolFiberTests extends FiberBaseTest {
     }
 
     @Test
-    public void nothing() {
+    public void ScheduleIntervalWithCancel() throws InterruptedException {
+        _bus.start();
+        Runnable onReset = new Runnable() {
+            public void run() {
+            }
+        };
+        Stopable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
+        assertEquals(1, _bus.stoppableSize());
+        stopper.stop();
+        assertEquals(0, _bus.stoppableSize());
 
     }
+
 }

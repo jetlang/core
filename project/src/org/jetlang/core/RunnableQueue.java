@@ -11,4 +11,6 @@ public interface RunnableQueue extends Executor {
     void addOnStop(Stopable runOnStop);
 
     boolean removeOnStop(Stopable stopable);
+
+    int stoppableSize();
 }

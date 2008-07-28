@@ -101,6 +101,7 @@ public class PoolFiber implements ProcessFiber {
         execute(flushPending);
     }
 
+
     /// <summary>
     /// Stop consuming events.
     /// </summary>
@@ -124,6 +125,12 @@ public class PoolFiber implements ProcessFiber {
         }
     }
 
+    public int stoppableSize() {
+        synchronized (_onStop) {
+            return _onStop.size();
+        }
+    }
+
     /// <summary>
     /// Schedules an event to be executes once.
     /// </summary>
@@ -142,8 +149,14 @@ public class PoolFiber implements ProcessFiber {
     /// <returns>controller to stop timer.</returns>
     public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         //the timer object is shared so interval timers must be shut down manually.
-        Stopable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
-        addOnStop(stopper);
-        return stopper;
+        final Stopable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+        final Stopable wrapper = new Stopable() {
+            public void stop() {
+                stopper.stop();
+                removeOnStop(this);
+            }
+        };
+        addOnStop(wrapper);
+        return wrapper;
     }
 }

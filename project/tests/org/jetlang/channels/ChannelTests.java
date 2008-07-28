@@ -281,6 +281,10 @@ class StubCommandContext implements ProcessFiber {
         return false;
     }
 
+    public int stoppableSize() {
+        return 0;
+    }
+
     public void execute(Runnable command) {
         throw new RuntimeException("no impl");
     }
