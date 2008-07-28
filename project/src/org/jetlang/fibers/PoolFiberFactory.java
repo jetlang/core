@@ -1,4 +1,7 @@
-package org.jetlang.core;
+package org.jetlang.fibers;
+
+import org.jetlang.core.RunnableInvoker;
+import org.jetlang.core.Stopable;
 
 import java.util.Timer;
 import java.util.concurrent.Executor;

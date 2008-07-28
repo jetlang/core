@@ -5,7 +5,7 @@ package org.jetlang.channels;    /// <summary>
 /// <typeparam name="T"></typeparam>
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.ProcessFiber;
+import org.jetlang.fibers.ProcessFiber;
 
 import java.util.HashMap;
 import java.util.Map;

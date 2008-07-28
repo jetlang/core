@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
 /// </summary>
 public interface RunnableQueue extends Executor {
 
-    void onStop(Stopable runOnStop);
+    void addOnStop(Stopable runOnStop);
 
     boolean removeOnStop(Stopable stopable);
 }

@@ -1,5 +1,7 @@
 package org.jetlang.core;
 
+import org.jetlang.fibers.PoolFiberFactory;
+import org.jetlang.fibers.ProcessFiber;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;

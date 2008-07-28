@@ -4,7 +4,7 @@ package org.jetlang.channels;    /// <summary>
 /// <typeparam name="T"></typeparam>
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.ProcessFiber;
+import org.jetlang.fibers.ProcessFiber;
 
 public class LastSubscriber<T> extends BaseSubscription<T> {
     private final Object _lock = new Object();

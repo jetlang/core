@@ -1,4 +1,8 @@
-package org.jetlang.core;
+package org.jetlang.fibers;
+
+import org.jetlang.core.RunnableInvoker;
+import org.jetlang.core.RunnableSchedulerImpl;
+import org.jetlang.core.Stopable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +112,7 @@ public class PoolFiber implements ProcessFiber {
         }
     }
 
-    public void onStop(Stopable runOnStop) {
+    public void addOnStop(Stopable runOnStop) {
         synchronized (_onStop) {
             _onStop.add(runOnStop);
         }
@@ -130,11 +134,6 @@ public class PoolFiber implements ProcessFiber {
         return _scheduler.schedule(command, firstIntervalInMs);
     }/// <summary>
 
-    private Stopable addOnStop(Stopable stopable) {
-        onStop(stopable);
-        return stopable;
-    }
-
     /// Schedule an event on a recurring interval.
     /// </summary>
     /// <param name="command"></param>
@@ -143,6 +142,8 @@ public class PoolFiber implements ProcessFiber {
     /// <returns>controller to stop timer.</returns>
     public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         //the timer object is shared so interval timers must be shut down manually.
-        return addOnStop(_scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs));
+        Stopable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+        addOnStop(stopper);
+        return stopper;
     }
 }

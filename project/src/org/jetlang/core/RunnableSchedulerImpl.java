@@ -2,12 +2,13 @@ package org.jetlang.core;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executor;
 
-public class RunnableSchedulerImpl implements RunnableScheduler, Stopable {
+public class RunnableSchedulerImpl implements RunnableScheduler {
     private final Timer _timer;
-    private final RunnableQueue _queue;
+    private final Executor _queue;
 
-    public RunnableSchedulerImpl(RunnableQueue queue) {
+    public RunnableSchedulerImpl(Executor queue) {
         _queue = queue;
         _timer = new Timer(true);
     }

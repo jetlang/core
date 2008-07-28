@@ -21,7 +21,7 @@ public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor
         }
     }
 
-    public void onStop(Stopable runOnStop) {
+    public void addOnStop(Stopable runOnStop) {
         _onStop.add(runOnStop);
     }
 

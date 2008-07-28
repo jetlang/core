@@ -1,6 +1,8 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.*;
+import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.ThreadFiber;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -272,7 +274,7 @@ class StubCommandContext implements ProcessFiber {
     public void start() {
     }
 
-    public void onStop(Stopable runOnStop) {
+    public void addOnStop(Stopable runOnStop) {
     }
 
     public boolean removeOnStop(Stopable stopable) {

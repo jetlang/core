@@ -95,7 +95,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         }
     }
 
-    public void onStop(Stopable r) {
+    public void addOnStop(Stopable r) {
         synchronized (_lock) {
             _onStop.add(r);
         }

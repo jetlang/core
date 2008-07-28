@@ -7,7 +7,7 @@ package org.jetlang.core;
  */ /// <summary>
 /// Methods for schedule events that will be executed in the future.
 /// </summary>
-public interface RunnableScheduler {
+public interface RunnableScheduler extends Stopable {
     /// <summary>
     /// Schedules an event to be executes once.
     /// </summary>
@@ -24,4 +24,5 @@ public interface RunnableScheduler {
     /// <param name="regularIntervalInMs"></param>
     /// <returns>controller to stop timer.</returns>
     Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs);
+
 }

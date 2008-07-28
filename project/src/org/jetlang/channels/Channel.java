@@ -58,7 +58,7 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
                 queue.removeOnStop(this);
             }
         };
-        queue.onStop(unSub);
+        queue.addOnStop(unSub);
         return unSub;
     }
 

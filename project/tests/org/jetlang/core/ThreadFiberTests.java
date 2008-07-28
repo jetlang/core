@@ -1,5 +1,7 @@
 package org.jetlang.core;
 
+import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.ThreadFiber;
 import org.junit.Test;
 
 /**

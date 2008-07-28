@@ -1,4 +1,8 @@
-package org.jetlang.core;
+package org.jetlang.fibers;
+
+import org.jetlang.core.RunnableExecutor;
+import org.jetlang.core.RunnableSchedulerImpl;
+import org.jetlang.core.Stopable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +35,7 @@ public class ThreadFiber implements ProcessFiber {
         };
         _thread = new Thread(runThread, threadName);
         _thread.setDaemon(isDaemonThread);
-        _scheduler = new RunnableSchedulerImpl(this);
+        _scheduler = new RunnableSchedulerImpl(queue);
     }
 
     /// <summary>
@@ -53,7 +57,7 @@ public class ThreadFiber implements ProcessFiber {
         _queue.execute(command);
     }
 
-    public void onStop(Stopable runOnStop) {
+    public void addOnStop(Stopable runOnStop) {
         synchronized (_onStop) {
             _onStop.add(runOnStop);
         }
