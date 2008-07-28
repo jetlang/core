@@ -84,38 +84,37 @@ public class ChannelTests {
         assertEquals(0, channel.publish("hello"));
         unsub.stop();
     }
-//
-//        [Test]
-//        public void SubToBatch()
-//        {
-//            Channel<string> channel = new Channel<string>();
-//            StubCommandContext execute = new StubCommandContext();
-//            bool received = false;
-//            Action<IList<string>> onReceive = delegate(IList<string> data)
-//                                                  {
-//                                                      Assert.AreEqual(5, data.Count);
-//                                                      Assert.AreEqual("0", data[0]);
-//                                                      Assert.AreEqual("4", data[4]);
-//                                                      received = true;
-//                                                  };
-//            channel.SubscribeToBatch(execute, onReceive, 0);
-//
-//            for (int i = 0; i < 5; i++)
-//            {
-//                channel.Publish(i.ToString());
-//            }
-//            Assert.AreEqual(1, execute.Scheduled.Count);
-//            execute.Scheduled[0]();
-//            Assert.IsTrue(received);
-//            execute.Scheduled.Clear();
-//            received = false;
-//
-//            channel.Publish("5");
-//            Assert.IsFalse(received);
-//            Assert.AreEqual(1, execute.Scheduled.Count);
-//        }
 
-    //
+    @Test
+    public void SubToBatch() {
+        Channel<String> channel = new Channel<String>();
+        StubCommandContext execute = new StubCommandContext();
+        final boolean[] received = new boolean[1];
+        Callback<List<String>> onReceive = new Callback<List<String>>() {
+            public void onMessage(List<String> data) {
+                assertEquals(5, data.size());
+                assertEquals("0", data.get(0));
+                assertEquals("4", data.get(4));
+                received[0] = true;
+            }
+        };
+
+        ChannelBatchSubscriber<String> subscriber = new ChannelBatchSubscriber<String>(execute, onReceive, 10);
+        channel.subscribe(subscriber);
+
+        for (int i = 0; i < 5; i++) {
+            channel.publish(i + "");
+        }
+        assertEquals(1, execute.Scheduled.size());
+        execute.Scheduled.get(0).run();
+        assertTrue(received[0]);
+        execute.Scheduled.clear();
+        received[0] = false;
+
+        channel.publish("5");
+        assertFalse(received[0]);
+        assertEquals(1, execute.Scheduled.size());
+    }
 
     @Test
     public void subToKeyedBatch() {

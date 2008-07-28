@@ -6,12 +6,11 @@ package org.jetlang.channels;    /// <summary>
 
 import org.jetlang.core.Callback;
 import org.jetlang.core.ProcessFiber;
-import org.jetlang.core.RunnableQueue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class KeyedBatchSubscriber<K, T> implements Subscribable<T> {
+public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     private final Object _batchLock = new Object();
 
     private final ProcessFiber _context;
@@ -32,6 +31,7 @@ public class KeyedBatchSubscriber<K, T> implements Subscribable<T> {
     public KeyedBatchSubscriber(Converter<T, K> keyResolver,
                                 Callback<Map<K, T>> target,
                                 ProcessFiber context, int flushIntervalInMs) {
+        super(context);
         _keyResolver = keyResolver;
         _context = context;
         _target = target;
@@ -47,7 +47,7 @@ public class KeyedBatchSubscriber<K, T> implements Subscribable<T> {
     /// received on delivery thread
     /// </summary>
     /// <param name="msg"></param>
-    public void onMessage(T msg) {
+    protected void onMessageOnProducerThread(T msg) {
         synchronized (_batchLock) {
             K key = _keyResolver.Convert(msg);
             if (_pending == null) {
@@ -57,6 +57,7 @@ public class KeyedBatchSubscriber<K, T> implements Subscribable<T> {
             _pending.put(key, msg);
         }
     }
+
 
     /// <summary>
     /// Flushed from process thread
@@ -79,10 +80,4 @@ public class KeyedBatchSubscriber<K, T> implements Subscribable<T> {
             return toReturn;
         }
     }
-
-    public RunnableQueue getQueue() {
-        return _context;
-    }
-
-
 }
