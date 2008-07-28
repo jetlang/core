@@ -217,7 +217,7 @@ public class ChannelTests {
         receiver.stop();
     }
 
-    int count = 0;
+    private int count = 0;
 
     private ProcessFiber startFiber() {
         ProcessFiber responder = new ThreadFiber(new RunnableExecutorImpl(), "thread" + (count++), true);
