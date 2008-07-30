@@ -1,9 +1,6 @@
 package org.jetlang.fibers;
 
-import org.jetlang.core.RunnableExecutor;
-import org.jetlang.core.RunnableScheduler;
-import org.jetlang.core.RunnableSchedulerImpl;
-import org.jetlang.core.Stopable;
+import org.jetlang.core.*;
 
 /// <summary>
 /// Default implementation for ThreadFiber.
@@ -30,9 +27,20 @@ public class ThreadFiber implements ProcessFiber {
                 RunThread();
             }
         };
-        _thread = new Thread(runThread, threadName);
+        _thread = createThread(threadName, runThread);
         _thread.setDaemon(isDaemonThread);
         _scheduler = new RunnableSchedulerImpl(queue);
+    }
+
+    private Thread createThread(String threadName, Runnable runThread) {
+        if (threadName == null) {
+            return new Thread(runThread);
+        }
+        return new Thread(runThread, threadName);
+    }
+
+    public ThreadFiber() {
+        this(new RunnableExecutorImpl(), null, true);
     }
 
     /// <summary>

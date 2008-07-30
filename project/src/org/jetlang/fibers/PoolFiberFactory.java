@@ -1,6 +1,7 @@
 package org.jetlang.fibers;
 
 import org.jetlang.core.RunnableInvoker;
+import org.jetlang.core.RunnableInvokerImpl;
 import org.jetlang.core.Stopable;
 
 import java.util.Timer;
@@ -26,5 +27,9 @@ public class PoolFiberFactory implements Stopable {
 
     public void stop() {
         _scheduler.cancel();
+    }
+
+    public ProcessFiber create() {
+        return create(new RunnableInvokerImpl());
     }
 }
