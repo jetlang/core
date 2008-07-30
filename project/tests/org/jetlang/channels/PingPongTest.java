@@ -84,6 +84,7 @@ public class PingPongTest {
         } finally {
             timer.stop();
             pingFiber.stop();
+            pongFiber.stop();
         }
     }
 
