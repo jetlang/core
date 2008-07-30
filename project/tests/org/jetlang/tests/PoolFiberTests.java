@@ -1,7 +1,9 @@
-package org.jetlang.core;
+package org.jetlang.tests;
 
 import org.jetlang.fibers.PoolFiberFactory;
 import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.core.RunnableInvokerImpl;
+import org.jetlang.core.Stopable;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;

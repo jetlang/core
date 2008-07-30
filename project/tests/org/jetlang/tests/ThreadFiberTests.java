@@ -1,7 +1,9 @@
-package org.jetlang.core;
+package org.jetlang.tests;
 
 import org.jetlang.fibers.ProcessFiber;
 import org.jetlang.fibers.ThreadFiber;
+import org.jetlang.core.RunnableExecutorImpl;
+import org.jetlang.core.Stopable;
 import org.junit.Test;
 
 /**

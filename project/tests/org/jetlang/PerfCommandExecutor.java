@@ -1,4 +1,6 @@
-package org.jetlang.core;
+package org.jetlang;
+
+import org.jetlang.core.RunnableInvoker;
 
 public class PerfCommandExecutor implements RunnableInvoker {
 

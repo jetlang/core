@@ -1,4 +1,6 @@
-package org.jetlang.core;
+package org.jetlang;
+
+import org.jetlang.core.Stopable;
 
 public class PerfTimer implements Stopable {
     private final int _count;

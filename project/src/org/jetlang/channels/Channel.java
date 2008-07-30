@@ -31,17 +31,8 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
     }
 
     public Stopable subscribe(final RunnableQueue queue, final Callback<T> onReceive) {
-        final Callback<T> callbackOnQueue = new Callback<T>() {
-            public void onMessage(final T message) {
-                final Runnable toExecute = new Runnable() {
-                    public void run() {
-                        onReceive.onMessage(message);
-                    }
-                };
-                queue.execute(toExecute);
-            }
-        };
-        return subscribeOnProducerThread(queue, callbackOnQueue);
+        ChannelSubscription<T> subber = new ChannelSubscription<T>(queue, onReceive);
+        return subscribe(subber);
     }
 
     public Stopable subscribe(final Subscribable<T> sub) {
@@ -49,9 +40,6 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
     }
 
     public Stopable subscribeOnProducerThread(final RunnableQueue queue, final Callback<T> callbackOnQueue) {
-        synchronized (_subscribers) {
-            _subscribers.add(callbackOnQueue);
-        }
         final Stopable unSub = new Stopable() {
             public void stop() {
                 Remove(callbackOnQueue);
@@ -59,6 +47,10 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
             }
         };
         queue.addOnStop(unSub);
+        //finally add subscription to start receiving events.
+        synchronized (_subscribers) {
+            _subscribers.add(callbackOnQueue);
+        }
         return unSub;
     }
 
@@ -66,7 +58,6 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         synchronized (_subscribers) {
             _subscribers.remove(callbackOnQueue);
         }
-
     }
 
     public void clearSubscribers() {

@@ -3,6 +3,8 @@ package org.jetlang.channels;
 import org.jetlang.core.*;
 import org.jetlang.fibers.ProcessFiber;
 import org.jetlang.fibers.ThreadFiber;
+import org.jetlang.PerfCommandExecutor;
+import org.jetlang.PerfTimer;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -253,6 +255,54 @@ public class ChannelTests {
             bus.stop();
         }
     }
+
+    @Test
+    public void PingPong() throws InterruptedException {
+        final Channel<Integer> pongChannel = new Channel<Integer>();
+        final Channel<Channel<Integer>> pingChannel = new Channel<Channel<Integer>>();
+
+        RunnableExecutorImpl queue = new RunnableExecutorImpl(new RunnableInvokerImpl());
+        ThreadFiber pingFiber = new ThreadFiber(queue, "testThread", true);
+        pingFiber.start();
+
+        RunnableExecutorImpl pongQueue = new RunnableExecutorImpl(new RunnableInvokerImpl());
+        ThreadFiber pongFiber = new ThreadFiber(pongQueue, "pongQ", true);
+        pongFiber.start();
+        
+        final Integer max = 5000000;
+        final CountDownLatch reset = new CountDownLatch(1);
+
+        Callback<Integer> onPong = new Callback<Integer>() {
+            public void onMessage(Integer count) {
+                if (count.equals(max)) {
+                    reset.countDown();
+                }
+                else{
+                    pingChannel.publish(pongChannel);
+                }
+            }
+        };
+        Callback<Channel<Integer>> onPing = new Callback<Channel<Integer>>() {
+            public int pingCount;
+            public void onMessage(Channel<Integer> count) {
+                    pingCount++;
+                    count.publish(pingCount);
+                }
+            };
+
+        pingChannel.subscribe(pingFiber, onPing);
+        pongChannel.subscribe(pongFiber, onPong);
+        PerfTimer timer = new PerfTimer(max);
+        try {
+            pingChannel.publish(pongChannel);
+            boolean result = reset.await(30, TimeUnit.SECONDS);
+            assertTrue(result);
+        } finally {
+            timer.stop();
+            pingFiber.stop();
+        }
+    }
+
 }
 
 class StubCommandContext implements ProcessFiber {
