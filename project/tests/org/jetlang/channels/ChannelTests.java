@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -215,6 +217,28 @@ public class ChannelTests {
         responder.stop();
         receiver.stop();
     }
+
+    @Test
+    public void asyncRequestReplyWithBlockingQueue() throws InterruptedException {
+        Channel<BlockingQueue<String>> requestChannel = new Channel<BlockingQueue<String>>();
+        ProcessFiber responder = startFiber();
+        Callback<BlockingQueue<String>> onRequest = new Callback<BlockingQueue<String>>() {
+            public void onMessage(BlockingQueue<String> message) {
+                for (int i = 0; i < 5; i++)
+                    message.add("hello" + i);
+            }
+        };
+
+        requestChannel.subscribe(responder, onRequest);
+
+        BlockingQueue<String> requestQueue = new ArrayBlockingQueue<String>(5);
+
+        assertEquals(1, requestChannel.publish(requestQueue));
+        for (int i = 0; i < 5; i++) {
+            assertEquals("hello" + i, requestQueue.poll(30, TimeUnit.SECONDS));
+        }
+    }
+
 
     private int count = 0;
 
