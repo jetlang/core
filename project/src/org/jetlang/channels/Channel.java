@@ -1,8 +1,8 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
+import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableQueue;
-import org.jetlang.core.Stopable;
 
 import java.util.ArrayList;
 
@@ -36,18 +36,18 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         }
     }
 
-    public Stopable subscribe(final RunnableQueue queue, final Callback<T> onReceive) {
+    public Disposable subscribe(final RunnableQueue queue, final Callback<T> onReceive) {
         ChannelSubscription<T> subber = new ChannelSubscription<T>(queue, onReceive);
         return subscribe(subber);
     }
 
-    public Stopable subscribe(final Subscribable<T> sub) {
+    public Disposable subscribe(final Subscribable<T> sub) {
         return subscribeOnProducerThread(sub.getQueue(), sub);
     }
 
-    public Stopable subscribeOnProducerThread(final RunnableQueue queue, final Callback<T> callbackOnQueue) {
-        final Stopable unSub = new Stopable() {
-            public void stop() {
+    public Disposable subscribeOnProducerThread(final RunnableQueue queue, final Callback<T> callbackOnQueue) {
+        final Disposable unSub = new Disposable() {
+            public void dispose() {
                 Remove(callbackOnQueue);
                 queue.removeOnStop(this);
             }

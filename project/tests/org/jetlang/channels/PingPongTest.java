@@ -42,7 +42,7 @@ public class PingPongTest {
         ProcessFiber pongFiber = factory.create();
         pongFiber.start();
         runTest(pingFiber, pongFiber);
-        factory.stop();
+        factory.dispose();
         executor.shutdown();
     }
 
@@ -82,9 +82,9 @@ public class PingPongTest {
             boolean result = reset.await(30, TimeUnit.SECONDS);
             assertTrue(result);
         } finally {
-            timer.stop();
-            pingFiber.stop();
-            pongFiber.stop();
+            timer.dispose();
+            pingFiber.dispose();
+            pongFiber.dispose();
         }
     }
 

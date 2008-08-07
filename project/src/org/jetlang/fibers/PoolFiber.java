@@ -1,8 +1,8 @@
 package org.jetlang.fibers;
 
+import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableInvoker;
 import org.jetlang.core.RunnableSchedulerImpl;
-import org.jetlang.core.Stopable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class PoolFiber implements ProcessFiber {
     private final Executor _pool;
     private ExecutionState _started = ExecutionState.Created;
     private final RunnableInvoker _executor;
-    private final ArrayList<Stopable> _onStop = new ArrayList<Stopable>();
+    private final ArrayList<Disposable> _onStop = new ArrayList<Disposable>();
     private final RunnableSchedulerImpl _scheduler;
     private final Runnable _flushRunnable;
 
@@ -105,23 +105,23 @@ public class PoolFiber implements ProcessFiber {
     /// <summary>
     /// Stop consuming events.
     /// </summary>
-    public void stop() {
+    public void dispose() {
         _started = ExecutionState.Stopped;
         synchronized (_onStop) {
-            for (Stopable r : _onStop.toArray(new Stopable[_onStop.size()]))
-                r.stop();
+            for (Disposable r : _onStop.toArray(new Disposable[_onStop.size()]))
+                r.dispose();
         }
     }
 
-    public void addOnStop(Stopable runOnStop) {
+    public void addOnStop(Disposable runOnStop) {
         synchronized (_onStop) {
             _onStop.add(runOnStop);
         }
     }
 
-    public boolean removeOnStop(Stopable stopable) {
+    public boolean removeOnStop(Disposable disposable) {
         synchronized (_onStop) {
-            return _onStop.remove(stopable);
+            return _onStop.remove(disposable);
         }
     }
 
@@ -136,8 +136,8 @@ public class PoolFiber implements ProcessFiber {
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
-    /// <returns>a controller to stop the event.</returns>
-    public Stopable schedule(Runnable command, long firstIntervalInMs) {
+    /// <returns>a controller to dispose the event.</returns>
+    public Disposable schedule(Runnable command, long firstIntervalInMs) {
         return _scheduler.schedule(command, firstIntervalInMs);
     }/// <summary>
 
@@ -146,13 +146,13 @@ public class PoolFiber implements ProcessFiber {
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
-    /// <returns>controller to stop timer.</returns>
-    public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+    /// <returns>controller to dispose timer.</returns>
+    public Disposable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         //the timer object is shared so interval timers must be shut down manually.
-        final Stopable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
-        final Stopable wrapper = new Stopable() {
-            public void stop() {
-                stopper.stop();
+        final Disposable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+        final Disposable wrapper = new Disposable() {
+            public void dispose() {
+                stopper.dispose();
                 removeOnStop(this);
             }
         };

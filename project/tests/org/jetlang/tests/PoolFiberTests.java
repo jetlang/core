@@ -1,9 +1,9 @@
 package org.jetlang.tests;
 
+import org.jetlang.core.Disposable;
+import org.jetlang.core.RunnableInvokerImpl;
 import org.jetlang.fibers.PoolFiberFactory;
 import org.jetlang.fibers.ProcessFiber;
-import org.jetlang.core.RunnableInvokerImpl;
-import org.jetlang.core.Stopable;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -32,7 +32,7 @@ public class PoolFiberTests extends FiberBaseTest {
         if (_executor != null)
             _executor.shutdown();
         if (_fiberFactory != null) {
-            _fiberFactory.stop();
+            _fiberFactory.dispose();
         }
     }
 
@@ -43,9 +43,9 @@ public class PoolFiberTests extends FiberBaseTest {
             public void run() {
             }
         };
-        Stopable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
+        Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
         assertEquals(1, _bus.stoppableSize());
-        stopper.stop();
+        stopper.dispose();
         assertEquals(0, _bus.stoppableSize());
 
     }

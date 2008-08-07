@@ -49,7 +49,7 @@ public class ChannelTests {
         latch.await(10, TimeUnit.SECONDS);
 
         //shutdown thread
-        receiver.stop();
+        receiver.dispose();
     }
 
 
@@ -114,12 +114,12 @@ public class ChannelTests {
                 received[0] = true;
             }
         };
-        Stopable unsub = channel.subscribe(execute, onReceive);
+        Disposable unsub = channel.subscribe(execute, onReceive);
         assertEquals(1, channel.publish("hello"));
         assertTrue(received[0]);
-        unsub.stop();
+        unsub.dispose();
         assertEquals(0, channel.publish("hello"));
-        unsub.stop();
+        unsub.dispose();
     }
 
     @Test
@@ -245,8 +245,8 @@ public class ChannelTests {
         replyChannel.subscribe(receiver, onMsg);
         assertEquals(1, requestChannel.publish(replyChannel));
         assertTrue(reset.await(10, TimeUnit.SECONDS));
-        responder.stop();
-        receiver.stop();
+        responder.dispose();
+        receiver.dispose();
     }
 
     @Test
@@ -306,8 +306,8 @@ public class ChannelTests {
             boolean result = reset.await(30, TimeUnit.SECONDS);
             assertTrue(result);
         } finally {
-            timer.stop();
-            bus.stop();
+            timer.dispose();
+            bus.dispose();
         }
     }
 
@@ -317,12 +317,12 @@ public class ChannelTests {
 class StubCommandContext implements ProcessFiber {
     public List<Runnable> Scheduled = new ArrayList<Runnable>();
 
-    public Stopable schedule(Runnable command, long firstIntervalInMs) {
+    public Disposable schedule(Runnable command, long firstIntervalInMs) {
         Scheduled.add(command);
         return null;
     }
 
-    public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+    public Disposable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         Scheduled.add(command);
         return null;
     }
@@ -333,10 +333,10 @@ class StubCommandContext implements ProcessFiber {
     public void start() {
     }
 
-    public void addOnStop(Stopable runOnStop) {
+    public void addOnStop(Disposable runOnStop) {
     }
 
-    public boolean removeOnStop(Stopable stopable) {
+    public boolean removeOnStop(Disposable disposable) {
         return false;
     }
 
@@ -348,6 +348,6 @@ class StubCommandContext implements ProcessFiber {
         throw new RuntimeException("no impl");
     }
 
-    public void stop() {
+    public void dispose() {
     }
 }

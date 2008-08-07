@@ -2,9 +2,9 @@ package org.jetlang.tests;
 
 import junit.framework.Assert;
 import org.jetlang.channels.Channel;
-import org.jetlang.fibers.ProcessFiber;
-import org.jetlang.core.Stopable;
 import org.jetlang.core.Callback;
+import org.jetlang.core.Disposable;
+import org.jetlang.fibers.ProcessFiber;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public abstract class FiberBaseTest extends Assert {
     @After
     public void TearDown() {
         if (_bus != null) {
-            _bus.stop();
+            _bus.dispose();
             assertEquals(0, _bus.stoppableSize());
         }
         DoTearDown();
@@ -62,14 +62,14 @@ public abstract class FiberBaseTest extends Assert {
                 executed[0] = true;
             }
         };
-        Stopable control = _bus.schedule(toCancel, 0);
+        Disposable control = _bus.schedule(toCancel, 0);
         Runnable toRun = new Runnable() {
             public void run() {
                 reset.countDown();
             }
         };
         _bus.schedule(toRun, 0);
-        control.stop();
+        control.dispose();
         _bus.start();
         assertTrue(reset.await(10, TimeUnit.SECONDS));
         assertFalse(executed[0]);
@@ -148,7 +148,7 @@ public abstract class FiberBaseTest extends Assert {
         };
         channel.subscribe(_bus, onReceive);
         assertEquals(1, channel.subscriberCount());
-        _bus.stop();
+        _bus.dispose();
         assertEquals(0, channel.subscriberCount());
     }
 
@@ -160,9 +160,9 @@ public abstract class FiberBaseTest extends Assert {
             public void onMessage(String data) {
             }
         };
-        Stopable unsub = channel.subscribe(_bus, onReceive);
+        Disposable unsub = channel.subscribe(_bus, onReceive);
         assertEquals(1, channel.subscriberCount());
-        unsub.stop();
+        unsub.dispose();
         assertEquals(0, channel.subscriberCount());
     }
 

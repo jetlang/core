@@ -62,12 +62,12 @@ public class ThreadFiber implements ProcessFiber {
         _queue.execute(command);
     }
 
-    public void addOnStop(Stopable runOnStop) {
+    public void addOnStop(Disposable runOnStop) {
         _queue.addOnStop(runOnStop);
     }
 
-    public boolean removeOnStop(Stopable stopable) {
-        return _queue.removeOnStop(stopable);
+    public boolean removeOnStop(Disposable disposable) {
+        return _queue.removeOnStop(disposable);
     }
 
     public int stoppableSize() {
@@ -78,9 +78,9 @@ public class ThreadFiber implements ProcessFiber {
     /// <see cref="ProcessFiber.Stop"/>
     /// </summary>
 
-    public void stop() {
-        _scheduler.stop();
-        _queue.stop();
+    public void dispose() {
+        _scheduler.dispose();
+        _queue.dispose();
     }
 
     /// <summary>
@@ -106,8 +106,8 @@ public class ThreadFiber implements ProcessFiber {
     /// </summary>
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
-    /// <returns>a controller to stop the event.</returns>
-    public Stopable schedule(Runnable command, long firstIntervalInMs) {
+    /// <returns>a controller to dispose the event.</returns>
+    public Disposable schedule(Runnable command, long firstIntervalInMs) {
         return _scheduler.schedule(command, firstIntervalInMs);
     }/// <summary>
 
@@ -116,8 +116,8 @@ public class ThreadFiber implements ProcessFiber {
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
-    /// <returns>controller to stop timer.</returns>
-    public Stopable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+    /// <returns>controller to dispose timer.</returns>
+    public Disposable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         return _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
     }
 }

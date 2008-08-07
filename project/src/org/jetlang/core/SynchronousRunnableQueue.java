@@ -9,7 +9,7 @@ import java.util.List;
 /// </summary>
 public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor {
     private boolean _running = true;
-    private List<Stopable> _onStop = new ArrayList<Stopable>();
+    private List<Disposable> _onStop = new ArrayList<Disposable>();
 
     /// <summary>
     /// Queue command
@@ -21,12 +21,12 @@ public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor
         }
     }
 
-    public void addOnStop(Stopable runOnStop) {
+    public void addOnStop(Disposable runOnStop) {
         _onStop.add(runOnStop);
     }
 
-    public boolean removeOnStop(Stopable stopable) {
-        return _onStop.remove(stopable);
+    public boolean removeOnStop(Disposable disposable) {
+        return _onStop.remove(disposable);
     }
 
     public int stoppableSize() {
@@ -43,10 +43,10 @@ public class SynchronousRunnableQueue implements RunnableQueue, RunnableExecutor
     /// <summary>
     /// Stop consuming events.
     /// </summary>
-    public void stop() {
+    public void dispose() {
         _running = false;
-        for (Stopable run : _onStop) {
-            run.stop();
+        for (Disposable run : _onStop) {
+            run.dispose();
         }
     }
 }

@@ -1,8 +1,8 @@
 package org.jetlang.fibers;
 
+import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableInvoker;
 import org.jetlang.core.RunnableInvokerImpl;
-import org.jetlang.core.Stopable;
 
 import java.util.Timer;
 import java.util.concurrent.Executor;
@@ -12,7 +12,7 @@ import java.util.concurrent.Executor;
  * Date: Jul 27, 2008
  * Time: 9:34:31 PM
  */
-public class PoolFiberFactory implements Stopable {
+public class PoolFiberFactory implements Disposable {
 
     private final Timer _scheduler = new Timer(true);
     private Executor executor;
@@ -25,7 +25,7 @@ public class PoolFiberFactory implements Stopable {
         return new PoolFiber(executor, invoker, _scheduler);
     }
 
-    public void stop() {
+    public void dispose() {
         _scheduler.cancel();
     }
 

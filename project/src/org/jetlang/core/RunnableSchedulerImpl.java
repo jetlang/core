@@ -18,7 +18,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
         _timer = timer;
     }
 
-    public Stopable schedule(final Runnable comm, long timeTillEnqueueInMs) {
+    public Disposable schedule(final Runnable comm, long timeTillEnqueueInMs) {
         if (timeTillEnqueueInMs <= 0) {
             PendingCommand pending = new PendingCommand(comm);
             _queue.execute(pending);
@@ -34,7 +34,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
         }
     }
 
-    public Stopable scheduleOnInterval(final Runnable comm, long firstInMs, long intervalInMs) {
+    public Disposable scheduleOnInterval(final Runnable comm, long firstInMs, long intervalInMs) {
         TimerTask task = new TimerTask() {
             public void run() {
                 _queue.execute(comm);
@@ -44,12 +44,12 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
         return new TimerTaskControl(task);
     }
 
-    public void stop() {
+    public void dispose() {
         _timer.cancel();
     }
 }
 
-class TimerTaskControl implements Stopable {
+class TimerTaskControl implements Disposable {
     private TimerTask _task;
 
     public TimerTaskControl(TimerTask task) {
@@ -59,7 +59,7 @@ class TimerTaskControl implements Stopable {
     /// <summary>
     /// Cancels scheduled timer.
     /// </summary>
-    public void stop() {
+    public void dispose() {
         _task.cancel();
     }
 }

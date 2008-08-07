@@ -1,9 +1,9 @@
 package org.jetlang.tests;
 
+import org.jetlang.core.Disposable;
+import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ProcessFiber;
 import org.jetlang.fibers.ThreadFiber;
-import org.jetlang.core.RunnableExecutorImpl;
-import org.jetlang.core.Stopable;
 import org.junit.Test;
 
 /**
@@ -30,9 +30,9 @@ public class ThreadFiberTests extends FiberBaseTest {
             public void run() {
             }
         };
-        Stopable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
+        Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
         assertEquals(0, _bus.stoppableSize());
-        stopper.stop();
+        stopper.dispose();
         assertEquals(0, _bus.stoppableSize());
     }
 

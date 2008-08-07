@@ -1,8 +1,8 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
+import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableQueue;
-import org.jetlang.core.Stopable;
 
 /// <summary>
 /// Channel subscription methods.
@@ -15,8 +15,8 @@ public interface ChannelSubscriber<T> {
     ///</summary>
     ///<param name="execute">the target context to receive the message</param>
     ///<param name="receive"></param>
-    ///<returns>Stopable object</returns>
-    Stopable subscribe(RunnableQueue queue, Callback<T> receive);
+    ///<returns>Disposable object</returns>
+    Disposable subscribe(RunnableQueue queue, Callback<T> receive);
 
     /// <summary>
     /// Removes all subscribers.

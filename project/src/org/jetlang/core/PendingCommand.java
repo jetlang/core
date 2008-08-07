@@ -1,6 +1,6 @@
 package org.jetlang.core;
 
-class PendingCommand implements Stopable, Runnable {
+class PendingCommand implements Disposable, Runnable {
     private final Runnable _toExecute;
     private boolean _cancelled;
 
@@ -8,7 +8,7 @@ class PendingCommand implements Stopable, Runnable {
         _toExecute = toExecute;
     }
 
-    public void stop() {
+    public void dispose() {
         _cancelled = true;
     }
 

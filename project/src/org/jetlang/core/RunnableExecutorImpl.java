@@ -12,7 +12,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     private boolean _running = true;
 
     private final List<Runnable> _commands = new ArrayList<Runnable>();
-    private final List<Stopable> _onStop = new ArrayList<Stopable>();
+    private final List<Disposable> _onStop = new ArrayList<Disposable>();
 
     private final RunnableInvoker _commandRunner;
 
@@ -86,25 +86,25 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// <summary>
     /// Stop consuming events.
     /// </summary>
-    public void stop() {
+    public void dispose() {
         synchronized (_lock) {
-            for (Stopable r : _onStop.toArray(new Stopable[_onStop.size()])) {
-                r.stop();
+            for (Disposable r : _onStop.toArray(new Disposable[_onStop.size()])) {
+                r.dispose();
             }
             _running = false;
             _lock.notify();
         }
     }
 
-    public void addOnStop(Stopable r) {
+    public void addOnStop(Disposable r) {
         synchronized (_lock) {
             _onStop.add(r);
         }
     }
 
-    public boolean removeOnStop(Stopable stopable) {
+    public boolean removeOnStop(Disposable disposable) {
         synchronized (_lock) {
-            return _onStop.remove(stopable);
+            return _onStop.remove(disposable);
         }
     }
 
