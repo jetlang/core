@@ -21,6 +21,12 @@ public class Channel<T> implements ChannelPublisher<T>, ChannelSubscriber<T> {
         }
     }
 
+    /**
+     * Thread safe publish method
+     *
+     * @param s message to send
+     * @return number of subscribers
+     */
     public int publish(T s) {
         synchronized (_subscribers) {
             for (Callback<T> callback : _subscribers) {

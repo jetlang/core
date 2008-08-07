@@ -22,6 +22,37 @@ import java.util.concurrent.TimeUnit;
  * Time: 9:19:23 AM
  */
 public class ChannelTests {
+
+    @Test
+    public void basicPubSubWithThreads() throws InterruptedException {
+
+        //start receiver thread
+        ProcessFiber receiver = new ThreadFiber();
+        receiver.start();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        final Channel<String> channel = new Channel<String>();
+
+        Callback<String> onMsg = new Callback<String>() {
+            public void onMessage(String message) {
+                latch.countDown();
+            }
+        };
+        //add subscription for message on receiver thread
+        channel.subscribe(receiver, onMsg);
+
+        //publish message to receive thread. the publish method is thread safe.
+        channel.publish("Hello");
+
+        //wait for receiving thread to receive message
+        latch.await(10, TimeUnit.SECONDS);
+
+        //shutdown thread
+        receiver.stop();
+    }
+
+
     @Test
     public void PubSub() {
         Channel<String> channel = new Channel<String>();

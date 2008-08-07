@@ -3,8 +3,8 @@
   <component name="BuildJarSettings">
     <containerInfo>
       <containerElement type="module" name="Jetlang">
-        <attribute name="method" value="5" />
-        <attribute name="URI" value="/Jetlang.jar" />
+        <attribute name="method" value="1" />
+        <attribute name="URI" value="/" />
       </containerElement>
     </containerInfo>
     <setting name="jarUrl" value="file://$MODULE_DIR$/out/production/jetlang.jar" />
