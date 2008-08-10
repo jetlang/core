@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import org.jetlang.channels.Channel;
 import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
-import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.Fiber;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,13 +15,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public abstract class FiberBaseTest extends Assert {
-    public abstract ProcessFiber CreateBus();
+    public abstract Fiber CreateBus();
 
     public abstract void DoSetup();
 
     public abstract void DoTearDown();
 
-    protected ProcessFiber _bus;
+    protected Fiber _bus;
 
     @Before
     public void Setup() {
@@ -33,7 +33,7 @@ public abstract class FiberBaseTest extends Assert {
     public void TearDown() {
         if (_bus != null) {
             _bus.dispose();
-            assertEquals(0, _bus.stoppableSize());
+            assertEquals(0, _bus.registeredDisposableSize());
         }
         DoTearDown();
     }

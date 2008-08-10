@@ -2,8 +2,8 @@ package org.jetlang.channels;
 
 import org.jetlang.PerfTimer;
 import org.jetlang.core.Callback;
+import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.PoolFiberFactory;
-import org.jetlang.fibers.ProcessFiber;
 import org.jetlang.fibers.ThreadFiber;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -36,10 +36,10 @@ public class PingPongTest {
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
         PoolFiberFactory factory = new PoolFiberFactory(executor);
-        ProcessFiber pingFiber = factory.create();
+        Fiber pingFiber = factory.create();
         pingFiber.start();
 
-        ProcessFiber pongFiber = factory.create();
+        Fiber pongFiber = factory.create();
         pongFiber.start();
         runTest(pingFiber, pongFiber);
         factory.dispose();
@@ -47,7 +47,7 @@ public class PingPongTest {
     }
 
 
-    private void runTest(ProcessFiber pingFiber, ProcessFiber pongFiber) throws InterruptedException {
+    private void runTest(Fiber pingFiber, Fiber pongFiber) throws InterruptedException {
         final Channel<Integer> pongChannel = new Channel<Integer>();
         final Channel<Channel<Integer>> pingChannel = new Channel<Channel<Integer>>();
 

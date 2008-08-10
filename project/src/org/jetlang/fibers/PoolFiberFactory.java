@@ -29,7 +29,7 @@ public class PoolFiberFactory implements Disposable {
         _scheduler.cancel();
     }
 
-    public ProcessFiber create() {
+    public Fiber create() {
         return create(new RunnableInvokerImpl());
     }
 }

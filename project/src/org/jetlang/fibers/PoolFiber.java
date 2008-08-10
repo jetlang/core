@@ -13,7 +13,7 @@ import java.util.concurrent.Executor;
 /// Process Queue that uses a thread pool for execution.
 
 /// </summary>
-public class PoolFiber implements ProcessFiber {
+public class PoolFiber implements Fiber {
     private boolean _flushPending = false;
     private final Object _lock = new Object();
     private final List<Runnable> _queue = new ArrayList<Runnable>();
@@ -125,7 +125,7 @@ public class PoolFiber implements ProcessFiber {
         }
     }
 
-    public int stoppableSize() {
+    public int registeredDisposableSize() {
         synchronized (_onStop) {
             return _onStop.size();
         }

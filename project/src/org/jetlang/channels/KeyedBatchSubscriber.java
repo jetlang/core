@@ -5,7 +5,7 @@ package org.jetlang.channels;    /// <summary>
 /// <typeparam name="T"></typeparam>
 
 import org.jetlang.core.Callback;
-import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.Fiber;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     private final Object _batchLock = new Object();
 
-    private final ProcessFiber _context;
+    private final Fiber _context;
     private final Callback<Map<K, T>> _target;
     private final int _flushIntervalInMs;
     private final Converter<T, K> _keyResolver;
@@ -30,7 +30,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     /// <param name="flushIntervalInMs"></param>
     public KeyedBatchSubscriber(Converter<T, K> keyResolver,
                                 Callback<Map<K, T>> target,
-                                ProcessFiber context, int flushIntervalInMs) {
+                                Fiber context, int flushIntervalInMs) {
         super(context);
         _keyResolver = keyResolver;
         _context = context;

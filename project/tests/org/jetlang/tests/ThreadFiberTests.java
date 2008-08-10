@@ -2,7 +2,7 @@ package org.jetlang.tests;
 
 import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableExecutorImpl;
-import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 public class ThreadFiberTests extends FiberBaseTest {
 
-    public ProcessFiber CreateBus() {
+    public Fiber CreateBus() {
         return new ThreadFiber(new RunnableExecutorImpl(), System.currentTimeMillis() + "", true);
     }
 
@@ -31,9 +31,9 @@ public class ThreadFiberTests extends FiberBaseTest {
             }
         };
         Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
-        assertEquals(0, _bus.stoppableSize());
+        assertEquals(0, _bus.registeredDisposableSize());
         stopper.dispose();
-        assertEquals(0, _bus.stoppableSize());
+        assertEquals(0, _bus.registeredDisposableSize());
     }
 
 }

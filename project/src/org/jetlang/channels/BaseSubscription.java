@@ -25,7 +25,7 @@ public abstract class BaseSubscription<T> implements Subscribable<T> {
     /// Receives the event and queues the execution on the target execute.
     /// </summary>
     /// <param name="msg"></param>
-    public void onMessage(final T msg) {
+    public void onMessage(T msg) {
         if (_filter == null || _filter.passes(msg)) {
             onMessageOnProducerThread(msg);
         }

@@ -14,7 +14,7 @@ public class RunnableInvokerImpl implements RunnableInvoker {
         this._running = _running;
     }
 
-    private boolean _running = true;
+    private volatile boolean _running = true;
 
     /// <summary>
     /// <see cref="RunnableInvoker.ExecuteAll(Command[])"/>

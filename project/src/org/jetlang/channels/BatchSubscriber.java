@@ -4,14 +4,14 @@ package org.jetlang.channels;    /// <summary>
 /// <typeparam name="T"></typeparam>
 
 import org.jetlang.core.Callback;
-import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BatchSubscriber<T> extends BaseSubscription<T> {
     private final Object _lock = new Object();
-    private final ProcessFiber _queue;
+    private final Fiber _queue;
     private final Callback<List<T>> _receive;
     private final int _interval;
     private List<T> _pending;
@@ -24,7 +24,7 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
     /// <param name="channel"></param>
     /// <param name="receive"></param>
     /// <param name="interval"></param>
-    public BatchSubscriber(ProcessFiber queue, Callback<List<T>> receive, int interval) {
+    public BatchSubscriber(Fiber queue, Callback<List<T>> receive, int interval) {
         super(queue);
         _queue = queue;
         _receive = receive;

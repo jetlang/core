@@ -4,12 +4,12 @@ package org.jetlang.channels;    /// <summary>
 /// <typeparam name="T"></typeparam>
 
 import org.jetlang.core.Callback;
-import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.Fiber;
 
 public class LastSubscriber<T> extends BaseSubscription<T> {
     private final Object _lock = new Object();
 
-    private final ProcessFiber _context;
+    private final Fiber _context;
     private final Callback<T> _target;
     private final int _flushIntervalInMs;
 
@@ -23,7 +23,7 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
     /// <param name="target"></param>
     /// <param name="context"></param>
     /// <param name="flushIntervalInMs"></param>
-    public LastSubscriber(Callback<T> target, ProcessFiber context, int flushIntervalInMs) {
+    public LastSubscriber(Callback<T> target, Fiber context, int flushIntervalInMs) {
         super(context);
         _context = context;
         _target = target;

@@ -1,9 +1,8 @@
 package org.jetlang.channels;
 
-import org.jetlang.PerfCommandExecutor;
 import org.jetlang.PerfTimer;
 import org.jetlang.core.*;
-import org.jetlang.fibers.ProcessFiber;
+import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class ChannelTests {
     public void basicPubSubWithThreads() throws InterruptedException {
 
         //start receiver thread
-        ProcessFiber receiver = new ThreadFiber();
+        Fiber receiver = new ThreadFiber();
         receiver.start();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -226,8 +225,8 @@ public class ChannelTests {
     public void AsyncRequestReplyWithPrivateChannel() throws InterruptedException {
         Channel<Channel<String>> requestChannel = new Channel<Channel<String>>();
         Channel<String> replyChannel = new Channel<String>();
-        ProcessFiber responder = startFiber();
-        ProcessFiber receiver = startFiber();
+        Fiber responder = startFiber();
+        Fiber receiver = startFiber();
         final CountDownLatch reset = new CountDownLatch(1);
         Callback<Channel<String>> onRequest = new Callback<Channel<String>>() {
             public void onMessage(Channel<String> message) {
@@ -252,7 +251,7 @@ public class ChannelTests {
     @Test
     public void asyncRequestReplyWithBlockingQueue() throws InterruptedException {
         Channel<BlockingQueue<String>> requestChannel = new Channel<BlockingQueue<String>>();
-        ProcessFiber responder = startFiber();
+        Fiber responder = startFiber();
         Callback<BlockingQueue<String>> onRequest = new Callback<BlockingQueue<String>>() {
             public void onMessage(BlockingQueue<String> message) {
                 for (int i = 0; i < 5; i++)
@@ -273,8 +272,8 @@ public class ChannelTests {
 
     private int count = 0;
 
-    private ProcessFiber startFiber() {
-        ProcessFiber responder = new ThreadFiber(new RunnableExecutorImpl(), "thread" + (count++), true);
+    private Fiber startFiber() {
+        Fiber responder = new ThreadFiber(new RunnableExecutorImpl(), "thread" + (count++), true);
         responder.start();
         return responder;
     }
@@ -282,7 +281,7 @@ public class ChannelTests {
     @Test
     public void PointToPointPerfTest() throws InterruptedException {
         Channel<Integer> channel = new Channel<Integer>();
-        RunnableExecutorImpl queue = new RunnableExecutorImpl(new PerfCommandExecutor());
+        RunnableExecutorImpl queue = new RunnableExecutorImpl();
         ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
         bus.start();
         final Integer max = 5000000;
@@ -314,7 +313,7 @@ public class ChannelTests {
 
 }
 
-class StubCommandContext implements ProcessFiber {
+class StubCommandContext implements Fiber {
     public List<Runnable> Scheduled = new ArrayList<Runnable>();
 
     public Disposable schedule(Runnable command, long firstIntervalInMs) {
@@ -340,7 +339,7 @@ class StubCommandContext implements ProcessFiber {
         return false;
     }
 
-    public int stoppableSize() {
+    public int registeredDisposableSize() {
         return 0;
     }
 

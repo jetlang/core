@@ -4,9 +4,10 @@ import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableQueue;
 import org.jetlang.core.RunnableScheduler;
 
-public interface ProcessFiber extends RunnableQueue, RunnableScheduler, Disposable {
-    /// <summary>
-    /// start consuming events.
-    /// </summary>
+
+public interface Fiber extends RunnableQueue, RunnableScheduler, Disposable {
+    /**
+     * Start consuming events
+     */
     void start();
 }

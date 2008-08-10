@@ -108,7 +108,8 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         }
     }
 
-    public int stoppableSize() {
+
+    public int registeredDisposableSize() {
         synchronized (_lock) {
             return _onStop.size();
         }

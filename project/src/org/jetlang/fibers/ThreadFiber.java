@@ -7,7 +7,7 @@ import org.jetlang.core.*;
 /// <see cref="ThreadFiber"/>
 
 /// </summary>
-public class ThreadFiber implements ProcessFiber {
+public class ThreadFiber implements Fiber {
 
     private final Thread _thread;
     private final RunnableExecutor _queue;
@@ -70,12 +70,12 @@ public class ThreadFiber implements ProcessFiber {
         return _queue.removeOnStop(disposable);
     }
 
-    public int stoppableSize() {
-        return _queue.stoppableSize();
+    public int registeredDisposableSize() {
+        return _queue.registeredDisposableSize();
     }
 
     /// <summary>
-    /// <see cref="ProcessFiber.Stop"/>
+    /// <see cref="Fiber.Stop"/>
     /// </summary>
 
     public void dispose() {
@@ -84,7 +84,7 @@ public class ThreadFiber implements ProcessFiber {
     }
 
     /// <summary>
-    /// <see cref="ProcessFiber.start"/>
+    /// <see cref="Fiber.start"/>
     /// </summary>
     public void start() {
         _thread.start();
