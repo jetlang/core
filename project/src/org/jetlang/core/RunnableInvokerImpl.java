@@ -1,5 +1,7 @@
 package org.jetlang.core;
 
+import java.util.Collection;
+
 /// <summary>
 /// Default command executor.
 
@@ -20,7 +22,7 @@ public class RunnableInvokerImpl implements RunnableInvoker {
     /// <see cref="RunnableInvoker.ExecuteAll(Command[])"/>
     /// </summary>
     /// <param name="toExecute"></param>
-    public void executeAll(Runnable[] toExecute) {
+    public void executeAll(Collection<Runnable> toExecute) {
         for (Runnable command : toExecute) {
             if (_running) {
                 command.run();

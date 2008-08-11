@@ -1,7 +1,10 @@
 package org.jetlang.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /// <summary>
 /// Default implementation.
@@ -9,9 +12,10 @@ import java.util.List;
 /// </summary>
 public class RunnableExecutorImpl implements RunnableExecutor {
     private final Object _lock = new Object();
-    private boolean _running = true;
+    private volatile boolean _running = true;
 
-    private final List<Runnable> _commands = new ArrayList<Runnable>();
+    // TODO the ArrayBlockingQueue is generally a tad faster, but its capacity-limited..
+    private final BlockingQueue<Runnable> _commands = new LinkedBlockingQueue<Runnable>();
     private final List<Disposable> _onStop = new ArrayList<Disposable>();
 
     private final RunnableInvoker _commandRunner;
@@ -29,57 +33,43 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// </summary>
     /// <param name="command"></param>
     public void execute(Runnable command) {
-        synchronized (_lock) {
-            _commands.add(command);
-            _lock.notify();
-        }
+        _commands.add(command);
     }
 
     /// <summary>
     /// Remove all commands.
     /// </summary>
     /// <returns></returns>
-    public Runnable[] DequeueAll() {
-        synchronized (_lock) {
-            if (ReadyToDequeue()) {
-                Runnable[] toReturn = _commands.toArray(new Runnable[_commands.size()]);
-                _commands.clear();
-                return toReturn;
-            } else {
-                return null;
-            }
-        }
-    }
+    private Collection<Runnable> DequeueAll() {
+        List<Runnable> dequeued = new ArrayList<Runnable>();
+        Runnable command;
 
-    private boolean ReadyToDequeue() {
-        while (_commands.size() == 0 && _running) {
-            try {
-                _lock.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            command = _commands.take();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        return _running;
+
+        dequeued.add(command);
+        _commands.drainTo(dequeued);
+
+        return dequeued;
     }
 
     /// <summary>
     /// Remove all commands and execute.
     /// </summary>
     /// <returns></returns>
-    public boolean ExecuteNextBatch() {
-        Runnable[] toExecute = DequeueAll();
-        if (toExecute == null) {
-            return false;
-        }
-        _commandRunner.executeAll(toExecute);
-        return true;
+    private void ExecuteNextBatch() {
+        _commandRunner.executeAll(DequeueAll());
     }
 
     /// <summary>
     /// Execute commands until stopped.
     /// </summary>
     public void run() {
-        while (ExecuteNextBatch()) {
+        while (_running) {
+            ExecuteNextBatch();
         }
     }
 
@@ -87,12 +77,18 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// Stop consuming events.
     /// </summary>
     public void dispose() {
+        _running = false;
+
+        execute(new Runnable() {
+            public void run() {
+                // so it wakes up and will notice that we've told it to stop
+            }
+        });
+
         synchronized (_lock) {
             for (Disposable r : _onStop.toArray(new Disposable[_onStop.size()])) {
                 r.dispose();
             }
-            _running = false;
-            _lock.notify();
         }
     }
 

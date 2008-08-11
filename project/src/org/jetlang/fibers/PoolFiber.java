@@ -5,22 +5,26 @@ import org.jetlang.core.RunnableInvoker;
 import org.jetlang.core.RunnableSchedulerImpl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /// <summary>
 /// Process Queue that uses a thread pool for execution.
 
 /// </summary>
 public class PoolFiber implements Fiber {
-    private boolean _flushPending = false;
-    private final Object _lock = new Object();
-    private final List<Runnable> _queue = new ArrayList<Runnable>();
+    private final AtomicBoolean _flushPending = new AtomicBoolean(false);
+    private final BlockingQueue<Runnable> _queue = new ArrayBlockingQueue<Runnable>(1000);
     private final Executor _pool;
-    private ExecutionState _started = ExecutionState.Created;
+    private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
     private final RunnableInvoker _executor;
-    private final ArrayList<Disposable> _onStop = new ArrayList<Disposable>();
+    private final Collection<Disposable> _onStop = new ArrayList<Disposable>();
     private final RunnableSchedulerImpl _scheduler;
     private final Runnable _flushRunnable;
 
@@ -45,60 +49,57 @@ public class PoolFiber implements Fiber {
     /// </summary>
     /// <param name="commands"></param>
     public void execute(Runnable commands) {
-        if (_started == ExecutionState.Stopped) {
+        if (_started.get() == ExecutionState.Stopped) {
             return;
         }
 
-        synchronized (_lock) {
-            _queue.add(commands);
-            if (_started == ExecutionState.Created) {
-                return;
-            }
-            if (!_flushPending) {
-                _pool.execute(_flushRunnable);
-                _flushPending = true;
-            }
+        _queue.add(commands);
+        if (_started.get() == ExecutionState.Created) {
+            return;
+        }
+
+        flushIfNotPending();
+    }
+
+    private void flushIfNotPending() {
+        if (_flushPending.compareAndSet(false, true)) {
+            _pool.execute(_flushRunnable);
         }
     }
 
     private void flush() {
-        Runnable[] toExecute = ClearCommands();
-        if (toExecute != null) {
-            _executor.executeAll(toExecute);
-            synchronized (_lock) {
-                if (_queue.size() > 0) {
-                    // don't monopolize thread.
-                    _pool.execute(_flushRunnable);
-                } else {
-                    _flushPending = false;
-                }
-            }
+        _executor.executeAll(ClearCommands());
+
+        _flushPending.compareAndSet(true, false);
+
+        if (!_queue.isEmpty()) {
+            flushIfNotPending();
         }
     }
 
-    private Runnable[] ClearCommands() {
-        synchronized (_lock) {
-            if (_queue.size() == 0) {
-                _flushPending = false;
-                return null;
-            }
-            Runnable[] toReturn = _queue.toArray(new Runnable[_queue.size()]);
-            _queue.clear();
-            return toReturn;
-        }
+    private List<Runnable> ClearCommands() {
+        List<Runnable> commands = new ArrayList<Runnable>();
+
+        _queue.drainTo(commands);
+
+        return commands;
     }
 
     public void start() {
-        if (_started == ExecutionState.Running) {
+        ExecutionState state = _started.get();
+
+        if (state == ExecutionState.Running) {
             throw new RuntimeException("Already Started");
         }
-        _started = ExecutionState.Running;
-        //flush any pending events in execute
-        Runnable flushPending = new Runnable() {
-            public void run() {
-            }
-        };
-        execute(flushPending);
+
+        if (_started.compareAndSet(state, ExecutionState.Running)) {
+            //flush any pending events in execute
+            Runnable flushPending = new Runnable() {
+                public void run() {
+                }
+            };
+            execute(flushPending);
+        }
     }
 
 
@@ -106,7 +107,7 @@ public class PoolFiber implements Fiber {
     /// Stop consuming events.
     /// </summary>
     public void dispose() {
-        _started = ExecutionState.Stopped;
+        _started.set(ExecutionState.Stopped);
         synchronized (_onStop) {
             for (Disposable r : _onStop.toArray(new Disposable[_onStop.size()]))
                 r.dispose();
@@ -150,7 +151,7 @@ public class PoolFiber implements Fiber {
     public Disposable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
         //the timer object is shared so interval timers must be shut down manually.
         final Disposable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
-        final Disposable wrapper = new Disposable() {
+        Disposable wrapper = new Disposable() {
             public void dispose() {
                 stopper.dispose();
                 removeOnStop(this);
