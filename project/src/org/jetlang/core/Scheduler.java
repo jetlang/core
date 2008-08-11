@@ -7,7 +7,7 @@ package org.jetlang.core;
  */ /// <summary>
 /// Methods for schedule events that will be executed in the future.
 /// </summary>
-public interface RunnableScheduler extends Disposable {
+public interface Scheduler extends Disposable {
     /// <summary>
     /// Schedules an event to be executes once.
     /// </summary>
