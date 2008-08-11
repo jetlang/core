@@ -8,7 +8,7 @@ import org.jetlang.core.DisposingExecutor;
 /// </summary>
 
 /// <typeparam name="T"></typeparam>
-public class ChannelSubscription<T> extends BaseSubscription<T> {
+class ChannelSubscription<T> extends BaseSubscription<T> {
     private final Callback<T> _receiveMethod;
 
     /// <summary>
