@@ -71,7 +71,8 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         });
 
         synchronized (_disposables) {
-            for (Disposable r : _disposables) {
+            //copy list to prevent concurrent mod
+            for (Disposable r : _disposables.toArray(new Disposable[_disposables.size()])) {
                 r.dispose();
             }
         }

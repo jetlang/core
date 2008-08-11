@@ -8,11 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -107,7 +103,8 @@ class PoolFiber implements Fiber {
     public void dispose() {
         _started.set(ExecutionState.Stopped);
         synchronized (_disposables) {
-            for (Disposable r : _disposables) {
+            //copy list to prevent concurrent mod
+            for (Disposable r : _disposables.toArray(new Disposable[_disposables.size()])) {
                 r.dispose();
             }
         }
