@@ -2,7 +2,7 @@ package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableQueue;
+import org.jetlang.core.DisposingExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Channel<T> implements Publisher<T>, Subscriber<T> {
         }
     }
 
-    public Disposable subscribe(RunnableQueue queue, Callback<T> onReceive) {
+    public Disposable subscribe(DisposingExecutor queue, Callback<T> onReceive) {
         ChannelSubscription<T> subber = new ChannelSubscription<T>(queue, onReceive);
         return subscribe(subber);
     }
@@ -40,14 +40,14 @@ public class Channel<T> implements Publisher<T>, Subscriber<T> {
         return subscribeOnProducerThread(sub.getQueue(), sub);
     }
 
-    public Disposable subscribeOnProducerThread(final RunnableQueue queue, final Callback<T> callbackOnQueue) {
+    public Disposable subscribeOnProducerThread(final DisposingExecutor queue, final Callback<T> callbackOnQueue) {
         Disposable unSub = new Disposable() {
             public void dispose() {
                 Remove(callbackOnQueue);
-                queue.removeOnStop(this);
+                queue.remove(this);
             }
         };
-        queue.addOnStop(unSub);
+        queue.add(unSub);
         //finally add subscription to start receiving events.
         synchronized (_subscribers) {
             _subscribers.add(callbackOnQueue);

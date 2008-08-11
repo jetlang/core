@@ -13,13 +13,16 @@ import org.junit.Test;
  */
 public class ThreadFiberTests extends FiberBaseTest {
 
+    @Override
     public Fiber CreateBus() {
         return new ThreadFiber(new RunnableExecutorImpl(), System.currentTimeMillis() + "", true);
     }
 
+    @Override
     public void DoSetup() {
     }
 
+    @Override
     public void DoTearDown() {
     }
 
@@ -31,9 +34,9 @@ public class ThreadFiberTests extends FiberBaseTest {
             }
         };
         Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
-        assertEquals(0, _bus.registeredDisposableSize());
+        assertEquals(0, _bus.size());
         stopper.dispose();
-        assertEquals(0, _bus.registeredDisposableSize());
+        assertEquals(0, _bus.size());
     }
 
 }

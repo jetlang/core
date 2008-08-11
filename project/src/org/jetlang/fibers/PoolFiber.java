@@ -114,19 +114,19 @@ public class PoolFiber implements Fiber {
         }
     }
 
-    public void addOnStop(Disposable runOnStop) {
+    public void add(Disposable runOnStop) {
         synchronized (_onStop) {
             _onStop.add(runOnStop);
         }
     }
 
-    public boolean removeOnStop(Disposable disposable) {
+    public boolean remove(Disposable disposable) {
         synchronized (_onStop) {
             return _onStop.remove(disposable);
         }
     }
 
-    public int registeredDisposableSize() {
+    public int size() {
         synchronized (_onStop) {
             return _onStop.size();
         }
@@ -154,10 +154,10 @@ public class PoolFiber implements Fiber {
         Disposable wrapper = new Disposable() {
             public void dispose() {
                 stopper.dispose();
-                removeOnStop(this);
+                remove(this);
             }
         };
-        addOnStop(wrapper);
+        add(wrapper);
         return wrapper;
     }
 }

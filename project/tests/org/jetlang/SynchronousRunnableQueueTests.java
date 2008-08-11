@@ -1,6 +1,6 @@
 package org.jetlang;
 
-import org.jetlang.core.SynchronousRunnableQueue;
+import org.jetlang.core.SynchronousDisposingExecutor;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ public class SynchronousRunnableQueueTests {
 
     @Test
     public void execution() {
-        SynchronousRunnableQueue queue = new SynchronousRunnableQueue();
+        SynchronousDisposingExecutor queue = new SynchronousDisposingExecutor();
         final boolean[] executed = new boolean[1];
         Runnable run = new Runnable() {
 

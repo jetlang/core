@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
+import org.jetlang.core.DisposingExecutor;
 import org.jetlang.core.Filter;
-import org.jetlang.core.RunnableQueue;
 
 /// <summary>
 /// Subscription for events on a channel.
@@ -11,13 +11,13 @@ import org.jetlang.core.RunnableQueue;
 public abstract class BaseSubscription<T> implements Subscribable<T> {
 
     private Filter<T> _filter;
-    private RunnableQueue fiber;
+    private DisposingExecutor fiber;
 
-    public BaseSubscription(RunnableQueue fiber) {
+    public BaseSubscription(DisposingExecutor fiber) {
         this.fiber = fiber;
     }
 
-    public RunnableQueue getQueue() {
+    public DisposingExecutor getQueue() {
         return fiber;
     }
 

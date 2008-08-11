@@ -2,7 +2,7 @@ package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableQueue;
+import org.jetlang.core.DisposingExecutor;
 
 /**
  * Interface for components that allow for message subscriptions
@@ -13,9 +13,9 @@ public interface Subscriber<T> {
     /**
      * Subscribe to receive messages produced by this subscriber
      *
-     * @param queue   {@link RunnableQueue} to place subscription receipt tasks on
-     * @param receive {@link Callback} to invoke upon message receipt
+     * @param executor {@link DisposingExecutor} to use for invoking the callback upon message receipt.
+     * @param receive  {@link Callback} to invoke upon message receipt
      * @return {@link Disposable} that can be invoked to cancel this subscription
      */
-    Disposable subscribe(RunnableQueue queue, Callback<T> receive);
+    Disposable subscribe(DisposingExecutor executor, Callback<T> receive);
 }

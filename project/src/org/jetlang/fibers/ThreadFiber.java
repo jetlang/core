@@ -62,16 +62,16 @@ public class ThreadFiber implements Fiber {
         _queue.execute(command);
     }
 
-    public void addOnStop(Disposable runOnStop) {
-        _queue.addOnStop(runOnStop);
+    public void add(Disposable runOnStop) {
+        _queue.add(runOnStop);
     }
 
-    public boolean removeOnStop(Disposable disposable) {
-        return _queue.removeOnStop(disposable);
+    public boolean remove(Disposable disposable) {
+        return _queue.remove(disposable);
     }
 
-    public int registeredDisposableSize() {
-        return _queue.registeredDisposableSize();
+    public int size() {
+        return _queue.size();
     }
 
     /// <summary>

@@ -92,20 +92,20 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         }
     }
 
-    public void addOnStop(Disposable r) {
+    public void add(Disposable r) {
         synchronized (_lock) {
             _onStop.add(r);
         }
     }
 
-    public boolean removeOnStop(Disposable disposable) {
+    public boolean remove(Disposable disposable) {
         synchronized (_lock) {
             return _onStop.remove(disposable);
         }
     }
 
 
-    public int registeredDisposableSize() {
+    public int size() {
         synchronized (_lock) {
             return _onStop.size();
         }

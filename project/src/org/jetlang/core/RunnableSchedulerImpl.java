@@ -13,7 +13,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
         _timer = new Timer(true);
     }
 
-    public RunnableSchedulerImpl(RunnableQueue queue, Timer timer) {
+    public RunnableSchedulerImpl(DisposingExecutor queue, Timer timer) {
         _queue = queue;
         _timer = timer;
     }
@@ -25,6 +25,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
             return pending;
         } else {
             TimerTask task = new TimerTask() {
+                @Override
                 public void run() {
                     _queue.execute(comm);
                 }
@@ -36,6 +37,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
 
     public Disposable scheduleOnInterval(final Runnable comm, long firstInMs, long intervalInMs) {
         TimerTask task = new TimerTask() {
+            @Override
             public void run() {
                 _queue.execute(comm);
             }

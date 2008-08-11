@@ -33,7 +33,7 @@ public abstract class FiberBaseTest extends Assert {
     public void TearDown() {
         if (_bus != null) {
             _bus.dispose();
-            assertEquals(0, _bus.registeredDisposableSize());
+            assertEquals(0, _bus.size());
         }
         DoTearDown();
     }

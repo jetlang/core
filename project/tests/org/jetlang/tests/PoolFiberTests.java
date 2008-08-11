@@ -19,15 +19,18 @@ public class PoolFiberTests extends FiberBaseTest {
     private ExecutorService _executor;
     private PoolFiberFactory _fiberFactory;
 
+    @Override
     public Fiber CreateBus() {
         return _fiberFactory.create(new RunnableInvokerImpl());
     }
 
+    @Override
     public void DoSetup() {
         _executor = Executors.newCachedThreadPool();
         _fiberFactory = new PoolFiberFactory(_executor);
     }
 
+    @Override
     public void DoTearDown() {
         if (_executor != null)
             _executor.shutdown();
@@ -44,9 +47,9 @@ public class PoolFiberTests extends FiberBaseTest {
             }
         };
         Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
-        assertEquals(1, _bus.registeredDisposableSize());
+        assertEquals(1, _bus.size());
         stopper.dispose();
-        assertEquals(0, _bus.registeredDisposableSize());
+        assertEquals(0, _bus.size());
 
     }
 

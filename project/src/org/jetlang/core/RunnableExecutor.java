@@ -4,5 +4,5 @@ package org.jetlang.core;
 /// A runable execute implementation.
 
 /// </summary>
-public interface RunnableExecutor extends RunnableQueue, Disposable, Runnable {
+public interface RunnableExecutor extends DisposingExecutor, Disposable, Runnable {
 }

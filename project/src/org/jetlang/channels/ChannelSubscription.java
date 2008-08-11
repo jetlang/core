@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.RunnableQueue;
+import org.jetlang.core.DisposingExecutor;
 
 /// <summary>
 /// Subscription for events on a channel.
@@ -16,7 +16,7 @@ public class ChannelSubscription<T> extends BaseSubscription<T> {
     /// </summary>
     /// <param name="execute"></param>
     /// <param name="receiveMethod"></param>
-    public ChannelSubscription(RunnableQueue queue, Callback<T> receiveMethod) {
+    public ChannelSubscription(DisposingExecutor queue, Callback<T> receiveMethod) {
         super(queue);
         _receiveMethod = receiveMethod;
     }
@@ -25,6 +25,7 @@ public class ChannelSubscription<T> extends BaseSubscription<T> {
     /// Receives the event and queues the execution on the target execute.
     /// </summary>
     /// <param name="msg"></param>
+    @Override
     protected void onMessageOnProducerThread(final T msg) {
         Runnable asyncExec = new Runnable() {
             public void run() {

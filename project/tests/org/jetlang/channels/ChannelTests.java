@@ -31,7 +31,7 @@ public class ChannelTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        final Channel<String> channel = new Channel<String>();
+        Channel<String> channel = new Channel<String>();
 
         Callback<String> onMsg = new Callback<String>() {
             public void onMessage(String message) {
@@ -55,7 +55,7 @@ public class ChannelTests {
     @Test
     public void PubSub() {
         Channel<String> channel = new Channel<String>();
-        SynchronousRunnableQueue queue = new SynchronousRunnableQueue();
+        SynchronousDisposingExecutor queue = new SynchronousDisposingExecutor();
         assertEquals(0, channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
         Callback<String> onReceive = new Callback<String>() {
@@ -77,7 +77,7 @@ public class ChannelTests {
     @Test
     public void pubSubFilterTest() {
         Channel<Integer> channel = new Channel<Integer>();
-        SynchronousRunnableQueue execute = new SynchronousRunnableQueue();
+        SynchronousDisposingExecutor execute = new SynchronousDisposingExecutor();
         final List<Integer> received = new ArrayList<Integer>();
         Callback<Integer> onReceive = new Callback<Integer>() {
             public void onMessage(Integer num) {
@@ -105,7 +105,7 @@ public class ChannelTests {
     @Test
     public void pubSubUnsubscribe() {
         Channel<String> channel = new Channel<String>();
-        SynchronousRunnableQueue execute = new SynchronousRunnableQueue();
+        SynchronousDisposingExecutor execute = new SynchronousDisposingExecutor();
         final boolean[] received = new boolean[1];
         Callback<String> onReceive = new Callback<String>() {
             public void onMessage(String message) {
@@ -155,9 +155,9 @@ public class ChannelTests {
     @Test
     public void subToKeyedBatch() {
         Channel<Integer> channel = new Channel<Integer>();
-        final StubCommandContext execute = new StubCommandContext();
+        StubCommandContext execute = new StubCommandContext();
         final boolean[] received = new boolean[1];
-        final Callback<Map<String, Integer>> onReceive = new Callback<Map<String, Integer>>() {
+        Callback<Map<String, Integer>> onReceive = new Callback<Map<String, Integer>>() {
             public void onMessage(Map<String, Integer> data) {
                 assertEquals(2, data.keySet().size());
                 assertEquals(data.get("0"), new Integer(0));
@@ -332,14 +332,14 @@ class StubCommandContext implements Fiber {
     public void start() {
     }
 
-    public void addOnStop(Disposable runOnStop) {
+    public void add(Disposable runOnStop) {
     }
 
-    public boolean removeOnStop(Disposable disposable) {
+    public boolean remove(Disposable disposable) {
         return false;
     }
 
-    public int registeredDisposableSize() {
+    public int size() {
         return 0;
     }
 

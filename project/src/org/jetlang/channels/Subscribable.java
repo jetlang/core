@@ -1,7 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.RunnableQueue;
+import org.jetlang.core.DisposingExecutor;
 
 /**
  * User: mrettig
@@ -10,6 +10,6 @@ import org.jetlang.core.RunnableQueue;
  */
 public interface Subscribable<T> extends Callback<T> {
 
-    RunnableQueue getQueue();
+    DisposingExecutor getQueue();
 
 }
