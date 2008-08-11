@@ -12,7 +12,7 @@ import java.util.List;
  * Date: Jul 22, 2008
  * Time: 3:57:21 PM
  */
-public class Channel<T> implements Publisher<T>, ChannelSubscriber<T> {
+public class Channel<T> implements Publisher<T>, Subscriber<T> {
 
     private final List<Callback<T>> _subscribers = new ArrayList<Callback<T>>();
 
