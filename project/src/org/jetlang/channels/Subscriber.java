@@ -18,10 +18,4 @@ public interface Subscriber<T> {
      * @return {@link Disposable} that can be invoked to cancel this subscription
      */
     Disposable subscribe(RunnableQueue queue, Callback<T> receive);
-
-    /// <summary>
-    /// Removes all subscribers.
-    /// </summary>
-    void clearSubscribers();
-
 }
