@@ -1,7 +1,7 @@
 package org.jetlang.tests;
 
 import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableInvokerImpl;
+import org.jetlang.core.SynchronousExecutor;
 import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.PoolFiberFactory;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class PoolFiberTests extends FiberBaseTest {
 
     @Override
     public Fiber CreateBus() {
-        return _fiberFactory.create(new RunnableInvokerImpl());
+        return _fiberFactory.create(new SynchronousExecutor());
     }
 
     @Override

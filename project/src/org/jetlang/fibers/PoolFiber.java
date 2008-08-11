@@ -1,7 +1,7 @@
 package org.jetlang.fibers;
 
 import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableInvoker;
+import static org.jetlang.core.ExecutorHelper.invokeAll;
 import org.jetlang.core.RunnableSchedulerImpl;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class PoolFiber implements Fiber {
     private final BlockingQueue<Runnable> _queue = new ArrayBlockingQueue<Runnable>(1000);
     private final Executor _pool;
     private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
-    private final RunnableInvoker _executor;
+    private final Executor _executor;
     private final Collection<Disposable> _onStop = new ArrayList<Disposable>();
     private final RunnableSchedulerImpl _scheduler;
     private final Runnable _flushRunnable;
@@ -33,7 +33,7 @@ public class PoolFiber implements Fiber {
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="executor"></param>
-    public PoolFiber(Executor pool, RunnableInvoker executor, Timer timer) {
+    public PoolFiber(Executor pool, Executor executor, Timer timer) {
         _pool = pool;
         _executor = executor;
         _scheduler = new RunnableSchedulerImpl(this, timer);
@@ -68,7 +68,7 @@ public class PoolFiber implements Fiber {
     }
 
     private void flush() {
-        _executor.executeAll(ClearCommands());
+        invokeAll(_executor, ClearCommands());
 
         _flushPending.compareAndSet(true, false);
 

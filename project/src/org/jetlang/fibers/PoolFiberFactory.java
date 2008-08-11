@@ -1,8 +1,7 @@
 package org.jetlang.fibers;
 
 import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableInvoker;
-import org.jetlang.core.RunnableInvokerImpl;
+import org.jetlang.core.SynchronousExecutor;
 
 import java.util.Timer;
 import java.util.concurrent.Executor;
@@ -21,7 +20,7 @@ public class PoolFiberFactory implements Disposable {
         this.executor = executor;
     }
 
-    public PoolFiber create(RunnableInvoker invoker) {
+    public PoolFiber create(Executor invoker) {
         return new PoolFiber(executor, invoker, _scheduler);
     }
 
@@ -30,6 +29,6 @@ public class PoolFiberFactory implements Disposable {
     }
 
     public Fiber create() {
-        return create(new RunnableInvokerImpl());
+        return create(new SynchronousExecutor());
     }
 }
