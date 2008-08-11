@@ -4,6 +4,7 @@ import static org.jetlang.core.ExecutorHelper.invokeAll;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -14,12 +15,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /// </summary>
 public class RunnableExecutorImpl implements RunnableExecutor {
-    private final Object _lock = new Object();
     private volatile boolean _running = true;
 
     // TODO the ArrayBlockingQueue is generally a tad faster, but its capacity-limited..
     private final BlockingQueue<Runnable> _commands = new LinkedBlockingQueue<Runnable>();
-    private final List<Disposable> _disposables = new ArrayList<Disposable>();
+    private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
 
     private final Executor _commandExecutor;
 
@@ -70,28 +70,22 @@ public class RunnableExecutorImpl implements RunnableExecutor {
             }
         });
 
-        synchronized (_lock) {
-            for (Disposable r : _disposables.toArray(new Disposable[_disposables.size()])) {
+        synchronized (_disposables) {
+            for (Disposable r : _disposables) {
                 r.dispose();
             }
         }
     }
 
     public void add(Disposable r) {
-        synchronized (_lock) {
-            _disposables.add(r);
-        }
+        _disposables.add(r);
     }
 
     public boolean remove(Disposable disposable) {
-        synchronized (_lock) {
-            return _disposables.remove(disposable);
-        }
+        return _disposables.remove(disposable);
     }
 
     public int size() {
-        synchronized (_lock) {
-            return _disposables.size();
-        }
+        return _disposables.size();
     }
 }

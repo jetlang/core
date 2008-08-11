@@ -6,6 +6,7 @@ import org.jetlang.core.SchedulerImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -25,7 +26,7 @@ class PoolFiber implements Fiber {
     private final Executor _flushExecutor;
     private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
     private final Executor _commandExecutor;
-    private final Collection<Disposable> _onStop = new ArrayList<Disposable>();
+    private final Collection<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
     private final SchedulerImpl _scheduler;
     private final Runnable _flushRunnable;
 
@@ -105,28 +106,23 @@ class PoolFiber implements Fiber {
 
     public void dispose() {
         _started.set(ExecutionState.Stopped);
-        synchronized (_onStop) {
-            for (Disposable r : _onStop.toArray(new Disposable[_onStop.size()]))
+        synchronized (_disposables) {
+            for (Disposable r : _disposables) {
                 r.dispose();
+            }
         }
     }
 
     public void add(Disposable runOnStop) {
-        synchronized (_onStop) {
-            _onStop.add(runOnStop);
-        }
+        _disposables.add(runOnStop);
     }
 
     public boolean remove(Disposable disposable) {
-        synchronized (_onStop) {
-            return _onStop.remove(disposable);
-        }
+        return _disposables.remove(disposable);
     }
 
     public int size() {
-        synchronized (_onStop) {
-            return _onStop.size();
-        }
+        return _disposables.size();
     }
 
     /// <summary>

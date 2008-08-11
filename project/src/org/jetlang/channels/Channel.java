@@ -5,6 +5,7 @@ import org.jetlang.core.Disposable;
 import org.jetlang.core.DisposingExecutor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,12 +15,10 @@ import java.util.List;
  */
 public class Channel<T> implements Publisher<T>, Subscriber<T> {
 
-    private final List<Callback<T>> _subscribers = new ArrayList<Callback<T>>();
+    private final List<Callback<T>> _subscribers = Collections.synchronizedList(new ArrayList<Callback<T>>());
 
     public int subscriberCount() {
-        synchronized (_subscribers) {
-            return _subscribers.size();
-        }
+        return _subscribers.size();
     }
 
     public int publish(T s) {
@@ -49,21 +48,15 @@ public class Channel<T> implements Publisher<T>, Subscriber<T> {
         };
         queue.add(unSub);
         //finally add subscription to start receiving events.
-        synchronized (_subscribers) {
-            _subscribers.add(callbackOnQueue);
-        }
+        _subscribers.add(callbackOnQueue);
         return unSub;
     }
 
     private void Remove(Callback<T> callbackOnQueue) {
-        synchronized (_subscribers) {
-            _subscribers.remove(callbackOnQueue);
-        }
+        _subscribers.remove(callbackOnQueue);
     }
 
     public void clearSubscribers() {
-        synchronized (_subscribers) {
-            _subscribers.clear();
-        }
+        _subscribers.clear();
     }
 }
