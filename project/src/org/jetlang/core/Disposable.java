@@ -1,14 +1,12 @@
 package org.jetlang.core;
 
 /**
- * User: mrettig
- * Date: Jul 22, 2008
- * Time: 4:07:41 PM
+ * Interface to represent an instance that requires explicit resource cleanup
  */
 public interface Disposable {
 
     /**
-     * dispose of object. object is unusable after dispose is called.
+     * Dispose this instance. It should be considered unusable after calling this method
      */
     void dispose();
 }
