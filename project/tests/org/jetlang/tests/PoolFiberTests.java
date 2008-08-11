@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: mrettig
@@ -46,7 +47,7 @@ public class PoolFiberTests extends FiberBaseTest {
             public void run() {
             }
         };
-        Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
+        Disposable stopper = _bus.scheduleWithFixedDelay(onReset, 15, 15, TimeUnit.MILLISECONDS);
         assertEquals(1, _bus.size());
         stopper.dispose();
         assertEquals(0, _bus.size());

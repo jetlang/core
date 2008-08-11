@@ -3,15 +3,16 @@ package org.jetlang.fibers;
 import org.jetlang.core.Disposable;
 import org.jetlang.core.SynchronousExecutor;
 
-import java.util.Timer;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Factory that creates {@link Fiber} instances that share threads.
  */
 public class PoolFiberFactory implements Disposable {
 
-    private final Timer _scheduler = new Timer(true);
+    private final ScheduledExecutorService _scheduler = Executors.newSingleThreadScheduledExecutor();
     private final Executor executor;
 
     /**
@@ -44,6 +45,6 @@ public class PoolFiberFactory implements Disposable {
     }
 
     public void dispose() {
-        _scheduler.cancel();
+        _scheduler.shutdown();
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class FiberBaseTest extends Assert {
     public abstract Fiber CreateBus();
@@ -47,7 +48,7 @@ public abstract class FiberBaseTest extends Assert {
                 reset.countDown();
             }
         };
-        _bus.schedule(onReset, 1);
+        _bus.schedule(onReset, 1, TimeUnit.MILLISECONDS);
         _bus.start();
 
         assertTrue(reset.await(10, TimeUnit.SECONDS));
@@ -56,25 +57,24 @@ public abstract class FiberBaseTest extends Assert {
     @Test
     public void ScheduleAndCancelBeforeStart() throws InterruptedException {
         final CountDownLatch reset = new CountDownLatch(1);
-        final boolean[] executed = new boolean[1];
+        final AtomicBoolean executed = new AtomicBoolean();
         Runnable toCancel = new Runnable() {
             public void run() {
-                executed[0] = true;
+                executed.set(true);
             }
         };
-        Disposable control = _bus.schedule(toCancel, 0);
+        Disposable control = _bus.schedule(toCancel, 0, TimeUnit.MILLISECONDS);
         Runnable toRun = new Runnable() {
             public void run() {
                 reset.countDown();
             }
         };
-        _bus.schedule(toRun, 0);
+        _bus.schedule(toRun, 0, TimeUnit.MILLISECONDS);
         control.dispose();
         _bus.start();
         assertTrue(reset.await(10, TimeUnit.SECONDS));
-        assertFalse(executed[0]);
+        assertFalse(executed.get());
     }
-
 
     @Test
     public void ScheduleOne() throws InterruptedException {
@@ -85,7 +85,7 @@ public abstract class FiberBaseTest extends Assert {
                 reset.countDown();
             }
         };
-        _bus.schedule(onReset, 1);
+        _bus.schedule(onReset, 1, TimeUnit.MILLISECONDS);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
     }
 
@@ -98,7 +98,7 @@ public abstract class FiberBaseTest extends Assert {
                 reset.countDown();
             }
         };
-        _bus.scheduleOnInterval(onReset, 15, 15);
+        _bus.scheduleWithFixedDelay(onReset, 15, 15, TimeUnit.MILLISECONDS);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
     }
 

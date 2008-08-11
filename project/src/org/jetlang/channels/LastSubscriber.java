@@ -6,6 +6,8 @@ package org.jetlang.channels;    /// <summary>
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
 
+import java.util.concurrent.TimeUnit;
+
 public class LastSubscriber<T> extends BaseSubscription<T> {
     private final Object _lock = new Object();
 
@@ -43,7 +45,7 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_lock) {
             if (!_flushPending) {
-                _context.schedule(_flushRunnable, _flushIntervalInMs);
+                _context.schedule(_flushRunnable, _flushIntervalInMs, TimeUnit.MILLISECONDS);
                 _flushPending = true;
             }
             _pending = msg;

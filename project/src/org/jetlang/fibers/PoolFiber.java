@@ -7,10 +7,11 @@ import org.jetlang.core.SchedulerImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -33,10 +34,10 @@ class PoolFiber implements Fiber {
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="executor"></param>
-    public PoolFiber(Executor pool, Executor executor, Timer timer) {
+    PoolFiber(Executor pool, Executor executor, ScheduledExecutorService scheduler) {
         _flushExecutor = pool;
         _commandExecutor = executor;
-        _scheduler = new SchedulerImpl(this, timer);
+        _scheduler = new SchedulerImpl(this, scheduler);
         _flushRunnable = new Runnable() {
             public void run() {
                 flush();
@@ -134,8 +135,8 @@ class PoolFiber implements Fiber {
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <returns>a controller to dispose the event.</returns>
-    public Disposable schedule(Runnable command, long firstIntervalInMs) {
-        return _scheduler.schedule(command, firstIntervalInMs);
+    public Disposable schedule(Runnable command, long delay, TimeUnit unit) {
+        return _scheduler.schedule(command, delay, TimeUnit.MILLISECONDS);
     }
 
     /// Schedule an event on a recurring interval.
@@ -144,9 +145,9 @@ class PoolFiber implements Fiber {
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
     /// <returns>controller to dispose timer.</returns>
-    public Disposable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
+    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         //the timer object is shared so interval timers must be shut down manually.
-        final Disposable stopper = _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+        final Disposable stopper = _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
         Disposable wrapper = new Disposable() {
             public void dispose() {
                 stopper.dispose();

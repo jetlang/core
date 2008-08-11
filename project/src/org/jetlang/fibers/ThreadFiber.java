@@ -3,7 +3,10 @@ package org.jetlang.fibers;
 import org.jetlang.core.Disposable;
 import org.jetlang.core.RunnableExecutor;
 import org.jetlang.core.RunnableExecutorImpl;
+import org.jetlang.core.Scheduler;
 import org.jetlang.core.SchedulerImpl;
+
+import java.util.concurrent.TimeUnit;
 
 /// <summary>
 /// Default implementation for ThreadFiber.
@@ -110,8 +113,8 @@ public class ThreadFiber implements Fiber {
     /// <param name="command"></param>
     /// <param name="firstIntervalInMs"></param>
     /// <returns>a controller to dispose the event.</returns>
-    public Disposable schedule(Runnable command, long firstIntervalInMs) {
-        return _scheduler.schedule(command, firstIntervalInMs);
+    public Disposable schedule(Runnable command, long delay, TimeUnit unit) {
+        return _scheduler.schedule(command, delay, unit);
     }/// <summary>
 
     /// Schedule an event on a recurring interval.
@@ -120,7 +123,7 @@ public class ThreadFiber implements Fiber {
     /// <param name="firstIntervalInMs"></param>
     /// <param name="regularIntervalInMs"></param>
     /// <returns>controller to dispose timer.</returns>
-    public Disposable scheduleOnInterval(Runnable command, long firstIntervalInMs, long regularIntervalInMs) {
-        return _scheduler.scheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+        return _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 }

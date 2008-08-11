@@ -9,6 +9,7 @@ import org.jetlang.fibers.Fiber;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     private final Object _batchLock = new Object();
@@ -53,7 +54,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
             K key = _keyResolver.Convert(msg);
             if (_pending == null) {
                 _pending = new HashMap<K, T>();
-                _context.schedule(_flushRunner, _flushIntervalInMs);
+                _context.schedule(_flushRunner, _flushIntervalInMs, TimeUnit.MILLISECONDS);
             }
             _pending.put(key, msg);
         }

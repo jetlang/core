@@ -8,6 +8,7 @@ import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class BatchSubscriber<T> extends BaseSubscription<T> {
     private final Object _lock = new Object();
@@ -45,7 +46,7 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
         synchronized (_lock) {
             if (_pending == null) {
                 _pending = new ArrayList<T>();
-                _queue.schedule(_flushRunnable, _interval);
+                _queue.schedule(_flushRunnable, _interval, TimeUnit.MILLISECONDS);
             }
             _pending.add(msg);
         }

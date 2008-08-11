@@ -6,6 +6,8 @@ import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * User: mrettig
  * Date: Jul 23, 2008
@@ -33,7 +35,7 @@ public class ThreadFiberTests extends FiberBaseTest {
             public void run() {
             }
         };
-        Disposable stopper = _bus.scheduleOnInterval(onReset, 15, 15);
+        Disposable stopper = _bus.scheduleWithFixedDelay(onReset, 15, 15, TimeUnit.MILLISECONDS);
         assertEquals(0, _bus.size());
         stopper.dispose();
         assertEquals(0, _bus.size());
