@@ -19,7 +19,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
 
     // TODO the ArrayBlockingQueue is generally a tad faster, but its capacity-limited..
     private final BlockingQueue<Runnable> _commands = new LinkedBlockingQueue<Runnable>();
-    private final List<Disposable> _onStop = new ArrayList<Disposable>();
+    private final List<Disposable> _disposables = new ArrayList<Disposable>();
 
     private final Executor _commandExecutor;
 
@@ -31,10 +31,6 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         _commandExecutor = executor;
     }
 
-    /// <summary>
-    /// Queue command.
-    /// </summary>
-    /// <param name="command"></param>
     public void execute(Runnable command) {
         _commands.add(command);
     }
@@ -43,7 +39,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     /// Remove all commands.
     /// </summary>
     /// <returns></returns>
-    private Collection<Runnable> DequeueAll() {
+    private Collection<Runnable> dequeueAll() {
         List<Runnable> dequeued = new ArrayList<Runnable>();
         Runnable command;
 
@@ -59,26 +55,12 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         return dequeued;
     }
 
-    /// <summary>
-    /// Remove all commands and execute.
-    /// </summary>
-    /// <returns></returns>
-    private void ExecuteNextBatch() {
-        invokeAll(_commandExecutor, DequeueAll());
-    }
-
-    /// <summary>
-    /// Execute commands until stopped.
-    /// </summary>
     public void run() {
         while (_running) {
-            ExecuteNextBatch();
+            invokeAll(_commandExecutor, dequeueAll());
         }
     }
 
-    /// <summary>
-    /// Stop consuming events.
-    /// </summary>
     public void dispose() {
         _running = false;
 
@@ -89,7 +71,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         });
 
         synchronized (_lock) {
-            for (Disposable r : _onStop.toArray(new Disposable[_onStop.size()])) {
+            for (Disposable r : _disposables.toArray(new Disposable[_disposables.size()])) {
                 r.dispose();
             }
         }
@@ -97,20 +79,19 @@ public class RunnableExecutorImpl implements RunnableExecutor {
 
     public void add(Disposable r) {
         synchronized (_lock) {
-            _onStop.add(r);
+            _disposables.add(r);
         }
     }
 
     public boolean remove(Disposable disposable) {
         synchronized (_lock) {
-            return _onStop.remove(disposable);
+            return _disposables.remove(disposable);
         }
     }
 
-
     public int size() {
         synchronized (_lock) {
-            return _onStop.size();
+            return _disposables.size();
         }
     }
 }
