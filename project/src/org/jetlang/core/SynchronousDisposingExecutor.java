@@ -9,7 +9,7 @@ import java.util.List;
 /// </summary>
 public class SynchronousDisposingExecutor implements RunnableExecutor {
     private boolean _running = true;
-    private List<Disposable> _onStop = new ArrayList<Disposable>();
+    private final List<Disposable> _onStop = new ArrayList<Disposable>();
 
     /// <summary>
     /// Queue command

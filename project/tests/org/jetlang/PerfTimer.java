@@ -4,7 +4,7 @@ import org.jetlang.core.Disposable;
 
 public class PerfTimer implements Disposable {
     private final int _count;
-    private long _stopWatch;
+    private final long _stopWatch;
 
     public PerfTimer(int count) {
         _count = count;

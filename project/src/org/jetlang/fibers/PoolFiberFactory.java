@@ -15,7 +15,7 @@ import java.util.concurrent.Executor;
 public class PoolFiberFactory implements Disposable {
 
     private final Timer _scheduler = new Timer(true);
-    private Executor executor;
+    private final Executor executor;
 
     public PoolFiberFactory(Executor executor) {
         this.executor = executor;

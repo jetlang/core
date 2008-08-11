@@ -39,6 +39,7 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
     /// Receives message from producer thread.
     /// </summary>
     /// <param name="msg"></param>
+    @Override
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_lock) {
             if (!_flushPending) {

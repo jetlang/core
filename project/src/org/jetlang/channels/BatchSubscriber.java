@@ -40,6 +40,7 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
     /// Receives message and batches as needed.
     /// </summary>
     /// <param name="msg"></param>
+    @Override
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_lock) {
             if (_pending == null) {

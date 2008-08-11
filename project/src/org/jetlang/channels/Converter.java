@@ -6,5 +6,5 @@ package org.jetlang.channels;
  * Time: 3:59:33 PM
  */
 public interface Converter<T, K> {
-    public K Convert(T msg);
+    K Convert(T msg);
 }

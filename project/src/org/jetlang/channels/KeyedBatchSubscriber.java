@@ -47,6 +47,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     /// received on delivery thread
     /// </summary>
     /// <param name="msg"></param>
+    @Override
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_batchLock) {
             K key = _keyResolver.Convert(msg);
@@ -71,7 +72,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
 
     private Map<K, T> ClearPending() {
         synchronized (_batchLock) {
-            if (_pending == null || _pending.size() == 0) {
+            if (_pending == null || _pending.isEmpty()) {
                 _pending = null;
                 return null;
             }

@@ -52,7 +52,7 @@ public class RunnableSchedulerImpl implements RunnableScheduler {
 }
 
 class TimerTaskControl implements Disposable {
-    private TimerTask _task;
+    private final TimerTask _task;
 
     public TimerTaskControl(TimerTask task) {
         _task = task;
