@@ -1,11 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.PerfTimer;
-import org.jetlang.core.Callback;
-import org.jetlang.core.Disposable;
-import org.jetlang.core.Filter;
-import org.jetlang.core.RunnableExecutorImpl;
-import org.jetlang.core.SynchronousDisposingExecutor;
+import org.jetlang.core.*;
 import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import static org.junit.Assert.*;
@@ -283,7 +279,7 @@ public class ChannelTests {
     }
 
     @Test
-    public void PointToPointPerfTest() throws InterruptedException {
+    public void pointToPointPerfTest() throws InterruptedException {
         Channel<Integer> channel = new Channel<Integer>();
         RunnableExecutorImpl queue = new RunnableExecutorImpl();
         ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
