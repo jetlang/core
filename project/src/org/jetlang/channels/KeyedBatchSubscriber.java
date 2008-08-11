@@ -1,8 +1,4 @@
-package org.jetlang.channels;    /// <summary>
-/// Channel subscription that drops duplicates based upon a key.
-/// </summary>
-/// <typeparam name="K"></typeparam>
-/// <typeparam name="T"></typeparam>
+package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
@@ -11,32 +7,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Channel subscription that drops duplicates based upon a key.
+ */
 public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     private final Object _batchLock = new Object();
 
     private final Fiber _context;
     private final Callback<Map<K, T>> _target;
     private final int _flushIntervalInMs;
+    private final TimeUnit _timeUnit;
     private final Converter<T, K> _keyResolver;
 
     private Map<K, T> _pending = null;
     private final Runnable _flushRunner;
 
-    /// <summary>
-    /// Construct new instance.
-    /// </summary>
-    /// <param name="keyResolver"></param>
-    /// <param name="target"></param>
-    /// <param name="context"></param>
-    /// <param name="flushIntervalInMs"></param>
     public KeyedBatchSubscriber(Converter<T, K> keyResolver,
                                 Callback<Map<K, T>> target,
-                                Fiber context, int flushIntervalInMs) {
+                                Fiber context, int flushIntervalInMs, TimeUnit timeUnit) {
         super(context);
         _keyResolver = keyResolver;
         _context = context;
         _target = target;
         _flushIntervalInMs = flushIntervalInMs;
+        _timeUnit = timeUnit;
         _flushRunner = new Runnable() {
             public void run() {
                 flush();
@@ -44,34 +38,33 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
         };
     }
 
-    /// <summary>
-    /// received on delivery thread
-    /// </summary>
-    /// <param name="msg"></param>
+    /**
+     * Message received and batched on producer thread.
+     */
     @Override
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_batchLock) {
             K key = _keyResolver.Convert(msg);
             if (_pending == null) {
                 _pending = new HashMap<K, T>();
-                _context.schedule(_flushRunner, _flushIntervalInMs, TimeUnit.MILLISECONDS);
+                _context.schedule(_flushRunner, _flushIntervalInMs, _timeUnit);
             }
             _pending.put(key, msg);
         }
     }
 
 
-    /// <summary>
-    /// Flushed from process thread
-    /// </summary>
+    /**
+     * Flushes events on fiber thread
+     */
     private void flush() {
-        Map<K, T> toReturn = ClearPending();
+        Map<K, T> toReturn = clearPending();
         if (toReturn != null) {
             _target.onMessage(toReturn);
         }
     }
 
-    private Map<K, T> ClearPending() {
+    private Map<K, T> clearPending() {
         synchronized (_batchLock) {
             if (_pending == null || _pending.isEmpty()) {
                 _pending = null;

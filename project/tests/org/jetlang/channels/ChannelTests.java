@@ -135,7 +135,7 @@ public class ChannelTests {
             }
         };
 
-        BatchSubscriber<String> subscriber = new BatchSubscriber<String>(execute, onReceive, 10);
+        BatchSubscriber<String> subscriber = new BatchSubscriber<String>(execute, onReceive, 10, TimeUnit.MILLISECONDS);
         channel.subscribe(subscriber);
 
         for (int i = 0; i < 5; i++) {
@@ -170,7 +170,7 @@ public class ChannelTests {
             }
         };
         KeyedBatchSubscriber<String, Integer> subscriber
-                = new KeyedBatchSubscriber<String, Integer>(key, onReceive, execute, 0);
+                = new KeyedBatchSubscriber<String, Integer>(key, onReceive, execute, 0, TimeUnit.MILLISECONDS);
         channel.subscribe(subscriber);
 
         for (int i = 0; i < 5; i++) {
