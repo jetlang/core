@@ -1,8 +1,8 @@
 package org.jetlang;
 
+import org.jetlang.core.SynchronousRunnableQueue;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import org.jetlang.core.SynchronousRunnableQueue;
 
 /**
  * User: mrettig
