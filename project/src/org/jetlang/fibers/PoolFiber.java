@@ -129,7 +129,7 @@ class PoolFiber implements Fiber {
     /// <param name="firstIntervalInMs"></param>
     /// <returns>a controller to dispose the event.</returns>
     public Disposable schedule(Runnable command, long delay, TimeUnit unit) {
-        return _scheduler.schedule(command, delay, TimeUnit.MILLISECONDS);
+        return _scheduler.schedule(command, delay, unit);
     }
 
     /// Schedule an event on a recurring interval.
@@ -140,7 +140,7 @@ class PoolFiber implements Fiber {
     /// <returns>controller to dispose timer.</returns>
     public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         //the timer object is shared so interval timers must be shut down manually.
-        final Disposable stopper = _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
+        final Disposable stopper = _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
         Disposable wrapper = new Disposable() {
             public void dispose() {
                 stopper.dispose();
