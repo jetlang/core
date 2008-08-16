@@ -28,11 +28,19 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     public void execute(Runnable command) {
         synchronized (_commands) {
             _commands.add(command);
+            _commands.notify();
         }
     }
 
     private Collection<Runnable> dequeueAll() {
         synchronized (_commands) {
+            while (_commands.size() == 0 && _running) {
+                try {
+                    _commands.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             List<Runnable> dequeued = new ArrayList<Runnable>(_commands);
             _commands.clear();
             return dequeued;
