@@ -31,7 +31,7 @@ public class ChannelTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
 
         Callback<String> onMsg = new Callback<String>() {
             public void onMessage(String message) {
@@ -54,7 +54,7 @@ public class ChannelTests {
 
     @Test
     public void PubSub() {
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
         SynchronousDisposingExecutor queue = new SynchronousDisposingExecutor();
         assertEquals(0, channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
@@ -76,7 +76,7 @@ public class ChannelTests {
 
     @Test
     public void pubSubFilterTest() {
-        Channel<Integer> channel = new Channel<Integer>();
+        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
         SynchronousDisposingExecutor execute = new SynchronousDisposingExecutor();
         final List<Integer> received = new ArrayList<Integer>();
         Callback<Integer> onReceive = new Callback<Integer>() {
@@ -104,7 +104,7 @@ public class ChannelTests {
 
     @Test
     public void pubSubUnsubscribe() {
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
         SynchronousDisposingExecutor execute = new SynchronousDisposingExecutor();
         final boolean[] received = new boolean[1];
         Callback<String> onReceive = new Callback<String>() {
@@ -123,7 +123,7 @@ public class ChannelTests {
 
     @Test
     public void SubToBatch() {
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
         StubCommandContext execute = new StubCommandContext();
         final boolean[] received = new boolean[1];
         Callback<List<String>> onReceive = new Callback<List<String>>() {
@@ -154,7 +154,7 @@ public class ChannelTests {
 
     @Test
     public void subToKeyedBatch() {
-        Channel<Integer> channel = new Channel<Integer>();
+        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
         StubCommandContext execute = new StubCommandContext();
         final boolean[] received = new boolean[1];
         Callback<Map<String, Integer>> onReceive = new Callback<Map<String, Integer>>() {
@@ -190,7 +190,7 @@ public class ChannelTests {
 
     @Test
     public void SubscribeToLast() {
-        Channel<Integer> channel = new Channel<Integer>();
+        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
         StubCommandContext execute = new StubCommandContext();
         final List<Integer> received = new ArrayList<Integer>();
         Callback<Integer> onReceive = new Callback<Integer>() {
@@ -223,13 +223,13 @@ public class ChannelTests {
 
     @Test
     public void AsyncRequestReplyWithPrivateChannel() throws InterruptedException {
-        Channel<Channel<String>> requestChannel = new Channel<Channel<String>>();
-        Channel<String> replyChannel = new Channel<String>();
+        MemoryChannel<MemoryChannel<String>> requestChannel = new MemoryChannel<MemoryChannel<String>>();
+        MemoryChannel<String> replyChannel = new MemoryChannel<String>();
         Fiber responder = startFiber();
         Fiber receiver = startFiber();
         final CountDownLatch reset = new CountDownLatch(1);
-        Callback<Channel<String>> onRequest = new Callback<Channel<String>>() {
-            public void onMessage(Channel<String> message) {
+        Callback<MemoryChannel<String>> onRequest = new Callback<MemoryChannel<String>>() {
+            public void onMessage(MemoryChannel<String> message) {
                 message.publish("hello");
             }
         };
@@ -250,7 +250,7 @@ public class ChannelTests {
 
     @Test
     public void asyncRequestReplyWithBlockingQueue() throws InterruptedException {
-        Channel<BlockingQueue<String>> requestChannel = new Channel<BlockingQueue<String>>();
+        MemoryChannel<BlockingQueue<String>> requestChannel = new MemoryChannel<BlockingQueue<String>>();
         Fiber responder = startFiber();
         Callback<BlockingQueue<String>> onRequest = new Callback<BlockingQueue<String>>() {
             public void onMessage(BlockingQueue<String> message) {
@@ -280,7 +280,7 @@ public class ChannelTests {
 
     @Test
     public void pointToPointPerfTest() throws InterruptedException {
-        Channel<Integer> channel = new Channel<Integer>();
+        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
         RunnableExecutorImpl queue = new RunnableExecutorImpl();
         ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
         bus.start();

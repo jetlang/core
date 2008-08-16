@@ -1,7 +1,7 @@
 package org.jetlang.tests;
 
 import junit.framework.Assert;
-import org.jetlang.channels.Channel;
+import org.jetlang.channels.MemoryChannel;
 import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
 import org.jetlang.fibers.Fiber;
@@ -117,7 +117,7 @@ public abstract class FiberBaseTest extends Assert {
     @Test
     public void PubSub() throws InterruptedException {
         _bus.start();
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
         Assert.assertEquals(0, channel.publish("hello"));
         final List<String> received = new ArrayList<String>();
         final CountDownLatch reset = new CountDownLatch(1);
@@ -141,7 +141,7 @@ public abstract class FiberBaseTest extends Assert {
     @Test
     public void UnsubOnStop() throws InterruptedException {
         _bus.start();
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
         Callback<String> onReceive = new Callback<String>() {
             public void onMessage(String data) {
             }
@@ -155,7 +155,7 @@ public abstract class FiberBaseTest extends Assert {
     @Test
     public void Unsub() throws InterruptedException {
         _bus.start();
-        Channel<String> channel = new Channel<String>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
         Callback<String> onReceive = new Callback<String>() {
             public void onMessage(String data) {
             }
