@@ -1,31 +1,25 @@
 package org.jetlang.fibers;
 
-import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableExecutor;
-import org.jetlang.core.RunnableExecutorImpl;
-import org.jetlang.core.Scheduler;
-import org.jetlang.core.SchedulerImpl;
+import org.jetlang.core.*;
 
 import java.util.concurrent.TimeUnit;
 
-/// <summary>
-/// Default implementation for ThreadFiber.
-/// <see cref="ThreadFiber"/>
-
-/// </summary>
+/**
+ * Fiber implementation backed by a dedicated thread for execution.
+ */
 public class ThreadFiber implements Fiber {
 
     private final Thread _thread;
     private final RunnableExecutor _queue;
     private final Scheduler _scheduler;
 
-    /// <summary>
-    /// Create process thread.
-    /// </summary>
-    /// <param name="execute"></param>
-    /// <param name="threadName"></param>
-    /// <param name="isBackground"></param>
-
+    /**
+     * Create thread backed fiber
+     *
+     * @param queue          - target queue
+     * @param threadName     - name to assign thread
+     * @param isDaemonThread - true if daemon thread
+     */
     public ThreadFiber(RunnableExecutor queue, String threadName, boolean isDaemonThread) {
         _queue = queue;
         Runnable runThread = new Runnable() {
@@ -49,9 +43,6 @@ public class ThreadFiber implements Fiber {
         this(new RunnableExecutorImpl(), null, true);
     }
 
-    /// <summary>
-    /// <see cref="ThreadFiber.Thread"/>
-    /// </summary>
     public Thread getThread() {
         return _thread;
     }
@@ -60,10 +51,9 @@ public class ThreadFiber implements Fiber {
         _queue.run();
     }
 
-    /// <summary>
-    /// Queue command.
-    /// </summary>
-    /// <param name="command"></param>
+    /**
+     * Queue runnable for execution on this fiber.
+     */
     public void execute(Runnable command) {
         _queue.execute(command);
     }
@@ -80,25 +70,21 @@ public class ThreadFiber implements Fiber {
         return _queue.size();
     }
 
-    /// <summary>
-    /// <see cref="Fiber.Stop"/>
-    /// </summary>
-
     public void dispose() {
         _scheduler.dispose();
         _queue.dispose();
     }
 
-    /// <summary>
-    /// <see cref="Fiber.start"/>
-    /// </summary>
+    /**
+     * Start thread
+     */
     public void start() {
         _thread.start();
     }
 
-    /// <summary>
-    /// <see cref="ThreadFiber.join"/>
-    /// </summary>
+    /**
+     * Wait for thread to complete
+     */
     public void join() {
         try {
             _thread.join();
@@ -107,22 +93,16 @@ public class ThreadFiber implements Fiber {
         }
     }
 
-    /// <summary>
-    /// Schedules an event to be executes once.
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="firstIntervalInMs"></param>
-    /// <returns>a controller to dispose the event.</returns>
+    /**
+     * Schedule a Runnable to execute in the future. Event will be executed on Fiber thread.
+     */
     public Disposable schedule(Runnable command, long delay, TimeUnit unit) {
         return _scheduler.schedule(command, delay, unit);
-    }/// <summary>
+    }
 
-    /// Schedule an event on a recurring interval.
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="firstIntervalInMs"></param>
-    /// <param name="regularIntervalInMs"></param>
-    /// <returns>controller to dispose timer.</returns>
+    /**
+     * Schedule recurring event. Event will be fired on fiber thread.
+     */
     public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         return _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }

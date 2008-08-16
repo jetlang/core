@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /// <summary>
 /// Default implementation.
@@ -14,8 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class RunnableExecutorImpl implements RunnableExecutor {
     private volatile boolean _running = true;
 
-    // TODO the ArrayBlockingQueue is generally a tad faster, but its capacity-limited..
-    private final BlockingQueue<Runnable> _commands = new LinkedBlockingQueue<Runnable>();
+    private final List<Runnable> _commands = new ArrayList<Runnable>();
     private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
 
     private final BatchExecutor _commandExecutor;
@@ -29,27 +26,17 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     }
 
     public void execute(Runnable command) {
-        _commands.add(command);
+        synchronized (_commands) {
+            _commands.add(command);
+        }
     }
 
-    /// <summary>
-    /// Remove all commands.
-    /// </summary>
-    /// <returns></returns>
     private Collection<Runnable> dequeueAll() {
-        List<Runnable> dequeued = new ArrayList<Runnable>();
-        Runnable command;
-
-        try {
-            command = _commands.take();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        synchronized (_commands) {
+            List<Runnable> dequeued = new ArrayList<Runnable>(_commands);
+            _commands.clear();
+            return dequeued;
         }
-
-        dequeued.add(command);
-        _commands.drainTo(dequeued);
-
-        return dequeued;
     }
 
     public void run() {

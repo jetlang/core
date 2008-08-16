@@ -48,9 +48,8 @@ public class PingPongTest {
 
 
     private void runTest(Fiber pingFiber, Fiber pongFiber) throws InterruptedException {
-        final MemoryChannel<Integer> pongChannel = new MemoryChannel<Integer>();
-        final MemoryChannel<MemoryChannel<Integer>> pingChannel = new MemoryChannel<MemoryChannel<Integer>>();
-
+        final Channel<Integer> pongChannel = new MemoryChannel<Integer>();
+        final MemoryChannel<Channel<Integer>> pingChannel = new MemoryChannel<Channel<Integer>>();
 
         final Integer max = 1000;
         final CountDownLatch reset = new CountDownLatch(1);
@@ -65,10 +64,10 @@ public class PingPongTest {
             }
         };
 
-        Callback<MemoryChannel<Integer>> onPing = new Callback<MemoryChannel<Integer>>() {
+        Callback<Channel<Integer>> onPing = new Callback<Channel<Integer>>() {
             private int pingCount;
 
-            public void onMessage(MemoryChannel<Integer> replyChannel) {
+            public void onMessage(Channel<Integer> replyChannel) {
                 pingCount++;
                 replyChannel.publish(pingCount);
             }

@@ -13,7 +13,7 @@ import java.util.List;
  * Date: Jul 22, 2008
  * Time: 3:57:21 PM
  */
-public class MemoryChannel<T> implements Publisher<T>, Subscriber<T> {
+public class MemoryChannel<T> implements Channel<T> {
 
     private final List<Callback<T>> _subscribers = Collections.synchronizedList(new ArrayList<Callback<T>>());
 
