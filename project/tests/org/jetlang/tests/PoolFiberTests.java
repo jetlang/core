@@ -1,7 +1,6 @@
 package org.jetlang.tests;
 
 import org.jetlang.core.Disposable;
-import org.jetlang.core.SynchronousExecutor;
 import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.PoolFiberFactory;
 import org.junit.Test;
@@ -21,18 +20,18 @@ public class PoolFiberTests extends FiberBaseTest {
     private PoolFiberFactory _fiberFactory;
 
     @Override
-    public Fiber CreateBus() {
-        return _fiberFactory.create(new SynchronousExecutor());
+    public Fiber createFiber() {
+        return _fiberFactory.create();
     }
 
     @Override
-    public void DoSetup() {
+    public void doSetup() {
         _executor = Executors.newCachedThreadPool();
         _fiberFactory = new PoolFiberFactory(_executor);
     }
 
     @Override
-    public void DoTearDown() {
+    public void doTearDown() {
         if (_executor != null)
             _executor.shutdown();
         if (_fiberFactory != null) {

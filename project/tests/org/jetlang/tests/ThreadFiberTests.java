@@ -16,16 +16,16 @@ import java.util.concurrent.TimeUnit;
 public class ThreadFiberTests extends FiberBaseTest {
 
     @Override
-    public Fiber CreateBus() {
+    public Fiber createFiber() {
         return new ThreadFiber(new RunnableExecutorImpl(), System.currentTimeMillis() + "", true);
     }
 
     @Override
-    public void DoSetup() {
+    public void doSetup() {
     }
 
     @Override
-    public void DoTearDown() {
+    public void doTearDown() {
     }
 
     @Test

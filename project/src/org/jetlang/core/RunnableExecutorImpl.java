@@ -1,13 +1,10 @@
 package org.jetlang.core;
 
-import static org.jetlang.core.ExecutorHelper.invokeAll;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /// <summary>
@@ -21,13 +18,13 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     private final BlockingQueue<Runnable> _commands = new LinkedBlockingQueue<Runnable>();
     private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
 
-    private final Executor _commandExecutor;
+    private final BatchExecutor _commandExecutor;
 
     public RunnableExecutorImpl() {
-        this(new SynchronousExecutor());
+        this(new BatchExecutorImpl());
     }
 
-    public RunnableExecutorImpl(Executor executor) {
+    public RunnableExecutorImpl(BatchExecutor executor) {
         _commandExecutor = executor;
     }
 
@@ -57,7 +54,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
 
     public void run() {
         while (_running) {
-            invokeAll(_commandExecutor, dequeueAll());
+            _commandExecutor.execute(dequeueAll());
         }
     }
 

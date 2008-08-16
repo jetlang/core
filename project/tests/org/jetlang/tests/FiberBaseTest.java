@@ -16,18 +16,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class FiberBaseTest extends Assert {
-    public abstract Fiber CreateBus();
+    public abstract Fiber createFiber();
 
-    public abstract void DoSetup();
+    public abstract void doSetup();
 
-    public abstract void DoTearDown();
+    public abstract void doTearDown();
 
     protected Fiber _bus;
 
     @Before
     public void Setup() {
-        DoSetup();
-        _bus = CreateBus();
+        doSetup();
+        _bus = createFiber();
     }
 
     @After
@@ -36,7 +36,7 @@ public abstract class FiberBaseTest extends Assert {
             _bus.dispose();
             assertEquals(0, _bus.size());
         }
-        DoTearDown();
+        doTearDown();
     }
 
     @Test

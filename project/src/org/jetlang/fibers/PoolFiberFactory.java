@@ -1,5 +1,7 @@
 package org.jetlang.fibers;
 
+import org.jetlang.core.BatchExecutor;
+import org.jetlang.core.BatchExecutorImpl;
 import org.jetlang.core.Disposable;
 import org.jetlang.core.SynchronousExecutor;
 
@@ -25,23 +27,23 @@ public class PoolFiberFactory implements Disposable {
     }
 
     /**
-     * Create a new Fiber from this pool. Equivalent to calling {@link #create(Executor)}
+     * Create a new Fiber from this pool. Equivalent to calling {@link #create(BatchExecutor)}
      * with a {@link SynchronousExecutor}
      *
      * @return Fiber instance
      */
     public Fiber create() {
-        return create(new SynchronousExecutor());
+        return create(new BatchExecutorImpl());
     }
 
     /**
      * Create a new Fiber from this pool that uses the supplied {@link Executor} to execute commands
      *
-     * @param executor Executor to use for command executor. Required.
+     * @param batchExecutor Executor to use for command executor. Required.
      * @return Fiber instance
      */
-    public Fiber create(Executor executor) {
-        return new PoolFiber(this.executor, executor, _scheduler);
+    public Fiber create(BatchExecutor batchExecutor) {
+        return new PoolFiber(this.executor, batchExecutor, _scheduler);
     }
 
     public void dispose() {

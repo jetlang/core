@@ -281,8 +281,7 @@ public class ChannelTests {
     @Test
     public void pointToPointPerfTest() throws InterruptedException {
         MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
-        RunnableExecutorImpl queue = new RunnableExecutorImpl();
-        ThreadFiber bus = new ThreadFiber(queue, "testThread", true);
+        ThreadFiber bus = new ThreadFiber();
         bus.start();
         final Integer max = 5000000;
         final CountDownLatch reset = new CountDownLatch(1);
