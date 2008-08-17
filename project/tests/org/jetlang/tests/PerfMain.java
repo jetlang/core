@@ -12,6 +12,7 @@ public class PerfMain {
     public static void main(String[] args) throws InterruptedException {
         Thread.sleep(30000);
         ChannelTests tests = new ChannelTests();
-        tests.pointToPointPerfTest();
+        tests.pointToPointPerfTestWithPool();
+        tests.pointToPointPerfTestWithThread();
     }
 }

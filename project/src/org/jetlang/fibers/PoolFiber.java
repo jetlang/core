@@ -2,13 +2,15 @@ package org.jetlang.fibers;
 
 import org.jetlang.core.BatchExecutor;
 import org.jetlang.core.Disposable;
+import org.jetlang.core.RunnableBlockingQueue;
 import org.jetlang.core.SchedulerImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -18,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /// </summary>
 class PoolFiber implements Fiber {
     private final AtomicBoolean _flushPending = new AtomicBoolean(false);
-    private final BlockingQueue<Runnable> _queue = new ArrayBlockingQueue<Runnable>(1000);
+    private final RunnableBlockingQueue _queue = new RunnableBlockingQueue();
     private final Executor _flushExecutor;
     private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
     private final BatchExecutor _commandExecutor;
@@ -51,7 +53,7 @@ class PoolFiber implements Fiber {
             return;
         }
 
-        _queue.add(commands);
+        _queue.put(commands);
 
         if (_started.get() == ExecutionState.Created) {
             return;
@@ -76,12 +78,8 @@ class PoolFiber implements Fiber {
         }
     }
 
-    private List<Runnable> flushPendingCommands() {
-        List<Runnable> commands = new ArrayList<Runnable>();
-
-        _queue.drainTo(commands);
-
-        return commands;
+    private Runnable[] flushPendingCommands() {
+        return _queue.sweep();
     }
 
     public void start() {

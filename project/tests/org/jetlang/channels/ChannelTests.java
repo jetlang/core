@@ -3,6 +3,7 @@ package org.jetlang.channels;
 import org.jetlang.PerfTimer;
 import org.jetlang.core.*;
 import org.jetlang.fibers.Fiber;
+import org.jetlang.fibers.PoolFiberFactory;
 import org.jetlang.fibers.ThreadFiber;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -10,10 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * User: mrettig
@@ -277,10 +275,26 @@ public class ChannelTests {
     }
 
     @Test
-    public void pointToPointPerfTest() throws InterruptedException {
-        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
+    public void pointToPointPerfTestWithThread() throws InterruptedException {
         ThreadFiber bus = new ThreadFiber();
         bus.start();
+        runPerfTest(bus);
+    }
+
+    @Test
+    public void pointToPointPerfTestWithPool() throws InterruptedException {
+        ExecutorService serv = Executors.newFixedThreadPool(3);
+        PoolFiberFactory fact = new PoolFiberFactory(serv);
+        Fiber bus = fact.create();
+        bus.start();
+        runPerfTest(bus);
+        fact.dispose();
+        serv.shutdown();
+    }
+
+    private void runPerfTest(Fiber bus) throws InterruptedException {
+        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
+
         final Integer max = 5000000;
         final CountDownLatch reset = new CountDownLatch(1);
         Callback<Integer> onMsg = new Callback<Integer>() {

@@ -5,9 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class RunnableExecutorImpl implements RunnableExecutor {
-    private volatile boolean _running = true;
 
-    private final List<Runnable> _commands = new ArrayList<Runnable>();
+    private final RunnableBlockingQueue _commands = new RunnableBlockingQueue();
     private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
 
     private final BatchExecutor _commandExecutor;
@@ -21,35 +20,21 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     }
 
     public void execute(Runnable command) {
-        synchronized (_commands) {
-            _commands.add(command);
-            _commands.notify();
-        }
+        _commands.put(command);
     }
 
-    private List<Runnable> dequeueAll() {
-        synchronized (_commands) {
-            while (_commands.size() == 0 && _running) {
-                try {
-                    _commands.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            List<Runnable> dequeued = new ArrayList<Runnable>(_commands);
-            _commands.clear();
-            return dequeued;
-        }
+    private Runnable[] dequeueAll() {
+        return _commands.sweep();
     }
 
     public void run() {
-        while (_running) {
+        while (_commands.isRunning()) {
             _commandExecutor.execute(dequeueAll());
         }
     }
 
     public void dispose() {
-        _running = false;
+        _commands.setRunning(false);
 
         execute(new Runnable() {
             public void run() {
