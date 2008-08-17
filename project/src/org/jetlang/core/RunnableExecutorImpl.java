@@ -1,14 +1,9 @@
 package org.jetlang.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-/// <summary>
-/// Default implementation.
-
-/// </summary>
 public class RunnableExecutorImpl implements RunnableExecutor {
     private volatile boolean _running = true;
 
@@ -32,7 +27,7 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         }
     }
 
-    private Collection<Runnable> dequeueAll() {
+    private List<Runnable> dequeueAll() {
         synchronized (_commands) {
             while (_commands.size() == 0 && _running) {
                 try {

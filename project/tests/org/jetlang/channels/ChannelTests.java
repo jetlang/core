@@ -56,7 +56,7 @@ public class ChannelTests {
     public void PubSub() {
         MemoryChannel<String> channel = new MemoryChannel<String>();
         SynchronousDisposingExecutor queue = new SynchronousDisposingExecutor();
-        assertEquals(0, channel.publish("hello"));
+        channel.publish("hello");
         final List<String> received = new ArrayList<String>();
         Callback<String> onReceive = new Callback<String>() {
             public void onMessage(String data) {
@@ -64,14 +64,12 @@ public class ChannelTests {
             }
         };
         channel.subscribe(queue, onReceive);
-        assertEquals(1, channel.publish("hello"));
+        channel.publish("hello");
         assertEquals(1, received.size());
         assertEquals("hello", received.get(0));
 
         channel.clearSubscribers();
-        assertEquals(0, channel.publish("hello"));
-
-
+        channel.publish("hello");
     }
 
     @Test
@@ -114,10 +112,10 @@ public class ChannelTests {
             }
         };
         Disposable unsub = channel.subscribe(execute, onReceive);
-        assertEquals(1, channel.publish("hello"));
+        channel.publish("hello");
         assertTrue(received[0]);
         unsub.dispose();
-        assertEquals(0, channel.publish("hello"));
+        channel.publish("hello");
         unsub.dispose();
     }
 
@@ -242,7 +240,7 @@ public class ChannelTests {
             }
         };
         replyChannel.subscribe(receiver, onMsg);
-        assertEquals(1, requestChannel.publish(replyChannel));
+        requestChannel.publish(replyChannel);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
         responder.dispose();
         receiver.dispose();
@@ -263,7 +261,7 @@ public class ChannelTests {
 
         BlockingQueue<String> requestQueue = new ArrayBlockingQueue<String>(5);
 
-        assertEquals(1, requestChannel.publish(requestQueue));
+        requestChannel.publish(requestQueue);
         for (int i = 0; i < 5; i++) {
             assertEquals("hello" + i, requestQueue.poll(30, TimeUnit.SECONDS));
         }

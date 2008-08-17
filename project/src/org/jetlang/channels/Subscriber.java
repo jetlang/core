@@ -18,4 +18,6 @@ public interface Subscriber<T> {
      * @return {@link Disposable} that can be invoked to cancel this subscription
      */
     Disposable subscribe(DisposingExecutor executor, Callback<T> receive);
+
+    Disposable subscribe(Subscribable<T> sub);
 }

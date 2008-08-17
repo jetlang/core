@@ -5,7 +5,6 @@ import org.jetlang.core.Disposable;
 import org.jetlang.core.DisposingExecutor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,18 +14,19 @@ import java.util.List;
  */
 public class MemoryChannel<T> implements Channel<T> {
 
-    private final List<Callback<T>> _subscribers = Collections.synchronizedList(new ArrayList<Callback<T>>());
+    private final List<Callback<T>> _subscribers = new ArrayList<Callback<T>>();
 
     public int subscriberCount() {
-        return _subscribers.size();
+        synchronized (_subscribers) {
+            return _subscribers.size();
+        }
     }
 
-    public int publish(T s) {
+    public void publish(T s) {
         synchronized (_subscribers) {
-            for (Callback<T> callback : _subscribers) {
-                callback.onMessage(s);
+            for (int i = 0; i < _subscribers.size(); i++) {
+                _subscribers.get(i).onMessage(s);
             }
-            return _subscribers.size();
         }
     }
 
@@ -48,15 +48,21 @@ public class MemoryChannel<T> implements Channel<T> {
         };
         queue.add(unSub);
         //finally add subscription to start receiving events.
-        _subscribers.add(callbackOnQueue);
+        synchronized (_subscribers) {
+            _subscribers.add(callbackOnQueue);
+        }
         return unSub;
     }
 
     private void Remove(Callback<T> callbackOnQueue) {
-        _subscribers.remove(callbackOnQueue);
+        synchronized (_subscribers) {
+            _subscribers.remove(callbackOnQueue);
+        }
     }
 
     public void clearSubscribers() {
-        _subscribers.clear();
+        synchronized (_subscribers) {
+            _subscribers.clear();
+        }
     }
 }

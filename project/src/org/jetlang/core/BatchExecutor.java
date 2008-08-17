@@ -1,6 +1,6 @@
 package org.jetlang.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * User: mrettig
@@ -8,6 +8,5 @@ import java.util.Collection;
  * Time: 11:00:31 AM
  */
 public interface BatchExecutor {
-
-    void execute(Collection<Runnable> toExecute);
+    void execute(List<Runnable> toExecute);
 }

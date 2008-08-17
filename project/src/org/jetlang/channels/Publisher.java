@@ -8,7 +8,6 @@ public interface Publisher<T> {
      * Publish a message.
      *
      * @param msg Message to publish
-     * @return Number of subscribers that will receive this message at time of publication
      */
-    int publish(T msg);
+    void publish(T msg);
 }
