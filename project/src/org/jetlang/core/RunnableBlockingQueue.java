@@ -3,9 +3,9 @@ package org.jetlang.core;
 import java.util.ArrayList;
 
 /**
- * User: mrettig
- * Date: Aug 17, 2008
- * Time: 5:51:18 PM
+ * Blocking queue supporting efficient put and sweep operations.
+ *
+ * @author mrettig
  */
 public class RunnableBlockingQueue {
 
@@ -16,8 +16,8 @@ public class RunnableBlockingQueue {
         return _running;
     }
 
-    public void setRunning(boolean _running) {
-        this._running = _running;
+    public void setRunning(boolean isRunning) {
+        this._running = isRunning;
     }
 
     public void put(Runnable r) {

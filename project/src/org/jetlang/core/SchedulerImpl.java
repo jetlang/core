@@ -2,6 +2,9 @@ package org.jetlang.core;
 
 import java.util.concurrent.*;
 
+/**
+ * Default implementation for scheduling events for execution on fibers.
+ */
 public class SchedulerImpl implements Scheduler {
     private final ScheduledExecutorService _scheduler;
     private final Executor _queue;
