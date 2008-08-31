@@ -30,6 +30,12 @@ public abstract class BaseSubscription<T> implements Subscribable<T> {
 
     protected abstract void onMessageOnProducerThread(T msg);
 
+    /**
+     * Set a filter to be invoked from producer thread. Events not passing
+     * the filter will be discarded and not delivered to consuming Fiber.
+     *
+     * @param filter
+     */
     public void setFilterOnProducerThread(Filter<T> filter) {
         _filter = filter;
     }
