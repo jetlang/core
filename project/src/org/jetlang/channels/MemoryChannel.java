@@ -7,9 +7,12 @@ import org.jetlang.core.DisposingExecutor;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * User: mrettig
- * Date: Jul 22, 2008
- * Time: 3:57:21 PM
+ * Conduit for exchanging messages between threads. Objects references will be delivered
+ * between threads without any serialization or object copying.
+ * <p/>
+ * Provides method for publishing and subscribing to events.
+ *
+ * @author mrettig
  */
 public class MemoryChannel<T> implements Channel<T> {
 

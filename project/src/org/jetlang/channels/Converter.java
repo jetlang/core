@@ -1,9 +1,7 @@
 package org.jetlang.channels;
 
 /**
- * User: mrettig
- * Date: Jul 22, 2008
- * Time: 3:59:33 PM
+ * Interface to convert from T to K.
  */
 public interface Converter<T, K> {
     K Convert(T msg);

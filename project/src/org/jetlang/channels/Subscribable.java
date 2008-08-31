@@ -4,9 +4,8 @@ import org.jetlang.core.Callback;
 import org.jetlang.core.DisposingExecutor;
 
 /**
- * User: mrettig
- * Date: Jul 27, 2008
- * Time: 3:55:14 PM
+ * Interface to subscribe to events on producing thread(s). Implementations
+ * should be thread safe.
  */
 public interface Subscribable<T> extends Callback<T> {
 

@@ -3,11 +3,9 @@ package org.jetlang.channels;
 import org.jetlang.core.DisposingExecutor;
 import org.jetlang.core.Filter;
 
-/// <summary>
-/// Subscription for events on a channel.
-/// </summary>
-
-/// <typeparam name="T"></typeparam>
+/**
+ * Base implementation for all producer thread subscriptions.
+ */
 public abstract class BaseSubscription<T> implements Subscribable<T> {
 
     private Filter<T> _filter;
@@ -21,10 +19,9 @@ public abstract class BaseSubscription<T> implements Subscribable<T> {
         return fiber;
     }
 
-    /// <summary>
-    /// Receives the event and queues the execution on the target execute.
-    /// </summary>
-    /// <param name="msg"></param>
+    /**
+     * Receives the event, filters, and passes to handler.
+     */
     public void onMessage(T msg) {
         if (_filter == null || _filter.passes(msg)) {
             onMessageOnProducerThread(msg);
