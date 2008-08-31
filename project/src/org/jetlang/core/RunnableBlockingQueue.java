@@ -1,6 +1,7 @@
 package org.jetlang.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Blocking queue supporting efficient put and sweep operations.
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 public class RunnableBlockingQueue {
 
     private volatile boolean _running = true;
-    private final ArrayList<Runnable> _queue = new ArrayList<Runnable>();
+    private final List<Runnable> _queue = new ArrayList<Runnable>();
 
     public boolean isRunning() {
         return _running;
@@ -29,7 +30,7 @@ public class RunnableBlockingQueue {
 
     public Runnable[] sweep() {
         synchronized (_queue) {
-            while (_queue.size() == 0 && _running) {
+            while (_queue.isEmpty() && _running) {
                 try {
                     _queue.wait();
                 } catch (InterruptedException e) {
@@ -44,7 +45,7 @@ public class RunnableBlockingQueue {
 
     public boolean isEmpty() {
         synchronized (_queue) {
-            return _queue.size() == 0;
+            return _queue.isEmpty();
         }
     }
 }
