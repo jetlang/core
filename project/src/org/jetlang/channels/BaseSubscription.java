@@ -8,8 +8,8 @@ import org.jetlang.core.Filter;
  */
 public abstract class BaseSubscription<T> implements Subscribable<T> {
 
-    private Filter<T> _filter;
-    private DisposingExecutor fiber;
+    private volatile Filter<T> _filter;
+    private final DisposingExecutor fiber;
 
     public BaseSubscription(DisposingExecutor fiber) {
         this.fiber = fiber;
@@ -34,7 +34,7 @@ public abstract class BaseSubscription<T> implements Subscribable<T> {
      * Set a filter to be invoked from producer thread. Events not passing
      * the filter will be discarded and not delivered to consuming Fiber.
      *
-     * @param filter
+     * @param filter Filter to use
      */
     public void setFilterOnProducerThread(Filter<T> filter) {
         _filter = filter;
