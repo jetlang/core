@@ -23,11 +23,11 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
     private T _pending;
     private final Runnable _flushRunnable;
 
-    public LastSubscriber(Callback<T> target, Fiber context, int flushIntervalInMs, TimeUnit timeUnit) {
+    public LastSubscriber(Callback<T> target, Fiber context, int flushInterval, TimeUnit timeUnit) {
         super(context);
         _context = context;
         _target = target;
-        _flushIntervalInMs = flushIntervalInMs;
+        _flushIntervalInMs = flushInterval;
         _timeUnit = timeUnit;
         _flushRunnable = new Runnable() {
             public void run() {
