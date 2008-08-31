@@ -4,8 +4,7 @@ import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
 import org.jetlang.core.DisposingExecutor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * User: mrettig
@@ -14,19 +13,15 @@ import java.util.List;
  */
 public class MemoryChannel<T> implements Channel<T> {
 
-    private final List<Callback<T>> _subscribers = new ArrayList<Callback<T>>();
+    private final CopyOnWriteArrayList<Callback<T>> _subscribers = new CopyOnWriteArrayList<Callback<T>>();
 
     public int subscriberCount() {
-        synchronized (_subscribers) {
-            return _subscribers.size();
-        }
+        return _subscribers.size();
     }
 
     public void publish(T s) {
-        synchronized (_subscribers) {
-            for (int i = 0; i < _subscribers.size(); i++) {
-                _subscribers.get(i).onMessage(s);
-            }
+        for (Callback<T> subscriber : _subscribers) {
+            subscriber.onMessage(s);
         }
     }
 
@@ -42,27 +37,21 @@ public class MemoryChannel<T> implements Channel<T> {
     public Disposable subscribeOnProducerThread(final DisposingExecutor queue, final Callback<T> callbackOnQueue) {
         Disposable unSub = new Disposable() {
             public void dispose() {
-                Remove(callbackOnQueue);
+                remove(callbackOnQueue);
                 queue.remove(this);
             }
         };
         queue.add(unSub);
         //finally add subscription to start receiving events.
-        synchronized (_subscribers) {
-            _subscribers.add(callbackOnQueue);
-        }
+        _subscribers.add(callbackOnQueue);
         return unSub;
     }
 
-    private void Remove(Callback<T> callbackOnQueue) {
-        synchronized (_subscribers) {
-            _subscribers.remove(callbackOnQueue);
-        }
+    private void remove(Callback<T> callbackOnQueue) {
+        _subscribers.remove(callbackOnQueue);
     }
 
     public void clearSubscribers() {
-        synchronized (_subscribers) {
-            _subscribers.clear();
-        }
+        _subscribers.clear();
     }
 }
