@@ -1,10 +1,6 @@
 package org.jetlang.core;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class SchedulerImpl implements Scheduler {
     private final ScheduledExecutorService _scheduler;
@@ -12,7 +8,8 @@ public class SchedulerImpl implements Scheduler {
 
     public SchedulerImpl(Executor queue) {
         _queue = queue;
-        _scheduler = Executors.newSingleThreadScheduledExecutor();
+        ThreadFactory fact = new DaemonThreadFactory();
+        _scheduler = Executors.newSingleThreadScheduledExecutor(fact);
     }
 
     public SchedulerImpl(DisposingExecutor queue, ScheduledExecutorService scheduler) {
