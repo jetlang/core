@@ -9,7 +9,7 @@ import java.util.List;
  * Events will be executed immediately, rather than queued and executed on another thread
  */
 public class SynchronousDisposingExecutor implements RunnableExecutor {
-    private boolean _running = true;
+    private volatile boolean _running = true;
     private final List<Disposable> _onStop = new ArrayList<Disposable>();
 
     public void execute(Runnable command) {
