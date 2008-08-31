@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Default implementation that queues and executes events. A dedicated thread is typically
+ * used to consume events.
+ */
 public class RunnableExecutorImpl implements RunnableExecutor {
 
     private final RunnableBlockingQueue _commands = new RunnableBlockingQueue();

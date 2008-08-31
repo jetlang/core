@@ -1,9 +1,9 @@
 package org.jetlang.core;
 
 /**
- * User: mrettig
- * Date: Aug 16, 2008
- * Time: 11:01:28 AM
+ * Default implementation that simply executes all events.
+ *
+ * @author mrettig
  */
 public class BatchExecutorImpl implements BatchExecutor {
     public void execute(Runnable[] toExecute) {

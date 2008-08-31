@@ -1,8 +1,7 @@
 package org.jetlang.core;
 
-/// <summary>
-/// A runable execute implementation.
-
-/// </summary>
+/**
+ * Queues and executes events.
+ */
 public interface RunnableExecutor extends DisposingExecutor, Disposable, Runnable {
 }

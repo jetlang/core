@@ -1,9 +1,10 @@
 package org.jetlang.core;
 
 /**
- * User: mrettig
- * Date: Aug 16, 2008
- * Time: 11:00:31 AM
+ * Event executor. Implementatations execute all Runnables. Typically, custom implementations
+ * add logging and exception handling.
+ *
+ * @author mrettig
  */
 public interface BatchExecutor {
     void execute(Runnable[] toExecute);

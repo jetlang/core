@@ -4,9 +4,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * User: mrettig
- * Date: Aug 30, 2008
- * Time: 8:56:32 PM
+ * Creates daemon threads.
+ *
+ * @author mrettig
  */
 class DaemonThreadFactory implements ThreadFactory {
     private ThreadFactory factory = Executors.defaultThreadFactory();
