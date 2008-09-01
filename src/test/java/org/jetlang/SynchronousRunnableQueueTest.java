@@ -9,7 +9,7 @@ import org.junit.Test;
  * Date: Jul 27, 2008
  * Time: 1:03:34 PM
  */
-public class SynchronousRunnableQueueTests {
+public class SynchronousRunnableQueueTest {
 
     @Test
     public void execution() {

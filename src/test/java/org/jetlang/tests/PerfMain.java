@@ -1,6 +1,6 @@
 package org.jetlang.tests;
 
-import org.jetlang.channels.ChannelTests;
+import org.jetlang.channels.ChannelTest;
 
 /**
  * User: mrettig
@@ -11,7 +11,7 @@ public class PerfMain {
 
     public static void main(String[] args) throws InterruptedException {
         Thread.sleep(30000);
-        ChannelTests tests = new ChannelTests();
+        ChannelTest tests = new ChannelTest();
         tests.pointToPointPerfTestWithPool();
         tests.pointToPointPerfTestWithThread();
     }

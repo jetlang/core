@@ -8,7 +8,7 @@ import org.jetlang.core.SynchronousDisposingExecutor;
  * Date: Aug 31, 2008
  * Time: 8:44:54 AM
  */
-public class MemoryChannelPerfTest {
+public class MemoryChannelPerf {
 
     public static void main(String[] args) {
         MemoryChannel<String> channel = new MemoryChannel<String>();

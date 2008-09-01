@@ -18,7 +18,7 @@ import java.util.concurrent.*;
  * Date: Jul 26, 2008
  * Time: 9:19:23 AM
  */
-public class ChannelTests {
+public class ChannelTest {
 
     @Test
     public void basicPubSubWithThreads() throws InterruptedException {
