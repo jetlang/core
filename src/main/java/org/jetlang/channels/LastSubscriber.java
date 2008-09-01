@@ -1,7 +1,6 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.Filter;
 import org.jetlang.fibers.Fiber;
 
 import java.util.concurrent.TimeUnit;
@@ -24,9 +23,8 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
     private T _pending;
     private final Runnable _flushRunnable;
 
-    public LastSubscriber(Fiber context, Callback<T> target, Filter<T> filter,
-                          int flushInterval, TimeUnit timeUnit) {
-        super(context, filter);
+    public LastSubscriber(Callback<T> target, Fiber context, int flushInterval, TimeUnit timeUnit) {
+        super(context);
         _context = context;
         _target = target;
         _flushIntervalInMs = flushInterval;
@@ -36,11 +34,6 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
                 flush();
             }
         };
-    }
-
-    public LastSubscriber(Callback<T> target, Fiber context,
-                          int flushInterval, TimeUnit timeUnit) {
-        this(context, target, null, flushInterval, timeUnit);
     }
 
     @Override

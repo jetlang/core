@@ -1,7 +1,6 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
-import org.jetlang.core.Filter;
 import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
@@ -20,10 +19,8 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
     private List<T> _pending;
     private final Runnable _flushRunnable;
 
-    public BatchSubscriber(Fiber queue, Callback<List<T>> receive,
-                           Filter<T> filter,
-                           int interval, TimeUnit timeUnit) {
-        super(queue, filter);
+    public BatchSubscriber(Fiber queue, Callback<List<T>> receive, int interval, TimeUnit timeUnit) {
+        super(queue);
         _queue = queue;
         _receive = receive;
         _interval = interval;
@@ -33,11 +30,6 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
                 flush();
             }
         };
-    }
-
-    public BatchSubscriber(Fiber queue, Callback<List<T>> receive,
-                           int interval, TimeUnit timeUnit) {
-        this(queue, receive, null, interval, timeUnit);
     }
 
     /**

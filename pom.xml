@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jetlang</groupId>
+    <artifactId>jetlang</artifactId>
+
+    <version>0.1.6-SNAPSHOT</version>
+    <name>Jetlang</name>
+    <url>http://code.google.com/p/jetlang/</url>
+
+    <description>
+        Jetlang provides a high performance java threading library. It is a complement to the java.util.concurrent
+        package introduced in 1.5 and should be used for message based concurrency similar to event based actors in
+        Scala.
+    </description>
+
+    <licenses>
+        <license>
+            <name>New BSD License</name>
+            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:svn:http://jetlang.googlecode.com/svn/trunk/</connection>
+        <developerConnection>scm:svn:https://jetlang.googlecode.com/svn/trunk/</developerConnection>
+        <url>http://code.google.com/p/jetlang/source/browse/</url>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

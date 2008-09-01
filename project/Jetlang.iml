@@ -3,8 +3,8 @@
   <component name="BuildJarSettings">
     <containerInfo>
       <containerElement type="module" name="Jetlang">
-        <attribute name="method" value="1" />
-        <attribute name="URI" value="/" />
+        <attribute name="method" value="5" />
+        <attribute name="URI" value="/Jetlang.jar" />
       </containerElement>
     </containerInfo>
     <setting name="jarUrl" value="file://$MODULE_DIR$/out/production/jetlang.jar" />
@@ -20,7 +20,11 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="junit" level="project" />
-    <orderEntryProperties />
+  </component>
+  <component name="copyright">
+    <Base>
+      <setting name="state" value="2" />
+    </Base>
   </component>
 </module>
 
