@@ -80,13 +80,14 @@ public class ChannelTests {
                 received.add(num);
             }
         };
-        ChannelSubscription<Integer> subber = new ChannelSubscription<Integer>(execute, onReceive);
+
         Filter<Integer> filter = new Filter<Integer>() {
             public boolean passes(Integer msg) {
                 return msg % 2 == 0;
             }
         };
-        subber.setFilterOnProducerThread(filter);
+        ChannelSubscription<Integer> subber = new ChannelSubscription<Integer>(execute, onReceive, filter);
+
         channel.subscribeOnProducerThread(execute, subber);
         for (int i = 0; i <= 4; i++) {
             channel.publish(i);
@@ -166,7 +167,7 @@ public class ChannelTests {
             }
         };
         KeyedBatchSubscriber<String, Integer> subscriber
-                = new KeyedBatchSubscriber<String, Integer>(key, onReceive, execute, 0, TimeUnit.MILLISECONDS);
+                = new KeyedBatchSubscriber<String, Integer>(execute, onReceive, 0, TimeUnit.MILLISECONDS, key);
         channel.subscribe(subscriber);
 
         for (int i = 0; i < 5; i++) {
