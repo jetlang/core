@@ -1,6 +1,7 @@
 package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
+import org.jetlang.core.Filter;
 import org.jetlang.fibers.Fiber;
 
 import java.util.HashMap;
@@ -22,10 +23,12 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     private Map<K, T> _pending = null;
     private final Runnable _flushRunner;
 
-    public KeyedBatchSubscriber(Converter<T, K> keyResolver,
+    public KeyedBatchSubscriber(Fiber context,
                                 Callback<Map<K, T>> target,
-                                Fiber context, int flushIntervalInMs, TimeUnit timeUnit) {
-        super(context);
+                                Filter<T> filter,
+                                int flushIntervalInMs, TimeUnit timeUnit,
+                                Converter<T, K> keyResolver) {
+        super(context, filter);
         _keyResolver = keyResolver;
         _context = context;
         _target = target;
@@ -36,6 +39,12 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
                 flush();
             }
         };
+    }
+
+    public KeyedBatchSubscriber(Fiber context, Callback<Map<K, T>> target,
+                                int flushIntervalInMs, TimeUnit timeUnit,
+                                Converter<T, K> keyResolver) {
+        this(context, target, null, flushIntervalInMs, timeUnit, keyResolver);
     }
 
     /**

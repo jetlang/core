@@ -2,6 +2,7 @@ package org.jetlang.channels;
 
 import org.jetlang.core.Callback;
 import org.jetlang.core.DisposingExecutor;
+import org.jetlang.core.Filter;
 
 /**
  * Subscription for events on a channel.
@@ -11,8 +12,13 @@ public class ChannelSubscription<T> extends BaseSubscription<T> {
     private final Callback<T> _receiveMethod;
 
     public ChannelSubscription(DisposingExecutor queue, Callback<T> receiveMethod) {
-        super(queue);
-        _receiveMethod = receiveMethod;
+        this(queue, receiveMethod, null);
+    }
+
+    public ChannelSubscription(DisposingExecutor fiber, Callback<T> _receiveMethod,
+                               Filter<T> filter) {
+        super(fiber, filter);
+        this._receiveMethod = _receiveMethod;
     }
 
     /**
