@@ -38,7 +38,7 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
         };
     }
 
-    public LastSubscriber(Callback<T> target, Fiber context,
+    public LastSubscriber(Fiber context, Callback<T> target,
                           int flushInterval, TimeUnit timeUnit) {
         this(context, target, null, flushInterval, timeUnit);
     }

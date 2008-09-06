@@ -15,10 +15,10 @@ public class ChannelSubscription<T> extends BaseSubscription<T> {
         this(queue, receiveMethod, null);
     }
 
-    public ChannelSubscription(DisposingExecutor fiber, Callback<T> _receiveMethod,
+    public ChannelSubscription(DisposingExecutor fiber, Callback<T> receiveMethod,
                                Filter<T> filter) {
         super(fiber, filter);
-        this._receiveMethod = _receiveMethod;
+        this._receiveMethod = receiveMethod;
     }
 
     /**

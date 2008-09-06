@@ -197,7 +197,7 @@ public class ChannelTest {
                 received.add(data);
             }
         };
-        LastSubscriber<Integer> lastSub = new LastSubscriber<Integer>(onReceive, execute, 3, TimeUnit.MILLISECONDS);
+        LastSubscriber<Integer> lastSub = new LastSubscriber<Integer>(execute, onReceive, 3, TimeUnit.MILLISECONDS);
         channel.subscribe(lastSub);
         for (int i = 0; i < 5; i++) {
             channel.publish(i);
