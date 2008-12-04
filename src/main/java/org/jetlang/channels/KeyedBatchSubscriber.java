@@ -53,7 +53,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
     @Override
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_batchLock) {
-            K key = _keyResolver.Convert(msg);
+            K key = _keyResolver.convert(msg);
             if (_pending == null) {
                 _pending = new HashMap<K, T>();
                 _context.schedule(_flushRunner, _flushIntervalInMs, _timeUnit);

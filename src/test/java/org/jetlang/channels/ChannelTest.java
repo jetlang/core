@@ -162,7 +162,7 @@ public class ChannelTest {
             }
         };
         Converter<Integer, String> key = new Converter<Integer, String>() {
-            public String Convert(Integer msg) {
+            public String convert(Integer msg) {
                 return msg.toString();
             }
         };
