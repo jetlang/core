@@ -11,11 +11,11 @@ import org.jetlang.fibers.Fiber;
 public class Pong {
 
     private PingPongChannels channels;
-    private Fiber consumingThread;
+    private Fiber consumer;
 
-    public Pong(PingPongChannels channels, Fiber consumingThread) {
+    public Pong(PingPongChannels channels, Fiber fiber) {
         this.channels = channels;
-        this.consumingThread = consumingThread;
+        this.consumer = fiber;
     }
 
     public void start() {
@@ -26,14 +26,14 @@ public class Pong {
                     System.out.println("message = " + message);
             }
         };
-        channels.Ping.subscribe(consumingThread, onReceive);
+        channels.Ping.subscribe(consumer, onReceive);
 
         Callback<Void> onStop = new Callback<Void>() {
             public void onMessage(Void message) {
-                consumingThread.dispose();
+                consumer.dispose();
             }
         };
-        channels.Stop.subscribe(consumingThread, onStop);
-        consumingThread.start();
+        channels.Stop.subscribe(consumer, onStop);
+        consumer.start();
     }
 }

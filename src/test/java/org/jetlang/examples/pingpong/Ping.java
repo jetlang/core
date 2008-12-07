@@ -1,7 +1,11 @@
 package org.jetlang.examples.pingpong;
 
+import org.jetlang.channels.BatchSubscriber;
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: mrettig
@@ -11,12 +15,12 @@ import org.jetlang.fibers.Fiber;
 public class Ping {
 
     private PingPongChannels channels;
-    private Fiber consumingThread;
+    private Fiber consumer;
     private int total;
 
-    public Ping(PingPongChannels channels, Fiber consumingThread, int total) {
+    public Ping(PingPongChannels channels, Fiber fiber, int total) {
         this.channels = channels;
-        this.consumingThread = consumingThread;
+        this.consumer = fiber;
         this.total = total;
     }
 
@@ -27,18 +31,31 @@ public class Ping {
                     publishPing();
                 } else {
                     channels.Stop.publish(null);
-                    consumingThread.dispose();
+                    consumer.dispose();
                 }
             }
         };
-        channels.Pong.subscribe(consumingThread, onReceive);
-        consumingThread.start();
+        channels.Pong.subscribe(consumer, onReceive);
+        consumer.start();
+
+        //send first ping from ping fiber. The first ping could have been published from the main
+        // thread as well, but in this case we'll use the ping fiber to be consistent.
         Runnable firstPing = new Runnable() {
             public void run() {
                 publishPing();
             }
         };
-        consumingThread.execute(firstPing);
+        consumer.execute(firstPing);
+
+        Callback<List<Integer>> onBatch = new Callback<List<Integer>>() {
+
+            public void onMessage(List<Integer> message) {
+                //consume all messages.
+            }
+        };
+        BatchSubscriber<Integer> sub = new BatchSubscriber<Integer>(consumer, onBatch, 0, TimeUnit.MILLISECONDS);
+        channels.Ping.subscribe(consumer, sub);
+
     }
 
     private void publishPing() {
