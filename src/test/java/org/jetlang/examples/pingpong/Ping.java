@@ -1,8 +1,7 @@
 package org.jetlang.examples.pingpong;
 
-import org.jetlang.channels.Channel;
-import org.jetlang.fibers.Fiber;
 import org.jetlang.core.Callback;
+import org.jetlang.fibers.Fiber;
 
 /**
  * User: mrettig
@@ -15,19 +14,18 @@ public class Ping {
     private Fiber consumingThread;
     private int total;
 
-    public Ping(PingPongChannels channels, Fiber consumingThread, int total){
+    public Ping(PingPongChannels channels, Fiber consumingThread, int total) {
         this.channels = channels;
         this.consumingThread = consumingThread;
         this.total = total;
     }
 
-    public void start(){
-        Callback<Integer> onReceive = new Callback<Integer>(){
+    public void start() {
+        Callback<Integer> onReceive = new Callback<Integer>() {
             public void onMessage(Integer message) {
-                if(total > 0){
+                if (total > 0) {
                     publishPing();
-                }
-                else{
+                } else {
                     channels.Stop.publish(null);
                     consumingThread.dispose();
                 }
@@ -35,7 +33,7 @@ public class Ping {
         };
         channels.Pong.subscribe(consumingThread, onReceive);
         consumingThread.start();
-        Runnable firstPing = new Runnable(){
+        Runnable firstPing = new Runnable() {
             public void run() {
                 publishPing();
             }

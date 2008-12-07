@@ -1,14 +1,16 @@
 package org.jetlang.examples.pingpong;
 
-import org.junit.Test;
-import org.jetlang.fibers.ThreadFiber;
-import org.jetlang.fibers.PoolFiberFactory;
-import org.jetlang.fibers.Fiber;
-import org.jetlang.core.Disposable;
-
-import java.util.concurrent.*;
-
 import junit.framework.Assert;
+import org.jetlang.core.Disposable;
+import org.jetlang.fibers.Fiber;
+import org.jetlang.fibers.PoolFiberFactory;
+import org.jetlang.fibers.ThreadFiber;
+import org.junit.Test;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: mrettig
@@ -18,9 +20,9 @@ import junit.framework.Assert;
 public class PingPongTest {
 
     @Test
-    public void executWithDedicatedThreads(){
+    public void executWithDedicatedThreads() {
         PingPongChannels channels = new PingPongChannels();
-        
+
         ThreadFiber pingThread = new ThreadFiber();
         Ping ping = new Ping(channels, pingThread, 100000);
 
@@ -42,7 +44,7 @@ public class PingPongTest {
         PingPongChannels channels = new PingPongChannels();
 
         final CountDownLatch onstop = new CountDownLatch(2);
-        Disposable dispose = new Disposable(){
+        Disposable dispose = new Disposable() {
             public void dispose() {
                 onstop.countDown();
             }
