@@ -64,6 +64,37 @@ public class BasicExamples {
     }
 
     @Test
+    public void singleEventScheduling() throws InterruptedException {
+        Fiber fiber = new ThreadFiber();
+        fiber.start();
+        final CountDownLatch reset = new CountDownLatch(1);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        fiber.schedule(runnable, 1, TimeUnit.MILLISECONDS);
+        Assert.assertTrue(reset.await(5000, TimeUnit.MILLISECONDS));
+        fiber.dispose();
+    }
+
+    @Test
+    public void recurringEventScheduling() throws InterruptedException {
+        Fiber fiber = new ThreadFiber();
+        fiber.start();
+        final CountDownLatch reset = new CountDownLatch(5);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        fiber.scheduleWithFixedDelay(runnable, 1, 2, TimeUnit.MILLISECONDS);
+        Assert.assertTrue(reset.await(5000, TimeUnit.MILLISECONDS));
+        fiber.dispose();
+    }
+
+
+    @Test
     public void pubSubWithDedicatedThreadWithFilter() throws InterruptedException {
         Fiber fiber = new ThreadFiber();
         fiber.start();
