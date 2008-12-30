@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+/**
+ * Some contrived examples that demonstrate the basic publish and
+ * subscribe features in jetlang.
+ */
 public class BasicExamples {
 
     @Test
