@@ -74,7 +74,7 @@ public class ThreadRingJetlang {
         // inject message
         first.enqueue(hopCount);
         done.await();
-        System.out.println("time = " + (System.currentTimeMillis() - start));
+        System.out.println("done " + (System.currentTimeMillis() - start));
         pool.shutdown();
     }
 }

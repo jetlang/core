@@ -73,5 +73,6 @@ public class ThreadRing {
         first.enqueue(hopCount);
         done.await();
         System.out.println("done " + (System.currentTimeMillis() - start));
+        System.exit(0);
     }
 }
