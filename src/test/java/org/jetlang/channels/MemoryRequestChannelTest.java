@@ -8,6 +8,7 @@ import org.jetlang.fibers.PoolFiberFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -108,6 +109,66 @@ public class MemoryRequestChannelTest {
         assertTrue(done.await(10, TimeUnit.SECONDS));
 
     }
+
+    @Test
+    public void fiveMessagesRequestResponseWithEndSession() throws InterruptedException {
+        Fiber req = startFiber();
+        Fiber reply = startFiber();
+        MemoryRequestChannel<String, Integer> channel = new MemoryRequestChannel<String, Integer>();
+        final CountDownLatch done = new CountDownLatch(1);
+        Callback<Request<String, Integer>> onReq = new Callback<Request<String, Integer>>() {
+            public void onMessage(Request<String, Integer> message) {
+                for (int i = 0; i < 10; i++) {
+                    message.reply(i);
+                }
+            }
+        };
+        Callback<Request<String, Integer>> onEnd = new Callback<Request<String, Integer>>() {
+            public void onMessage(Request<String, Integer> message) {
+                done.countDown();
+            }
+        };
+        channel.subscribe(reply, onReq, onEnd);
+
+        final CountDownLatch rcv = new CountDownLatch(1);
+        AsyncRequest<String, Integer> async = new AsyncRequest<String, Integer>(req);
+        async.setResponseCount(5);
+
+        Callback<List<Integer>> onReply = new Callback<List<Integer>>() {
+            public void onMessage(List<Integer> message) {
+                assertEquals(5, message.size());
+                rcv.countDown();
+            }
+        };
+        async.publish(channel, "hello", onReply);
+        assertTrue(rcv.await(10, TimeUnit.SECONDS));
+        assertTrue(done.await(10, TimeUnit.SECONDS));
+    }
+
+
+    @Test
+    public void asyncRequestTimeout() throws InterruptedException {
+        Fiber req = startFiber();
+        MemoryRequestChannel<String, Integer> channel = new MemoryRequestChannel<String, Integer>();
+
+        final CountDownLatch timeout = new CountDownLatch(1);
+        Callback<List<Integer>> onTimeout = new Callback<List<Integer>>() {
+            public void onMessage(List<Integer> message) {
+                assertEquals(0, message.size());
+                timeout.countDown();
+            }
+        };
+        Callback<List<Integer>> onResp = new Callback<List<Integer>>() {
+            public void onMessage(List<Integer> message) {
+                fail();
+            }
+        };
+        AsyncRequest<String, Integer> async = new AsyncRequest<String, Integer>(req);
+        async.setTimeout(onTimeout, 10, TimeUnit.MILLISECONDS)
+                .publish(channel, "hello", onResp);
+        assertTrue(timeout.await(10, TimeUnit.SECONDS));
+    }
+
 
     private Fiber startFiber() {
         Fiber f = fiberPool.create();
