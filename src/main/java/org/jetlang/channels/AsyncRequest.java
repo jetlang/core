@@ -38,27 +38,16 @@ public class AsyncRequest<R, V> {
             time = timeout.cb;
         }
         BatchCallback callback = new BatchCallback(time, responses, onResponse);
-        final Disposable d = channel.publish(target, req, callback);
-        if (timeout != null) {
-            final Disposable timer = target.schedule(callback, timeout.time, timeout.unit);
-            Disposable dis = new Disposable() {
-                public void dispose() {
-                    d.dispose();
-                    timer.dispose();
-                }
-            };
-            callback.setDispose(dis);
-        } else {
-            callback.setDispose(d);
-        }
+        callback.send(channel, req, target, timeout);
         return callback;
     }
 
     private class BatchCallback implements Callback<V>, Runnable, Disposable {
+        private final Object lock = new Object();
         private final List<V> results = new ArrayList<V>();
         private final Callback<List<V>> onTimeout;
-        private int responses;
-        private Callback<List<V>> onComplete;
+        private final int responses;
+        private final Callback<List<V>> onComplete;
         private Disposable d;
 
         public BatchCallback(Callback<List<V>> onTimeout, int responses, Callback<List<V>> onComplete) {
@@ -68,10 +57,12 @@ public class AsyncRequest<R, V> {
         }
 
         public void onMessage(V message) {
-            results.add(message);
-            if (responses > 0 && results.size() == responses) {
-                dispose();
-                onComplete.onMessage(results);
+            synchronized (lock) {
+                results.add(message);
+                if (responses > 0 && results.size() == responses) {
+                    dispose();
+                    onComplete.onMessage(results);
+                }
             }
         }
 
@@ -80,13 +71,31 @@ public class AsyncRequest<R, V> {
             onTimeout.onMessage(results);
         }
 
-        public void setDispose(Disposable d) {
-            this.d = d;
+        public void dispose() {
+            synchronized (lock) {
+                if (d != null) {
+                    d.dispose();
+                }
+            }
         }
 
-        public void dispose() {
-            if (d != null) {
-                d.dispose();
+        public void send(RequestChannel<R, V> channel, R req, Fiber target, BatchTimeout timeout) {
+            // send may occur from a different thread than the receive thread.
+            // Once the message is sent there is a race. The lock prevents the receiving thread from
+            // attempting to dispose before the variables are properly set.
+            synchronized (lock) {
+                final Disposable requestDispose = channel.publish(target, req, this);
+                if (timeout != null) {
+                    final Disposable timer = target.schedule(this, timeout.time, timeout.unit);
+                    this.d = new Disposable() {
+                        public void dispose() {
+                            requestDispose.dispose();
+                            timer.dispose();
+                        }
+                    };
+                } else {
+                    d = requestDispose;
+                }
             }
         }
     }

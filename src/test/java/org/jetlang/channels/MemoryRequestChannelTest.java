@@ -73,10 +73,65 @@ public class MemoryRequestChannelTest {
                 done.countDown();
             }
         };
-        channel.publish(req, "hello", onReply);
+        SingleReply.publish(req, channel, "hello", onReply);
         assertTrue(done.await(10, TimeUnit.SECONDS));
-
     }
+
+    @Test
+    public void simpleRequestResponseWithTimeout() throws InterruptedException {
+        Fiber req = startFiber();
+        MemoryRequestChannel<String, Integer> channel = new MemoryRequestChannel<String, Integer>();
+
+        final CountDownLatch done = new CountDownLatch(1);
+        Callback<Integer> onReply = new Callback<Integer>() {
+            public void onMessage(Integer message) {
+                fail();
+            }
+        };
+        Runnable runnable = new Runnable() {
+            public void run() {
+                done.countDown();
+            }
+        };
+        SingleReply.publish(req, channel, "hello", onReply, 10, TimeUnit.MILLISECONDS, runnable);
+        assertTrue(done.await(10, TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void requestForSingleReplyThatTimesOutShouldEndRequest() throws InterruptedException {
+        Fiber req = startFiber();
+        MemoryRequestChannel<String, Integer> channel = new MemoryRequestChannel<String, Integer>();
+
+        Fiber reply = startFiber();
+        Callback<Request<String, Integer>> onReq = new Callback<Request<String, Integer>>() {
+            public void onMessage(Request<String, Integer> message) {
+                //ignore requests
+            }
+        };
+        final CountDownLatch endSession = new CountDownLatch(1);
+        Callback<Request<String, Integer>> onReqEnd = new Callback<Request<String, Integer>>() {
+            public void onMessage(Request<String, Integer> message) {
+                endSession.countDown();
+            }
+        };
+        channel.subscribe(reply, onReq, onReqEnd);
+
+        final CountDownLatch done = new CountDownLatch(1);
+        Callback<Integer> onReply = new Callback<Integer>() {
+            public void onMessage(Integer message) {
+                fail();
+            }
+        };
+        Runnable runnable = new Runnable() {
+            public void run() {
+                done.countDown();
+            }
+        };
+        SingleReply.publish(req, channel, "hello", onReply, 10, TimeUnit.MILLISECONDS, runnable);
+        assertTrue(done.await(10, TimeUnit.SECONDS));
+        assertTrue(endSession.await(10, TimeUnit.SECONDS));
+    }
+
 
     @Test
     public void simpleRequestResponseWithEndSession() throws InterruptedException {
@@ -131,9 +186,9 @@ public class MemoryRequestChannelTest {
         channel.subscribe(reply, onReq, onEnd);
 
         final CountDownLatch rcv = new CountDownLatch(1);
+
         AsyncRequest<String, Integer> async = new AsyncRequest<String, Integer>(req);
         async.setResponseCount(5);
-
         Callback<List<Integer>> onReply = new Callback<List<Integer>>() {
             public void onMessage(List<Integer> message) {
                 assertEquals(5, message.size());
