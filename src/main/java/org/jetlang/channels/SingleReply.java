@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Date: Jan 31, 2009
  * Time: 5:10:16 PM
  */
-public class SingleReply {
+class SingleReply {
 
     public static <R, V> Disposable publish(Fiber fiber,
                                             RequestChannel<R, V> channel, R request, final Callback<V> reply) {

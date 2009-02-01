@@ -73,7 +73,7 @@ public class MemoryRequestChannelTest {
                 done.countDown();
             }
         };
-        SingleReply.publish(req, channel, "hello", onReply);
+        AsyncRequest.withOneReply(req, channel, "hello", onReply);
         assertTrue(done.await(10, TimeUnit.SECONDS));
     }
 
@@ -93,7 +93,7 @@ public class MemoryRequestChannelTest {
                 done.countDown();
             }
         };
-        SingleReply.publish(req, channel, "hello", onReply, 10, TimeUnit.MILLISECONDS, runnable);
+        AsyncRequest.withOneReply(req, channel, "hello", onReply, 10, TimeUnit.MILLISECONDS, runnable);
         assertTrue(done.await(10, TimeUnit.SECONDS));
     }
 
