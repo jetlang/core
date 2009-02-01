@@ -53,9 +53,9 @@ public class AsyncRequest<R, V> {
 }
 
 class BatchTimeout<V> {
-    Callback<List<V>> cb;
-    long time;
-    TimeUnit unit;
+    final Callback<List<V>> cb;
+    final long time;
+    final TimeUnit unit;
 
     public BatchTimeout(Callback<List<V>> cb, long time, TimeUnit unit) {
         this.cb = cb;
