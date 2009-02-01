@@ -1,6 +1,7 @@
 package org.jetlang.examples;
 
 
+import static junit.framework.Assert.assertEquals;
 import org.jetlang.channels.*;
 import org.jetlang.core.Callback;
 import org.jetlang.core.Filter;
@@ -8,6 +9,7 @@ import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.PoolFiberFactory;
 import org.jetlang.fibers.ThreadFiber;
 import org.junit.Assert;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.List;
@@ -183,6 +185,37 @@ public class BasicExamples {
         Assert.assertTrue(reset.await(10000, TimeUnit.MILLISECONDS));
         fiber.dispose();
     }
+
+
+    @Test
+    // introduced in 1.7
+    public void simpleRequestResponse() throws InterruptedException {
+        Fiber req = new ThreadFiber();
+        Fiber reply = new ThreadFiber();
+        req.start();
+        reply.start();
+        RequestChannel<String, Integer> channel = new MemoryRequestChannel<String, Integer>();
+        Callback<Request<String, Integer>> onReq = new Callback<Request<String, Integer>>() {
+            public void onMessage(Request<String, Integer> message) {
+                assertEquals("hello", message.getRequest());
+                message.reply(1);
+            }
+        };
+        channel.subscribe(reply, onReq);
+
+        final CountDownLatch done = new CountDownLatch(1);
+        Callback<Integer> onReply = new Callback<Integer>() {
+            public void onMessage(Integer message) {
+                assertEquals(1, message.intValue());
+                done.countDown();
+            }
+        };
+        AsyncRequest.withOneReply(req, channel, "hello", onReply);
+        assertTrue(done.await(10, TimeUnit.SECONDS));
+        req.dispose();
+        reply.dispose();
+    }
+
 
     @Test
     public void requestReplyWithBlockingQueue() throws InterruptedException {
