@@ -6,7 +6,10 @@ package org.jetlang.channels;
  * Time: 10:25:53 AM
  */
 public interface Request<R, V> {
+    Session getSession();
+
     R getRequest();
 
     void reply(V i);
+
 }

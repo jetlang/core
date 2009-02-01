@@ -109,8 +109,9 @@ public class MemoryRequestChannelTest {
             }
         };
         final CountDownLatch endSession = new CountDownLatch(1);
-        Callback<Request<String, Integer>> onReqEnd = new Callback<Request<String, Integer>>() {
-            public void onMessage(Request<String, Integer> message) {
+        Callback<SessionClosed<String>> onReqEnd = new Callback<SessionClosed<String>>() {
+            public void onMessage(SessionClosed<String> message) {
+                assertEquals("hello", message.getOriginalRequest());
                 endSession.countDown();
             }
         };
@@ -144,8 +145,8 @@ public class MemoryRequestChannelTest {
                 message.reply(1);
             }
         };
-        Callback<Request<String, Integer>> onEnd = new Callback<Request<String, Integer>>() {
-            public void onMessage(Request<String, Integer> message) {
+        Callback<SessionClosed<String>> onEnd = new Callback<SessionClosed<String>>() {
+            public void onMessage(SessionClosed<String> message) {
                 done.countDown();
             }
         };
@@ -178,8 +179,8 @@ public class MemoryRequestChannelTest {
                 }
             }
         };
-        Callback<Request<String, Integer>> onEnd = new Callback<Request<String, Integer>>() {
-            public void onMessage(Request<String, Integer> message) {
+        Callback<SessionClosed<String>> onEnd = new Callback<SessionClosed<String>>() {
+            public void onMessage(SessionClosed<String> message) {
                 done.countDown();
             }
         };
