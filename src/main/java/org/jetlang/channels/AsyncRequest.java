@@ -26,6 +26,10 @@ public class AsyncRequest<R, V> {
         return this;
     }
 
+    /**
+     * @param responses - number of expected responses or 0 if using a timeout to gather responses.
+     * @return chained request object
+     */
     public AsyncRequest<R, V> setResponseCount(int responses) {
         this.responses = responses;
         return this;

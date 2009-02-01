@@ -22,12 +22,10 @@ class BatchCallback<R, V> implements Callback<V>, Runnable, Disposable {
     }
 
     public void onMessage(V message) {
-        synchronized (lock) {
-            results.add(message);
-            if (responses > 0 && results.size() == responses) {
-                dispose();
-                onComplete.onMessage(results);
-            }
+        results.add(message);
+        if (responses > 0 && results.size() == responses) {
+            dispose();
+            onComplete.onMessage(results);
         }
     }
 
