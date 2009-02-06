@@ -85,12 +85,8 @@ public class ThreadFiber implements Fiber {
     /**
      * Wait for thread to complete
      */
-    public void join() {
-        try {
-            _thread.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public void join() throws InterruptedException {
+        _thread.join();
     }
 
     /**
