@@ -47,8 +47,13 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_lock) {
             if (!_flushPending) {
-                _context.schedule(_flushRunnable, _flushIntervalInMs, _timeUnit);
                 _flushPending = true;
+                
+                if( _flushIntervalInMs < 1 ) {
+                    _context.execute( _flushRunnable );
+                } else {
+                    _context.schedule(_flushRunnable, _flushIntervalInMs, _timeUnit);
+                }
             }
             _pending = msg;
         }
