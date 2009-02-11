@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class PingPongTest {
 
     @Test
-    public void executWithDedicatedThreads() {
+    public void executWithDedicatedThreads() throws Exception {
         PingPongChannels channels = new PingPongChannels();
 
         ThreadFiber pingThread = new ThreadFiber();
