@@ -4,6 +4,7 @@ package org.jetlang.examples;
 import static junit.framework.Assert.assertEquals;
 import org.jetlang.channels.*;
 import org.jetlang.core.Callback;
+import org.jetlang.core.Disposable;
 import org.jetlang.core.Filter;
 import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.PoolFiberFactory;
@@ -95,6 +96,27 @@ public class BasicExamples {
         fiber.dispose();
     }
 
+    @Test
+    public void unsubscribe() throws InterruptedException {
+        Fiber fiber = new ThreadFiber();
+        fiber.start();
+        final CountDownLatch reset = new CountDownLatch(1);
+        final CountDownLatch two = new CountDownLatch(2);
+        Callback<String> runnable = new Callback<String>() {
+            public void onMessage(String message) {
+                reset.countDown();
+                two.countDown();
+            }
+        };
+        Channel<String> channel = new MemoryChannel<String>();
+        Disposable unsub = channel.subscribe(fiber, runnable);
+        channel.publish("one");
+        Assert.assertTrue(reset.await(5000, TimeUnit.MILLISECONDS));
+        unsub.dispose();
+        channel.publish("two");
+        Assert.assertFalse(two.await(10, TimeUnit.MILLISECONDS));
+        fiber.dispose();
+    }
 
     @Test
     public void pubSubWithDedicatedThreadWithFilter() throws InterruptedException {
