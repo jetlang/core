@@ -3,6 +3,7 @@ package org.jetlang.channels;
 import org.jetlang.PerfTimer;
 import org.jetlang.core.*;
 import org.jetlang.fibers.Fiber;
+import org.jetlang.fibers.FiberStub;
 import org.jetlang.fibers.PoolFiberFactory;
 import org.jetlang.fibers.ThreadFiber;
 import static org.junit.Assert.*;
@@ -121,7 +122,7 @@ public class ChannelTest {
     @Test
     public void SubToBatch() {
         MemoryChannel<String> channel = new MemoryChannel<String>();
-        StubCommandContext execute = new StubCommandContext();
+        FiberStub execute = new FiberStub();
         final boolean[] received = new boolean[1];
         Callback<List<String>> onReceive = new Callback<List<String>>() {
             public void onMessage(List<String> data) {
@@ -152,7 +153,7 @@ public class ChannelTest {
     @Test
     public void subToKeyedBatch() {
         MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
-        StubCommandContext execute = new StubCommandContext();
+        FiberStub execute = new FiberStub();
         final boolean[] received = new boolean[1];
         Callback<Map<String, Integer>> onReceive = new Callback<Map<String, Integer>>() {
             public void onMessage(Map<String, Integer> data) {
@@ -188,7 +189,7 @@ public class ChannelTest {
     @Test
     public void SubscribeToLast() {
         MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
-        StubCommandContext execute = new StubCommandContext();
+        FiberStub execute = new FiberStub();
         final List<Integer> received = new ArrayList<Integer>();
         Callback<Integer> onReceive = new Callback<Integer>() {
             public void onMessage(Integer data)
@@ -325,40 +326,3 @@ public class ChannelTest {
 
 }
 
-class StubCommandContext implements Fiber {
-    public List<Runnable> Scheduled = new ArrayList<Runnable>();
-
-    public Disposable schedule(Runnable command, long delay, TimeUnit unit) {
-        Scheduled.add(command);
-        return null;
-    }
-
-    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-        Scheduled.add(command);
-        return null;
-    }
-
-    /// <summary>
-    /// start consuming events.
-    /// </summary>
-    public void start() {
-    }
-
-    public void add(Disposable runOnStop) {
-    }
-
-    public boolean remove(Disposable disposable) {
-        return false;
-    }
-
-    public int size() {
-        return 0;
-    }
-
-    public void execute(Runnable command) {
-        throw new RuntimeException("no impl");
-    }
-
-    public void dispose() {
-    }
-}
