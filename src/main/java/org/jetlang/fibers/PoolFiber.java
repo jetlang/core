@@ -29,7 +29,7 @@ class PoolFiber implements Fiber {
     private final SchedulerImpl _scheduler;
     private final Runnable _flushRunnable;
 
-    PoolFiber(Executor pool, BatchExecutor executor, ScheduledExecutorService scheduler) {
+    public PoolFiber(Executor pool, BatchExecutor executor, ScheduledExecutorService scheduler) {
         _flushExecutor = pool;
         _commandExecutor = executor;
         _scheduler = new SchedulerImpl(this, scheduler);
