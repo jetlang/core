@@ -21,8 +21,14 @@ public class SchedulerImpl implements Scheduler {
     }
 
     public Disposable schedule(Runnable _command, long delay, TimeUnit unit) {
-        PendingCommand command = new PendingCommand(_command);
-        return new ScheduledFutureControl(_scheduler.schedule(new ExecuteCommand(command), delay, unit), command);
+        if (delay == 0) {
+            PendingCommand c = new PendingCommand(_command);
+            _queue.execute(c);
+            return c;
+        } else {
+            PendingCommand command = new PendingCommand(_command);
+            return new ScheduledFutureControl(_scheduler.schedule(new ExecuteCommand(command), delay, unit), command);
+        }
     }
 
     public Disposable scheduleWithFixedDelay(Runnable _command, long initialDelay, long interval, TimeUnit unit) {
