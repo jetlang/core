@@ -233,7 +233,10 @@
   <component name="ProjectDetails">
     <option name="projectName" value="jetlang" />
   </component>
-  <component name="ProjectFileVersion" converted="true" />
+  <component name="ProjectFileVersion" converted="true">
+    <converter id="ror-modules" />
+    <converter id="SelenaRunConfToDiana" />
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jetlang.iml" filepath="$PROJECT_DIR$/jetlang.iml" />
