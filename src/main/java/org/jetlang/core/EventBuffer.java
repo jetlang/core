@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * User: mrettig
  * Date: Aug 29, 2009
  */
-public class EventBuffer {
+public class EventBuffer implements EventReader {
 
     private ArrayList<Runnable> events = new ArrayList<Runnable>();
 
