@@ -4,8 +4,6 @@ import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
 import org.jetlang.core.DisposingExecutor;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
  * Conduit for exchanging messages between threads. Objects references will be delivered
  * between threads without any serialization or object copying.
@@ -16,16 +14,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MemoryChannel<T> implements Channel<T> {
 
-    private final CopyOnWriteArrayList<Callback<T>> _subscribers = new CopyOnWriteArrayList<Callback<T>>();
+    private final SubscriberList<T> _subscribers = new SubscriberList<T>();
 
     public int subscriberCount() {
         return _subscribers.size();
     }
 
     public void publish(T s) {
-        for (Callback<T> subscriber : _subscribers) {
-            subscriber.onMessage(s);
-        }
+        _subscribers.publish(s);
     }
 
     public Disposable subscribe(DisposingExecutor queue, Callback<T> onReceive) {

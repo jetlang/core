@@ -295,13 +295,15 @@ public class ChannelTest {
     }
 
     private void runPerfTest(Fiber bus) throws InterruptedException {
-        MemoryChannel<Integer> channel = new MemoryChannel<Integer>();
+        MemoryChannel<String> channel = new MemoryChannel<String>();
 
-        final Integer max = 5000000;
+        final int max = 10000000;
         final CountDownLatch reset = new CountDownLatch(1);
-        Callback<Integer> onMsg = new Callback<Integer>() {
-            public void onMessage(Integer count) {
-                if (count.equals(max)) {
+        Callback<String> onMsg = new Callback<String>() {
+            int count = 0;
+
+            public void onMessage(String msg) {
+                if (++count == max) {
                     reset.countDown();
                 }
             }
@@ -309,11 +311,8 @@ public class ChannelTest {
         channel.subscribe(bus, onMsg);
         PerfTimer timer = new PerfTimer(max);
         try {
-            for (int i = 0; i <= max; i++) {
-                channel.publish(i);
-                if (i % 50000 == 0) {
-                    //Thread.sleep(1);
-                }
+            for (int i = 0; i < max; i++) {
+                channel.publish("msg");
             }
             boolean result = reset.await(30, TimeUnit.SECONDS);
             assertTrue(result);

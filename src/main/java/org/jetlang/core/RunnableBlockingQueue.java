@@ -1,10 +1,8 @@
 package org.jetlang.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
 
 /**
  * Blocking queue supporting efficient put and sweep operations.
@@ -14,9 +12,9 @@ import java.util.concurrent.locks.Condition;
 public class RunnableBlockingQueue {
 
     private volatile boolean _running = true;
-    private Lock _lock = new ReentrantLock();
-    private Condition _waiter = _lock.newCondition();
-    private final List<Runnable> _queue = new ArrayList<Runnable>();
+    private final Lock _lock = new ReentrantLock();
+    private final Condition _waiter = _lock.newCondition();
+    private EventBuffer _queue = new EventBuffer();
 
     public boolean isRunning() {
         return _running;
@@ -28,15 +26,15 @@ public class RunnableBlockingQueue {
 
     public void put(Runnable r) {
         _lock.lock();
-        try{
+        try {
             _queue.add(r);
             _waiter.signal();
-        }finally{
+        } finally {
             _lock.unlock();
         }
     }
 
-    public Runnable[] sweep() {
+    public EventBuffer swap(EventBuffer buffer) {
         _lock.lock();
         try {
             while (_queue.isEmpty() && _running) {
@@ -46,19 +44,19 @@ public class RunnableBlockingQueue {
                     throw new RuntimeException(e);
                 }
             }
-            Runnable[] result = _queue.toArray(new Runnable[_queue.size()]);
-            _queue.clear();
-            return result;
-        }finally{
+            EventBuffer toReturn = _queue;
+            _queue = buffer;
+            return toReturn;
+        } finally {
             _lock.unlock();
         }
     }
 
     public boolean isEmpty() {
         _lock.lock();
-        try{
+        try {
             return _queue.isEmpty();
-        }finally{
+        } finally {
             _lock.unlock();
         }
     }

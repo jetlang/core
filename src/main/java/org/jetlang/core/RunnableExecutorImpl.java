@@ -27,13 +27,12 @@ public class RunnableExecutorImpl implements RunnableExecutor {
         _commands.put(command);
     }
 
-    private Runnable[] dequeueAll() {
-        return _commands.sweep();
-    }
-
     public void run() {
+        EventBuffer buffer = new EventBuffer();
         while (_commands.isRunning()) {
-            _commandExecutor.execute(dequeueAll());
+            buffer = _commands.swap(buffer);
+            _commandExecutor.execute(buffer);
+            buffer.clear();
         }
     }
 

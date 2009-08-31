@@ -1,9 +1,6 @@
 package org.jetlang.fibers;
 
-import org.jetlang.core.BatchExecutor;
-import org.jetlang.core.Disposable;
-import org.jetlang.core.RunnableBlockingQueue;
-import org.jetlang.core.SchedulerImpl;
+import org.jetlang.core.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +25,7 @@ class PoolFiber implements Fiber {
     private final Collection<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
     private final SchedulerImpl _scheduler;
     private final Runnable _flushRunnable;
+    private EventBuffer buffer = new EventBuffer();
 
     public PoolFiber(Executor pool, BatchExecutor executor, ScheduledExecutorService scheduler) {
         _flushExecutor = pool;
@@ -61,17 +59,15 @@ class PoolFiber implements Fiber {
     }
 
     private void flush() {
-        _commandExecutor.execute(flushPendingCommands());
+        buffer = _queue.swap(buffer);
+        _commandExecutor.execute(buffer);
+        buffer.clear();
 
         _flushPending.compareAndSet(true, false);
 
         if (!_queue.isEmpty()) {
             flushIfNotPending();
         }
-    }
-
-    private Runnable[] flushPendingCommands() {
-        return _queue.sweep();
     }
 
     public void start() {
