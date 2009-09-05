@@ -233,10 +233,7 @@
   <component name="ProjectDetails">
     <option name="projectName" value="jetlang" />
   </component>
-  <component name="ProjectFileVersion" converted="true">
-    <converter id="ror-modules" />
-    <converter id="SelenaRunConfToDiana" />
-  </component>
+  <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jetlang.iml" filepath="$PROJECT_DIR$/jetlang.iml" />
@@ -260,6 +257,26 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://jetlang.googlecode.com/svn/branches" />
+                  <option value="https://jetlang.googlecode.com/svn/repo" />
+                  <option value="https://jetlang.googlecode.com/svn/site" />
+                  <option value="https://jetlang.googlecode.com/svn/tags" />
+                  <option value="https://jetlang.googlecode.com/svn/wiki" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://jetlang.googlecode.com/svn/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="myVersion" value="124" />
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
