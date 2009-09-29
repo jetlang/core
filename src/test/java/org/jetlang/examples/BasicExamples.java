@@ -208,6 +208,28 @@ public class BasicExamples {
         fiber.dispose();
     }
 
+    @Test
+    public void compositeChannel() throws InterruptedException {
+        Channel<String> channel = new MemoryChannel<String>();
+        Channel<String> channel2 = new MemoryChannel<String>();
+        Channel<String> comp = new CompositeChannel<String>(channel, channel2);
+        final CountDownLatch latch = new CountDownLatch(2);
+        Callback<String> sub = new Callback<String>() {
+
+            public void onMessage(String message) {
+                latch.countDown();
+            }
+        };
+        Fiber fiber = new ThreadFiber();
+        fiber.start();
+        comp.subscribe(fiber, sub);
+
+        comp.publish("msg");
+        Assert.assertTrue(latch.await(10, TimeUnit.SECONDS));
+        fiber.dispose();
+
+    }
+
 
     @Test
     // introduced in 1.7

@@ -322,6 +322,76 @@ public class ChannelTest {
         }
     }
 
+    @Test
+    public void batchingPerfTest() throws InterruptedException {
+        ThreadFiber bus = new ThreadFiber();
+        bus.start();
+
+        MemoryChannel<String> channel = new MemoryChannel<String>();
+
+        final int max = 10000000;
+        final CountDownLatch reset = new CountDownLatch(1);
+        Callback<List<String>> cb = new Callback<List<String>>() {
+            int total = 0;
+
+            public void onMessage(List<String> batch) {
+                total += batch.size();
+                if (total == max) {
+                    reset.countDown();
+                }
+            }
+        };
+
+        BatchSubscriber<String> batch = new BatchSubscriber<String>(bus, cb, 0, TimeUnit.MILLISECONDS);
+        channel.subscribe(batch);
+        PerfTimer timer = new PerfTimer(max);
+        try {
+            for (int i = 0; i < max; i++) {
+                channel.publish("msg");
+            }
+            boolean result = reset.await(30, TimeUnit.SECONDS);
+            assertTrue(result);
+        } finally {
+            timer.dispose();
+            bus.dispose();
+        }
+    }
+
+    @Test
+    public void recyclingBatchingTest() throws InterruptedException {
+        ThreadFiber bus = new ThreadFiber();
+        bus.start();
+
+        MemoryChannel<String> channel = new MemoryChannel<String>();
+
+        final int max = 10000000;
+        final CountDownLatch reset = new CountDownLatch(1);
+        Callback<MessageReader<String>> cb = new Callback<MessageReader<String>>() {
+            int total = 0;
+
+            public void onMessage(MessageReader<String> batch) {
+                total += batch.size();
+                if (total == max) {
+                    reset.countDown();
+                }
+            }
+        };
+
+        RecyclingBatchSubscriber<String> batch = new RecyclingBatchSubscriber<String>(bus, cb, 0, TimeUnit.MILLISECONDS);
+        channel.subscribe(batch);
+        PerfTimer timer = new PerfTimer(max);
+        try {
+            for (int i = 0; i < max; i++) {
+                channel.publish("msg");
+            }
+            boolean result = reset.await(30, TimeUnit.SECONDS);
+            assertTrue(result);
+        } finally {
+            timer.dispose();
+            bus.dispose();
+        }
+    }
+
 
 }
 
