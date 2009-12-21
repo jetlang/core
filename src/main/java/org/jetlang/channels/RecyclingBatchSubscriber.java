@@ -68,7 +68,10 @@ public class RecyclingBatchSubscriber<T> extends BaseSubscription<T> {
         } finally {
             _lock.unlock();
         }
-        _receive.onMessage(_active);
-        _active.clear();
+        try {
+            _receive.onMessage(_active);
+        } finally {
+            _active.clear();
+        }
     }
 }
