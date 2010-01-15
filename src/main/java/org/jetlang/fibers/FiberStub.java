@@ -69,7 +69,9 @@ public class FiberStub implements Fiber {
     public void executeAllScheduled() {
         for (ScheduledEvent event : new ArrayList<ScheduledEvent>(Scheduled)) {
             event.getRunnable().run();
-            Scheduled.remove(event);
+            if (!event.isRecurring()) {
+                Scheduled.remove(event);
+            }
         }
     }
 
