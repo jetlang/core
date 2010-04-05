@@ -32,6 +32,11 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
             public void run() {
                 flush();
             }
+
+            @Override
+            public String toString() {
+                return "Flushing" + BatchSubscriber.this + " via " +  _receive.toString();
+            }
         };
     }
 

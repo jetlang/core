@@ -35,6 +35,11 @@ public class RecyclingBatchSubscriber<T> extends BaseSubscription<T> {
             public void run() {
                 flush();
             }
+
+            @Override
+            public String toString() {
+                return "Flushing" + RecyclingBatchSubscriber.this + " via " +  _receive.toString();
+            }
         };
     }
 

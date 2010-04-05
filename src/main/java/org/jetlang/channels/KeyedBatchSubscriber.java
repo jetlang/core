@@ -38,6 +38,11 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
             public void run() {
                 flush();
             }
+
+            @Override
+            public String toString() {
+                return "Flushing" + KeyedBatchSubscriber.this + " via " +  _target.toString();
+            }
         };
     }
 

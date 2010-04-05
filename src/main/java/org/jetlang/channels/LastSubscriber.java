@@ -35,6 +35,11 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
             public void run() {
                 flush();
             }
+
+            @Override
+            public String toString() {
+                return "Flushing" + LastSubscriber.this + " via " +  _target.toString();
+            }
         };
     }
 
@@ -48,9 +53,9 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
         synchronized (_lock) {
             if (!_flushPending) {
                 _flushPending = true;
-                
-                if( _flushIntervalInMs < 1 ) {
-                    _context.execute( _flushRunnable );
+
+                if (_flushIntervalInMs < 1) {
+                    _context.execute(_flushRunnable);
                 } else {
                     _context.schedule(_flushRunnable, _flushIntervalInMs, _timeUnit);
                 }
