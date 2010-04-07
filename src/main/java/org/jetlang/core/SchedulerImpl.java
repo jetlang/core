@@ -72,6 +72,11 @@ public class SchedulerImpl implements Scheduler {
                 _toExecute.run();
             }
         }
+
+        @Override
+        public String toString() {
+            return _toExecute.toString();
+        }
     }
 
     private final class ScheduledFutureControl implements Disposable {
