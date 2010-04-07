@@ -38,7 +38,7 @@ public class RecyclingBatchSubscriber<T> extends BaseSubscription<T> {
 
             @Override
             public String toString() {
-                return "Flushing" + RecyclingBatchSubscriber.this + " via " +  _receive.toString();
+                return "Flushing " + RecyclingBatchSubscriber.this + " via " +  _receive.toString();
             }
         };
     }

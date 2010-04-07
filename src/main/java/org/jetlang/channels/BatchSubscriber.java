@@ -35,7 +35,7 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
 
             @Override
             public String toString() {
-                return "Flushing" + BatchSubscriber.this + " via " +  _receive.toString();
+                return "Flushing " + BatchSubscriber.this + " via " +  _receive.toString();
             }
         };
     }

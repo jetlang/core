@@ -41,7 +41,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
 
             @Override
             public String toString() {
-                return "Flushing" + KeyedBatchSubscriber.this + " via " +  _target.toString();
+                return "Flushing " + KeyedBatchSubscriber.this + " via " +  _target.toString();
             }
         };
     }

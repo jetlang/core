@@ -38,7 +38,7 @@ public class LastSubscriber<T> extends BaseSubscription<T> {
 
             @Override
             public String toString() {
-                return "Flushing" + LastSubscriber.this + " via " +  _target.toString();
+                return "Flushing " + LastSubscriber.this + " via " +  _target.toString();
             }
         };
     }
