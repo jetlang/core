@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class QueueLatencyMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Fiber f = new ThreadFiber();
         f.start();
         final long[] totalLatency = new long[1];
@@ -33,10 +33,16 @@ public class QueueLatencyMain {
         }
         final CountDownLatch latch = new CountDownLatch(1);
         Runnable shutdown = new Runnable() {
+            final long timestamp = System.nanoTime();
+
             public void run() {
+                long m = (System.nanoTime() - timestamp);
+                System.out.println("nanos = " + m + " micros: " + TimeUnit.NANOSECONDS.toMicros(m));
                 latch.countDown();
             }
         };
+        f.execute(shutdown);
+        System.out.println("latch = " + latch.await(10, TimeUnit.SECONDS));
         long micros = TimeUnit.NANOSECONDS.toMicros(totalLatency[0]);
         System.out.println("totalLatency = " + micros + " avg: " + micros / total);
         f.dispose();
