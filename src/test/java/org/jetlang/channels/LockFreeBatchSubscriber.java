@@ -72,11 +72,14 @@ public class LockFreeBatchSubscriber<T> extends BaseSubscription<T> {
     }
 
     private void flush() {
-        callback.onMessage(queue);
-        pending.compareAndSet(true, false);
-        if (!queue.isEmpty()) {
-            if (pending.compareAndSet(false, true)) {
-                schedule();
+        try {
+            callback.onMessage(queue);
+        } finally {
+            pending.compareAndSet(true, false);
+            if (!queue.isEmpty()) {
+                if (pending.compareAndSet(false, true)) {
+                    schedule();
+                }
             }
         }
     }
