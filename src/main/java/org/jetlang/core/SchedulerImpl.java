@@ -34,7 +34,7 @@ public class SchedulerImpl implements Scheduler {
     public Disposable scheduleAtFixedRate(Runnable _command, long initialDelay, long interval, TimeUnit unit) {
         PendingCommand command = new PendingCommand(_command);
         return new ScheduledFutureControl(
-                _scheduler.scheduleWithFixedDelay(new ExecuteCommand(command), initialDelay, interval, unit),
+                _scheduler.scheduleAtFixedRate(new ExecuteCommand(command), initialDelay, interval, unit),
                 command);
     }
 
