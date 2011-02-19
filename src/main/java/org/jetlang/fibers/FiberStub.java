@@ -56,6 +56,10 @@ public class FiberStub implements Fiber {
         };
     }
 
+    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+        return scheduleAtFixedRate(command, initialDelay, delay, unit);
+    }
+
     public void dispose() {
     }
 

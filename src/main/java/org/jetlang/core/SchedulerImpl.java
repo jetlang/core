@@ -71,7 +71,7 @@ public class SchedulerImpl implements Scheduler {
 
     public Disposable scheduleWithFixedDelay(final Runnable command, long initialDelay, long interval, TimeUnit unit) {
         FixedDelayTask fixedDelayTask = new FixedDelayTask(command, interval, unit);
-        fixedDelayTask.scheduledEvent = schedule(command, initialDelay, unit);
+        fixedDelayTask.scheduledEvent = schedule(fixedDelayTask, initialDelay, unit);
         return fixedDelayTask;
     }
 

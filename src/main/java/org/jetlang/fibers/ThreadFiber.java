@@ -102,4 +102,8 @@ public class ThreadFiber implements Fiber {
     public Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         return _scheduler.scheduleAtFixedRate(command, initialDelay, delay, unit);
     }
+
+    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+        return _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+    }
 }

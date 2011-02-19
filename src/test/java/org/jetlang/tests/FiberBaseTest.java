@@ -111,11 +111,8 @@ public abstract class FiberBaseTest extends Assert {
                 reset.countDown();
             }
         };
-        long start = System.nanoTime();
         _bus.scheduleWithFixedDelay(onReset, 1, 1, TimeUnit.MILLISECONDS);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
-        long duration = System.nanoTime() - start;
-        assertTrue(TimeUnit.NANOSECONDS.toMillis(duration) >= 100);
     }
 
 
