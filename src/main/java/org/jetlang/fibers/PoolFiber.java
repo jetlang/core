@@ -112,9 +112,9 @@ class PoolFiber implements Fiber {
         return _scheduler.schedule(command, delay, unit);
     }
 
-    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+    public Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         //the timer object is shared so interval timers must be shut down manually.
-        final Disposable stopper = _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+        final Disposable stopper = _scheduler.scheduleAtFixedRate(command, initialDelay, delay, unit);
         Disposable wrapper = new Disposable() {
             public void dispose() {
                 stopper.dispose();

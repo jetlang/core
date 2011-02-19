@@ -46,7 +46,7 @@ public class FiberStub implements Fiber {
         };
     }
 
-    public Disposable scheduleWithFixedDelay(Runnable runnable, long first, long interval, TimeUnit timeUnit) {
+    public Disposable scheduleAtFixedRate(Runnable runnable, long first, long interval, TimeUnit timeUnit) {
         final ScheduledEvent event = new ScheduledEvent(runnable, first, interval, timeUnit);
         Scheduled.add(event);
         return new Disposable() {

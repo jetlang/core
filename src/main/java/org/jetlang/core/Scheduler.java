@@ -34,5 +34,5 @@ public interface Scheduler extends Disposable {
      * @param unit         the time unit of the initialDelay and delay parameters
      * @return a Disposable that can be used to cancel execution
      */
-    Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit);
+    Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long delay, TimeUnit unit);
 }

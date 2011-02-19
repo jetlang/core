@@ -46,7 +46,7 @@ public class PoolFiberTest extends FiberBaseTest {
             public void run() {
             }
         };
-        Disposable stopper = _bus.scheduleWithFixedDelay(onReset, 15, 15, TimeUnit.MILLISECONDS);
+        Disposable stopper = _bus.scheduleAtFixedRate(onReset, 15, 15, TimeUnit.MILLISECONDS);
         assertEquals(1, _bus.size());
         stopper.dispose();
         assertEquals(0, _bus.size());

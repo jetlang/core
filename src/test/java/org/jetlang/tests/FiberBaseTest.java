@@ -98,7 +98,7 @@ public abstract class FiberBaseTest extends Assert {
                 reset.countDown();
             }
         };
-        _bus.scheduleWithFixedDelay(onReset, 15, 15, TimeUnit.MILLISECONDS);
+        _bus.scheduleAtFixedRate(onReset, 15, 15, TimeUnit.MILLISECONDS);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
     }
 
@@ -109,8 +109,7 @@ public abstract class FiberBaseTest extends Assert {
         try {
             _bus.start();
             Assert.fail("Should not start");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
         }
     }
 

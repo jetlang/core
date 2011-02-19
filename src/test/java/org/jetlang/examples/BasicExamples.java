@@ -1,7 +1,6 @@
 package org.jetlang.examples;
 
 
-import static junit.framework.Assert.assertEquals;
 import org.jetlang.channels.*;
 import org.jetlang.core.Callback;
 import org.jetlang.core.Disposable;
@@ -10,12 +9,14 @@ import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.PoolFiberFactory;
 import org.jetlang.fibers.ThreadFiber;
 import org.junit.Assert;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Some contrived examples that demonstrate the basic publish and
@@ -91,7 +92,7 @@ public class BasicExamples {
                 reset.countDown();
             }
         };
-        fiber.scheduleWithFixedDelay(runnable, 1, 2, TimeUnit.MILLISECONDS);
+        fiber.scheduleAtFixedRate(runnable, 1, 2, TimeUnit.MILLISECONDS);
         Assert.assertTrue(reset.await(5000, TimeUnit.MILLISECONDS));
         fiber.dispose();
     }

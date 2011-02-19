@@ -99,7 +99,7 @@ public class ThreadFiber implements Fiber {
     /**
      * Schedule recurring event. Event will be fired on fiber thread.
      */
-    public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-        return _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+    public Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+        return _scheduler.scheduleAtFixedRate(command, initialDelay, delay, unit);
     }
 }
