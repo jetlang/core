@@ -1,6 +1,7 @@
 package org.jetlang.core;
 
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Default implementation for scheduling events for execution on fibers.
@@ -36,6 +37,42 @@ public class SchedulerImpl implements Scheduler {
         return new ScheduledFutureControl(
                 _scheduler.scheduleAtFixedRate(new ExecuteCommand(command), initialDelay, interval, unit),
                 command);
+    }
+
+    private class FixedDelayTask implements Runnable, Disposable {
+        private final AtomicBoolean cancelled = new AtomicBoolean(false);
+        private final Runnable target;
+        private final long interval;
+        private final TimeUnit unit;
+        private volatile Disposable scheduledEvent;
+
+        public FixedDelayTask(Runnable target, long interval, TimeUnit unit) {
+            this.target = target;
+            this.interval = interval;
+            this.unit = unit;
+        }
+
+        public void dispose() {
+            if (cancelled.compareAndSet(false, true)) {
+                scheduledEvent.dispose();
+            }
+        }
+
+        public void run() {
+            if (cancelled.get()) return;
+            try {
+                target.run();
+            } finally {
+                if (!cancelled.get())
+                    scheduledEvent = schedule(this, interval, unit);
+            }
+        }
+    }
+
+    public Disposable scheduleWithFixedDelay(final Runnable command, long initialDelay, long interval, TimeUnit unit) {
+        FixedDelayTask fixedDelayTask = new FixedDelayTask(command, interval, unit);
+        fixedDelayTask.scheduledEvent = schedule(command, initialDelay, unit);
+        return fixedDelayTask;
     }
 
     public void dispose() {

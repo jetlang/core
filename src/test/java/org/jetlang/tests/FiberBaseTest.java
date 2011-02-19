@@ -90,7 +90,7 @@ public abstract class FiberBaseTest extends Assert {
     }
 
     @Test
-    public void ScheduleInterval() throws InterruptedException {
+    public void scheduleAtFixedRate() throws InterruptedException {
         final CountDownLatch reset = new CountDownLatch(5);
         _bus.start();
         Runnable onReset = new Runnable() {
@@ -99,7 +99,23 @@ public abstract class FiberBaseTest extends Assert {
             }
         };
         _bus.scheduleAtFixedRate(onReset, 15, 15, TimeUnit.MILLISECONDS);
+        assertTrue(reset.await(2, TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void scheduleWithFixedDelay() throws InterruptedException {
+        final CountDownLatch reset = new CountDownLatch(5);
+        _bus.start();
+        Runnable onReset = new Runnable() {
+            public void run() {
+                reset.countDown();
+            }
+        };
+        long start = System.nanoTime();
+        _bus.scheduleWithFixedDelay(onReset, 1, 1, TimeUnit.MILLISECONDS);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
+        long duration = System.nanoTime() - start;
+        assertTrue(TimeUnit.NANOSECONDS.toMillis(duration) >= 100);
     }
 
 

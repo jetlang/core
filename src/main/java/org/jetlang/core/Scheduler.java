@@ -22,10 +22,7 @@ public interface Scheduler extends Disposable {
      * Creates and executes a periodic action that becomes enabled first
      * after the given initial delay, and subsequently with the
      * given delay between the termination of one execution and the
-     * commencement of the next.  If any execution of the task
-     * encounters an exception, subsequent executions are suppressed.
-     * Otherwise, the task will only terminate via cancellation or
-     * termination of the scheduler.
+     * commencement of the next.
      *
      * @param command      the task to execute
      * @param initialDelay the time to delay first execution
@@ -34,5 +31,20 @@ public interface Scheduler extends Disposable {
      * @param unit         the time unit of the initialDelay and delay parameters
      * @return a Disposable that can be used to cancel execution
      */
-    Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long delay, TimeUnit unit);
+    Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit);
+
+    /**
+     * Creates and executes a periodic action that becomes enabled first after the given initial delay,
+     * and subsequently with the given period; that is executions will commence after initialDelay
+     * then initialDelay+period, then initialDelay + 2 * period, and so on.
+     * The task will only terminate via cancellation or termination of the executor.
+     *
+     * @param command      the task to execute
+     * @param initialDelay the time to delay first execution
+     * @param period       the delay
+     * @param unit         the time unit of the initialDelay and delay parameters
+     * @return a Disposable that can be used to cancel execution
+     */
+    Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit);
+
 }
