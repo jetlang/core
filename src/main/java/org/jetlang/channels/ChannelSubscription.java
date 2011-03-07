@@ -33,7 +33,7 @@ public class ChannelSubscription<T> extends BaseSubscription<T> {
 
             @Override
             public String toString() {
-                return _receiveMethod.toString();
+                return _receiveMethod.toString() + "(" + msg + ")";
             }
         };
         getQueue().execute(asyncExec);
