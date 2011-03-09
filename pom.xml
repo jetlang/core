@@ -5,7 +5,7 @@
     <artifactId>jetlang</artifactId>
     <packaging>bundle</packaging>
 
-    <version>0.2.5</version>
+    <version>0.2.6-SNAPSHOT</version>
     <name>Jetlang</name>
     <url>http://code.google.com/p/jetlang/</url>
 
@@ -25,9 +25,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:svn:http://jetlang.googlecode.com/svn/tags/jetlang-0.2.5</connection>
-        <developerConnection>scm:svn:https://jetlang.googlecode.com/svn/tags/jetlang-0.2.5</developerConnection>
-        <url>http://code.google.com/p/jetlang/source/browse/tags/jetlang-0.2.5</url>
+        <connection>scm:svn:http://jetlang.googlecode.com/svn/trunk/</connection>
+        <developerConnection>scm:svn:https://jetlang.googlecode.com/svn/trunk/</developerConnection>
+        <url>http://code.google.com/p/jetlang/source/browse/</url>
     </scm>
 
     <build>
