@@ -6,7 +6,7 @@
     <artifactId>jetlang</artifactId>
     <packaging>bundle</packaging>
 
-    <version>0.2.5-SNAPSHOT</version>
+    <version>0.2.2</version>
     <name>Jetlang</name>
     <url>http://code.google.com/p/jetlang/</url>
 
