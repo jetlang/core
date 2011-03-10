@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Default implementation for scheduling events for execution on fibers.
  */
 public class SchedulerImpl implements Scheduler {
+
+    private volatile boolean disposed;
     private final ScheduledExecutorService _scheduler;
     private final Executor _queue;
 
@@ -63,7 +65,7 @@ public class SchedulerImpl implements Scheduler {
             try {
                 target.run();
             } finally {
-                if (!cancelled.get())
+                if (!cancelled.get() && !disposed)
                     scheduledEvent = schedule(this, interval, unit);
             }
         }
@@ -76,6 +78,7 @@ public class SchedulerImpl implements Scheduler {
     }
 
     public void dispose() {
+        disposed = true;
         _scheduler.shutdown();
     }
 
