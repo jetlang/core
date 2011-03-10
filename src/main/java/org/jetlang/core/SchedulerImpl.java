@@ -8,14 +8,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SchedulerImpl implements Scheduler {
 
-    private volatile boolean disposed;
     private final ScheduledExecutorService _scheduler;
     private final Executor _queue;
 
     public SchedulerImpl(Executor queue) {
         _queue = queue;
         ThreadFactory fact = new DaemonThreadFactory();
-        _scheduler = Executors.newSingleThreadScheduledExecutor(fact);
+        ScheduledThreadPoolExecutor s = new ScheduledThreadPoolExecutor(1, fact);
+        RejectedExecutionHandler handler = new RejectedExecutionHandler() {
+            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                if (!executor.isShutdown()) {
+                    throw new RejectedExecutionException("Rejected Execution: " + r);
+                }
+                //ignore tasks if shutdown already.
+            }
+        };
+        s.setRejectedExecutionHandler(handler);
+        _scheduler = s;
     }
 
     public SchedulerImpl(DisposingExecutor queue, ScheduledExecutorService scheduler) {
@@ -65,8 +74,9 @@ public class SchedulerImpl implements Scheduler {
             try {
                 target.run();
             } finally {
-                if (!cancelled.get() && !disposed)
+                if (!cancelled.get()) {
                     scheduledEvent = schedule(this, interval, unit);
+                }
             }
         }
     }
@@ -78,7 +88,6 @@ public class SchedulerImpl implements Scheduler {
     }
 
     public void dispose() {
-        disposed = true;
         _scheduler.shutdown();
     }
 

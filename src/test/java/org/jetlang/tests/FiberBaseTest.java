@@ -113,6 +113,10 @@ public abstract class FiberBaseTest extends Assert {
         };
         _bus.scheduleWithFixedDelay(onReset, 1, 1, TimeUnit.MILLISECONDS);
         assertTrue(reset.await(10, TimeUnit.SECONDS));
+        _bus.dispose();
+
+        //ignore task after dispose.
+        _bus.scheduleWithFixedDelay(onReset, 1, 1, TimeUnit.MILLISECONDS);
     }
 
 
