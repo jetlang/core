@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author mrettig
  */
-public class RunnableBlockingQueue {
+public class RunnableBlockingQueue implements EventQueue {
 
     private volatile boolean _running = true;
     private final Lock _lock = new ReentrantLock();

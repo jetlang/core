@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 class PoolFiber implements Fiber {
     private final AtomicBoolean _flushPending = new AtomicBoolean(false);
-    private final RunnableBlockingQueue _queue = new RunnableBlockingQueue();
+    private final EventQueue _queue = new RunnableBlockingQueue();
     private final Executor _flushExecutor;
     private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
     private final BatchExecutor _commandExecutor;

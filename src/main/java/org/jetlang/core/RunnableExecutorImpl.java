@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class RunnableExecutorImpl implements RunnableExecutor {
 
-    private final RunnableBlockingQueue _commands = new RunnableBlockingQueue();
+    private final EventQueue _commands;
     private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
 
     private final BatchExecutor _commandExecutor;
@@ -20,7 +20,12 @@ public class RunnableExecutorImpl implements RunnableExecutor {
     }
 
     public RunnableExecutorImpl(BatchExecutor executor) {
-        _commandExecutor = executor;
+        this(executor, new RunnableBlockingQueue());
+    }
+
+    public RunnableExecutorImpl(BatchExecutor exec, EventQueue q) {
+        this._commands = q;
+        this._commandExecutor = exec;
     }
 
     public void execute(Runnable command) {
