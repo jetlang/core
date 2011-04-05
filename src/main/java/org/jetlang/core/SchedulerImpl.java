@@ -13,6 +13,10 @@ public class SchedulerImpl implements Scheduler {
 
     public SchedulerImpl(Executor queue) {
         _queue = queue;
+        _scheduler = createSchedulerThatIgnoresEventsAfterStop();
+    }
+
+    public static ScheduledThreadPoolExecutor createSchedulerThatIgnoresEventsAfterStop() {
         ThreadFactory fact = new DaemonThreadFactory();
         ScheduledThreadPoolExecutor s = new ScheduledThreadPoolExecutor(1, fact);
         RejectedExecutionHandler handler = new RejectedExecutionHandler() {
@@ -24,7 +28,7 @@ public class SchedulerImpl implements Scheduler {
             }
         };
         s.setRejectedExecutionHandler(handler);
-        _scheduler = s;
+        return s;
     }
 
     public SchedulerImpl(DisposingExecutor queue, ScheduledExecutorService scheduler) {

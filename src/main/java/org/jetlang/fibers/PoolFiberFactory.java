@@ -1,12 +1,8 @@
 package org.jetlang.fibers;
 
-import org.jetlang.core.BatchExecutor;
-import org.jetlang.core.BatchExecutorImpl;
-import org.jetlang.core.Disposable;
-import org.jetlang.core.SynchronousExecutor;
+import org.jetlang.core.*;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -14,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class PoolFiberFactory implements Disposable {
 
-    private final ScheduledExecutorService _scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService _scheduler;
     private final Executor executor;
 
     /**
@@ -22,8 +18,13 @@ public class PoolFiberFactory implements Disposable {
      *
      * @param executor Executor to use for flushing pending commands for each created Fiber
      */
-    public PoolFiberFactory(Executor executor) {
+    public PoolFiberFactory(Executor executor, ScheduledExecutorService sched) {
         this.executor = executor;
+        this._scheduler = sched;
+    }
+
+    public PoolFiberFactory(Executor exec) {
+        this(exec, SchedulerImpl.createSchedulerThatIgnoresEventsAfterStop());
     }
 
     /**
