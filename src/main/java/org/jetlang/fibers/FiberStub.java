@@ -81,22 +81,26 @@ public class FiberStub implements Fiber {
 
     public static class ScheduledEvent {
 
-        private Runnable runnable;
-        private long first;
-        private long interval;
-        private TimeUnit timeUnit;
-        private boolean isRecurring = false;
+        private final Runnable runnable;
+        private final long first;
+        private final long interval;
+        private final TimeUnit timeUnit;
+        private final boolean isRecurring;
 
         public ScheduledEvent(Runnable runnable, long time, TimeUnit timeUnit) {
-            this(runnable, time, -1, timeUnit);
+            this(runnable, time, -1, timeUnit, false);
         }
 
-        public ScheduledEvent(Runnable runnable, long first, long interval, TimeUnit timeUnit) {
+        public ScheduledEvent(Runnable runnable, long first, long interval, TimeUnit timeUnit, boolean recurring) {
             this.runnable = runnable;
             this.first = first;
             this.interval = interval;
             this.timeUnit = timeUnit;
-            this.isRecurring = true;
+            this.isRecurring = recurring;
+        }
+
+        public ScheduledEvent(Runnable runnable, long first, long interval, TimeUnit timeUnit) {
+            this(runnable, first, interval, timeUnit, true);
         }
 
         public Runnable getRunnable() {
