@@ -50,6 +50,13 @@
     </developers>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.jvnet.wagon-svn</groupId>
+                <artifactId>wagon-svn</artifactId>
+                <version>1.8</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -221,11 +228,6 @@
             <id>google-code</id>
             <url>svn:https://jetlang.googlecode.com/svn/site/</url>
         </site>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>google-code</id>
-            <url>svn:https://jetlang.googlecode.com/svn/repo/</url>
-        </repository>
     </distributionManagement>
 
 </project>
