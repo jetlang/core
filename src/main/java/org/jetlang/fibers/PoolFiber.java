@@ -1,6 +1,9 @@
 package org.jetlang.fibers;
 
-import org.jetlang.core.*;
+import org.jetlang.core.BatchExecutor;
+import org.jetlang.core.Disposable;
+import org.jetlang.core.EventBuffer;
+import org.jetlang.core.SchedulerImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +11,6 @@ import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -17,8 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author mrettig
  */
 class PoolFiber implements Fiber {
-    private final AtomicBoolean _flushPending = new AtomicBoolean(false);
-    private final EventQueue _queue = new RunnableBlockingQueue();
+
+    private final Queue _queue = new Queue();
     private final Executor _flushExecutor;
     private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
     private final BatchExecutor _commandExecutor;
@@ -38,35 +40,48 @@ class PoolFiber implements Fiber {
         };
     }
 
+    private class Queue {
+        private boolean running = true;
+        private boolean flushPending = false;
+        private EventBuffer _queue = new EventBuffer();
+
+        public synchronized void setRunning(boolean newValue) {
+            running = newValue;
+        }
+
+        public synchronized void put(Runnable r) {
+            _queue.add(r);
+            if (running && !flushPending) {
+                _flushExecutor.execute(_flushRunnable);
+                flushPending = true;
+            }
+        }
+
+        public synchronized EventBuffer swap(EventBuffer buffer) {
+            if (_queue.isEmpty()) {
+                flushPending = false;
+                return null;
+            }
+            EventBuffer toReturn = _queue;
+            _queue = buffer;
+            return toReturn;
+        }
+    }
+
     public void execute(Runnable commands) {
         if (_started.get() == ExecutionState.Stopped) {
             return;
         }
-
         _queue.put(commands);
-
-        if (_started.get() == ExecutionState.Created) {
-            return;
-        }
-
-        flushIfNotPending();
-    }
-
-    private void flushIfNotPending() {
-        if (_flushPending.compareAndSet(false, true)) {
-            _flushExecutor.execute(_flushRunnable);
-        }
     }
 
     private void flush() {
-        buffer = _queue.swap(buffer);
-        _commandExecutor.execute(buffer);
-        buffer.clear();
-
-        _flushPending.compareAndSet(true, false);
-
-        if (!_queue.isEmpty()) {
-            flushIfNotPending();
+        EventBuffer swap = _queue.swap(buffer);
+        while (swap != null) {
+            buffer = swap;
+            _commandExecutor.execute(buffer);
+            buffer.clear();
+            swap = _queue.swap(buffer);
         }
     }
 
@@ -78,6 +93,7 @@ class PoolFiber implements Fiber {
         }
 
         if (_started.compareAndSet(state, ExecutionState.Running)) {
+            _queue.setRunning(true);
             execute(new Runnable() {
                 public void run() {
                     //flush any pending events in execute
@@ -87,6 +103,7 @@ class PoolFiber implements Fiber {
     }
 
     public void dispose() {
+        _queue.setRunning(false);
         _started.set(ExecutionState.Stopped);
         synchronized (_disposables) {
             //copy list to prevent concurrent mod
