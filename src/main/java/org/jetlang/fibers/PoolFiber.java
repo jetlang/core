@@ -41,16 +41,16 @@ class PoolFiber implements Fiber {
     }
 
     private class Queue {
-        private boolean running = true;
+        private boolean running = false;
         private boolean flushPending = false;
-        private EventBuffer _queue = new EventBuffer();
+        private EventBuffer queue = new EventBuffer();
 
         public synchronized void setRunning(boolean newValue) {
             running = newValue;
         }
 
         public synchronized void put(Runnable r) {
-            _queue.add(r);
+            queue.add(r);
             if (running && !flushPending) {
                 _flushExecutor.execute(_flushRunnable);
                 flushPending = true;
@@ -58,12 +58,12 @@ class PoolFiber implements Fiber {
         }
 
         public synchronized EventBuffer swap(EventBuffer buffer) {
-            if (_queue.isEmpty()) {
+            if (queue.isEmpty() || !running) {
                 flushPending = false;
                 return null;
             }
-            EventBuffer toReturn = _queue;
-            _queue = buffer;
+            EventBuffer toReturn = queue;
+            queue = buffer;
             return toReturn;
         }
     }
