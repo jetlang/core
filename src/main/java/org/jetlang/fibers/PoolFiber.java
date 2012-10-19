@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 class PoolFiber implements Fiber {
 
-    private final Queue _queue = new Queue();
+    private final SynchronizedQueue _queue = new SynchronizedQueue();
     private final Executor _flushExecutor;
     private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
     private final BatchExecutor _commandExecutor;
@@ -40,16 +40,16 @@ class PoolFiber implements Fiber {
         };
     }
 
-    private class Queue {
+    private class SynchronizedQueue {
         private boolean running = false;
         private boolean flushPending = false;
         private EventBuffer queue = new EventBuffer();
 
-        public synchronized void setRunning(boolean newValue) {
+        private synchronized void setRunning(boolean newValue) {
             running = newValue;
         }
 
-        public synchronized void put(Runnable r) {
+        private synchronized void put(Runnable r) {
             queue.add(r);
             if (running && !flushPending) {
                 _flushExecutor.execute(_flushRunnable);
@@ -57,7 +57,7 @@ class PoolFiber implements Fiber {
             }
         }
 
-        public synchronized EventBuffer swap(EventBuffer buffer) {
+        private synchronized EventBuffer swap(EventBuffer buffer) {
             if (queue.isEmpty() || !running) {
                 flushPending = false;
                 return null;
