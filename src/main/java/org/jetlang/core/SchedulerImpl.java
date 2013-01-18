@@ -22,6 +22,10 @@ public class SchedulerImpl implements Scheduler {
 
     public static ScheduledThreadPoolExecutor createSchedulerThatIgnoresEventsAfterStop() {
         ThreadFactory fact = new DaemonThreadFactory();
+        return createSchedulerThatIgnoresEventsAfterStop(fact);
+    }
+
+    public static ScheduledThreadPoolExecutor createSchedulerThatIgnoresEventsAfterStop(ThreadFactory fact) {
         ScheduledThreadPoolExecutor s = new ScheduledThreadPoolExecutor(1, fact);
         RejectedExecutionHandler handler = new RejectedExecutionHandler() {
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
