@@ -11,9 +11,13 @@ public class SchedulerImpl implements Scheduler {
     private final ScheduledExecutorService _scheduler;
     private final Executor _queue;
 
-    public SchedulerImpl(Executor queue) {
+    public SchedulerImpl(Executor queue, ScheduledExecutorService service) {
         _queue = queue;
-        _scheduler = createSchedulerThatIgnoresEventsAfterStop();
+        _scheduler = service;
+    }
+
+    public SchedulerImpl(Executor queue){
+        this(queue, createSchedulerThatIgnoresEventsAfterStop());
     }
 
     public static ScheduledThreadPoolExecutor createSchedulerThatIgnoresEventsAfterStop() {

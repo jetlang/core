@@ -19,8 +19,9 @@ public class ThreadFiber implements Fiber {
      * @param queue          - target queue
      * @param threadName     - name to assign thread
      * @param isDaemonThread - true if daemon thread
+     * @param scheduler      - scheduler for delayed tasks
      */
-    public ThreadFiber(RunnableExecutor queue, String threadName, boolean isDaemonThread) {
+    public ThreadFiber(RunnableExecutor queue, String threadName, boolean isDaemonThread, Scheduler scheduler) {
         _queue = queue;
         Runnable runThread = new Runnable() {
             public void run() {
@@ -29,7 +30,11 @@ public class ThreadFiber implements Fiber {
         };
         _thread = createThread(threadName, runThread);
         _thread.setDaemon(isDaemonThread);
-        _scheduler = new SchedulerImpl(queue);
+        _scheduler = scheduler;
+    }
+
+    public ThreadFiber(RunnableExecutor queue, String threadName, boolean isDaemonThread){
+        this(queue, threadName, isDaemonThread, new SchedulerImpl(queue));
     }
 
     private Thread createThread(String threadName, Runnable runThread) {
