@@ -25,7 +25,7 @@ public class ThreadFiber implements Fiber {
         _queue = queue;
         Runnable runThread = new Runnable() {
             public void run() {
-                runThread();
+                _queue.run();
             }
         };
         _thread = createThread(threadName, runThread);
@@ -50,10 +50,6 @@ public class ThreadFiber implements Fiber {
 
     public Thread getThread() {
         return _thread;
-    }
-
-    private void runThread() {
-        _queue.run();
     }
 
     /**
