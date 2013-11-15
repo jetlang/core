@@ -91,6 +91,11 @@ public class SchedulerImpl implements Scheduler {
                 }
             }
         }
+
+        @Override
+        public String toString() {
+            return target.toString();
+        }
     }
 
     public Disposable scheduleWithFixedDelay(final Runnable command, long initialDelay, long interval, TimeUnit unit) {
@@ -113,6 +118,11 @@ public class SchedulerImpl implements Scheduler {
 
         public void run() {
             _queue.execute(command);
+        }
+
+        @Override
+        public String toString() {
+            return command.toString();
         }
     }
 
