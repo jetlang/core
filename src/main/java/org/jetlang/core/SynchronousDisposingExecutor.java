@@ -36,7 +36,7 @@ public class SynchronousDisposingExecutor implements RunnableExecutor {
 
     public void dispose() {
         _running = false;
-        for (Disposable run : _onStop) {
+        for (Disposable run : new ArrayList<Disposable>(_onStop)) {
             run.dispose();
         }
     }
