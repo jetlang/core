@@ -108,13 +108,13 @@ public class NioFiberImpl implements Runnable, NioFiber {
     }
 
     public void dispose() {
+        scheduler.dispose();
         synchronized (_disposables) {
             //copy list to prevent concurrent mod
             for (Disposable r : _disposables.toArray(new Disposable[_disposables.size()])) {
                 r.dispose();
             }
         }
-        scheduler.dispose();
         try {
             selector.close();
         } catch (IOException e) {

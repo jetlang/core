@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class NioFiberTest extends FiberBaseTest {
@@ -41,29 +39,6 @@ public class NioFiberTest extends FiberBaseTest {
         fiber.dispose();
     }
 
-
-    @Test
-    public void eventBurstFromDifferentThreads() throws IOException, InterruptedException {
-        final NioFiber fiber = new NioFiberImpl();
-        fiber.start();
-        int total = 5000000;
-        final CountDownLatch latch = new CountDownLatch(total);
-        final ExecutorService executorService = Executors.newFixedThreadPool(4);
-        for (int i = 0; i < total; i++) {
-            executorService.execute(new Runnable() {
-                public void run() {
-                    fiber.execute(new Runnable() {
-                        public void run() {
-                            latch.countDown();
-                        }
-                    });
-                }
-            });
-        }
-        final boolean await = latch.await(30, TimeUnit.SECONDS);
-        assertTrue(await);
-        fiber.dispose();
-    }
 
     @Test
     public void schedule() throws InterruptedException {

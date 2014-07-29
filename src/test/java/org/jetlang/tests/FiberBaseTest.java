@@ -9,20 +9,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class FiberBaseTest extends Assert {
+    protected Fiber _bus;
+
     public abstract Fiber createFiber();
 
     public abstract void doSetup();
 
     public abstract void doTearDown();
-
-    protected Fiber _bus;
 
     @Before
     public void Setup() {
@@ -34,7 +37,6 @@ public abstract class FiberBaseTest extends Assert {
     public void TearDown() {
         if (_bus != null) {
             _bus.dispose();
-            assertEquals(0, _bus.size());
         }
         doTearDown();
     }
@@ -181,6 +183,28 @@ public abstract class FiberBaseTest extends Assert {
         assertEquals(1, channel.subscriberCount());
         unsub.dispose();
         assertEquals(0, channel.subscriberCount());
+    }
+
+    @Test
+    public void eventBurstFromDifferentThreads() throws IOException, InterruptedException {
+        _bus.start();
+        int total = 5000000;
+        final CountDownLatch latch = new CountDownLatch(total);
+        final ExecutorService executorService = Executors.newFixedThreadPool(4);
+        for (int i = 0; i < total; i++) {
+            executorService.execute(new Runnable() {
+                public void run() {
+                    _bus.execute(new Runnable() {
+                        public void run() {
+                            latch.countDown();
+                        }
+                    });
+                }
+            });
+        }
+        final boolean await = latch.await(30, TimeUnit.SECONDS);
+        assertTrue(await);
+        _bus.dispose();
     }
 
 }
