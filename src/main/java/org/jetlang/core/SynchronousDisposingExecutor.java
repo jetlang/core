@@ -1,6 +1,7 @@
 package org.jetlang.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -9,8 +10,8 @@ import java.util.List;
  * Events will be executed immediately, rather than queued and executed on another thread
  */
 public class SynchronousDisposingExecutor implements RunnableExecutor {
+    private final List<Disposable> _onStop = Collections.synchronizedList(new ArrayList<Disposable>());
     private volatile boolean _running = true;
-    private final List<Disposable> _onStop = new ArrayList<Disposable>();
 
     public void execute(Runnable command) {
         if (_running) {
