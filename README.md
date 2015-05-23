@@ -66,3 +66,7 @@ Channel Example
 
         //shutdown thread
         receiver.dispose();
+
+#Dev Mailing List
+
+https://groups.google.com/forum/#!forum/jetlang-dev
