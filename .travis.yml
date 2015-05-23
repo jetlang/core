@@ -2,7 +2,7 @@ language: java
 
 script: mvn test
 
-install:
+install: echo "install"
 
 jdk:
   - openjdk7
