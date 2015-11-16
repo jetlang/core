@@ -63,7 +63,7 @@ public class NioFiberTest extends FiberBaseTest {
             private ByteBuffer buffer = ByteBuffer.allocate(4);
 
             @Override
-            protected void onData(Pipe.SourceChannel source) {
+            protected boolean onData(Pipe.SourceChannel source) {
                 try {
                     source.read(buffer);
                     if (buffer.position() == 4) {
@@ -73,6 +73,7 @@ public class NioFiberTest extends FiberBaseTest {
                         buffer.clear();
                         latch.countDown();
                     }
+                    return true;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

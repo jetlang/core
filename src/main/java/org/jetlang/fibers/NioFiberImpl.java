@@ -33,7 +33,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
             ByteBuffer bb = ByteBuffer.allocateDirect(2);
 
             @Override
-            protected void onData(Pipe.SourceChannel source) {
+            protected boolean onData(Pipe.SourceChannel source) {
                 final int read;
                 try {
                     read = source.read(bb);
@@ -45,6 +45,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 executor.execute(buffer);
                 buffer.clear();
                 bb.clear();
+                return true;
             }
         };
         try {
@@ -139,7 +140,11 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 selector.select();
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 for (SelectionKey key : selectedKeys) {
-                    ((NioChannelHandler) key.attachment()).onSelect(key);
+                    final NioChannelHandler attachment = (NioChannelHandler) key.attachment();
+                    boolean running = attachment.onSelect(key);
+                    if(!running){
+                        handlers.remove(attachment);
+                    }
                 }
                 selectedKeys.clear();
             } catch (ClosedSelectorException closed) {
@@ -153,6 +158,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         for (NioChannelHandler handler : handlers) {
             handler.onEnd();
         }
+        handlers.clear();
     }
 
 }

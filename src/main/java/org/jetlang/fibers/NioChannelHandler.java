@@ -6,7 +6,11 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 
 public interface NioChannelHandler {
-    void onSelect(SelectionKey key);
+
+    /**
+     * @return true to continue
+     */
+    boolean onSelect(SelectionKey key);
 
     SelectableChannel getChannel();
 
@@ -14,7 +18,7 @@ public interface NioChannelHandler {
 
     void onEnd();
 
-    public abstract static class PipeReader implements NioChannelHandler {
+    abstract class PipeReader implements NioChannelHandler {
         protected final Pipe.SinkChannel sink;
         protected final Pipe.SourceChannel source;
 
@@ -30,11 +34,11 @@ public interface NioChannelHandler {
             }
         }
 
-        public void onSelect(SelectionKey key) {
-            onData(source);
+        public boolean onSelect(SelectionKey key) {
+            return onData(source);
         }
 
-        protected abstract void onData(Pipe.SourceChannel source);
+        protected abstract boolean onData(Pipe.SourceChannel source);
 
         public SelectableChannel getChannel() {
             return source;
