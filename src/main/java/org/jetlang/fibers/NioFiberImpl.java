@@ -144,6 +144,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
                     boolean running = attachment.onSelect(key);
                     if(!running){
                         handlers.remove(attachment);
+                        attachment.onEnd();
                     }
                 }
                 selectedKeys.clear();
