@@ -13,7 +13,7 @@
 
     <version>0.2.13-SNAPSHOT</version>
     <name>Jetlang</name>
-    <url>http://code.google.com/p/jetlang/</url>
+    <url>https://github.com/jetlang/core</url>
 
     <description>
         Jetlang provides a high performance java threading library. It is a complement to the java.util.concurrent
@@ -31,9 +31,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:svn:http://jetlang.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://jetlang.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://code.google.com/p/jetlang/source/browse/</url>
+        <connection>scm:git:https://github.com/jetlang/core.git</connection>
+        <developerConnection>scm:git:git://github.com:jetlang/core.git</developerConnection>
+        <url>https://github.com/jetlang/core</url>
     </scm>
 
     <developers>
