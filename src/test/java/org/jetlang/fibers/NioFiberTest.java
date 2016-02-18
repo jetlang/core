@@ -58,7 +58,7 @@ public class NioFiberTest extends FiberBaseTest {
     @Test
     public void pipeData() throws IOException, InterruptedException {
         final CountDownLatch latch = new CountDownLatch(10);
-        NioChannelHandler.PipeReader pipePing = new NioChannelHandler.PipeReader() {
+        PipeReader pipePing = new PipeReader() {
             int count = 1;
             private ByteBuffer buffer = ByteBuffer.allocate(4);
 
