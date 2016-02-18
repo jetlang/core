@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jetlang/core.svg?branch=master)](https://travis-ci.org/jetlang/core)
+
 Jetlang provides a high performance java threading library. The library is based upon Retlang.
 
 The library is a complement to the java.util.concurrent package introduced in 1.5 and should be used for message based concurrency similar to event based actors in Scala.
