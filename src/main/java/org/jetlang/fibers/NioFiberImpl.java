@@ -1,121 +1,366 @@
 package org.jetlang.fibers;
 
-import org.jetlang.core.*;
+import org.jetlang.core.Callback;
+import org.jetlang.core.Disposable;
+import org.jetlang.core.EventBuffer;
+import org.jetlang.core.QueueSwapper;
+import org.jetlang.core.SchedulerImpl;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
-import java.util.*;
+import java.nio.channels.ClosedSelectorException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NioFiberImpl implements Runnable, NioFiber {
 
-    private final AtomicBoolean started = new AtomicBoolean(false);
     private final SchedulerImpl scheduler;
     private final Selector selector;
-    private final List<NioChannelHandler> handlers = new ArrayList<NioChannelHandler>();
-    private final String threadName;
-    private final boolean isDaemonThread;
+    private final Map<SelectableChannel, NioState> handlers = new IdentityHashMap<>();
     private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
-    private final NioQueueSwapper queue;
+    private final QueueSwapper queue;
+    private final Thread thread;
+    private final NioBatchExecutor executor;
+    private final WriteFailure writeFailed;
 
-    public NioFiberImpl() {
-        this(new BatchExecutorImpl(), Collections.EMPTY_LIST, "nioFiber", true);
+    public interface OnBuffer {
+
+        void onBufferEnd(SocketChannel channel);
+
+        void onBuffer(SocketChannel channel, ByteBuffer data);
     }
 
-    public NioFiberImpl(final BatchExecutor executor, Collection<NioChannelHandler> nioHandlers, String threadName, boolean isDaemonThread) {
-        this.threadName = threadName;
-        this.isDaemonThread = isDaemonThread;
-        this.scheduler = new SchedulerImpl(this);
-        final NioChannelHandler.PipeReader pipe = new NioChannelHandler.PipeReader() {
-            EventBuffer buffer = new EventBuffer();
-            ByteBuffer bb = ByteBuffer.allocateDirect(2);
+    private final OnBuffer onBuffer;
+    private NioControls controls = new NioControls() {
+        @Override
+        public void addHandler(NioChannelHandler handler) {
+            synchronousAdd(handler);
+        }
 
-            @Override
-            protected boolean onData(Pipe.SourceChannel source) {
-                final int read;
-                try {
-                    read = source.read(bb);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        @Override
+        public void write(SocketChannel accept, ByteBuffer buffer) {
+            NioState key = handlers.get(accept);
+            try {
+                if (key == null || key.buffer == null) {
+                    writeAll(accept, buffer);
+                    if (buffer.remaining() == 0) {
+                        return;
+                    }
                 }
-                assert read == 1 : read;
-                buffer = queue.swap(buffer);
-                executor.execute(buffer);
-                buffer.clear();
-                bb.clear();
+            } catch (IOException e) {
+                writeFailed.onFailure(e, accept, buffer);
+                return;
+            }
+            if (key == null) {
+                final BufferedWrite handler = new BufferedWrite(accept, writeFailed, onBuffer);
+                key = synchronousAdd(handler);
+                key.buffer = handler;
+                handler.state = key;
+            } else if (key.buffer == null) {
+                final BufferedWrite handler = new BufferedWrite(accept, writeFailed, onBuffer);
+                handler.state = key;
+                key.buffer = handler;
+                key.handlers.add(handler);
+                key.updateInterest(handler.getInterestSet());
+            }
+            key.addToBuffer(buffer);
+        }
+
+        @Override
+        public boolean close(SocketChannel channel) {
+            try {
+                channel.close();
+            } catch (IOException e) {
+            }
+            final NioState nioState = handlers.remove(channel);
+            if (nioState != null) {
+                nioState.onEnd();
                 return true;
             }
-        };
+            return false;
+        }
+    };
+
+    private static void writeAll(SocketChannel channel, ByteBuffer data) throws IOException {
+        int write;
+        do {
+            write = channel.write(data);
+        } while (write != 0 && data.remaining() > 0);
+    }
+
+    private static class NioState {
+        private final SelectableChannel channel;
+        private final List<NioChannelHandler> handlers = new ArrayList<>(1);
+        private SelectionKey key;
+
+        public BufferedWrite buffer;
+
+        public NioState(SelectableChannel channel) {
+            this.channel = channel;
+        }
+
+        public void addToBuffer(ByteBuffer newBytes) {
+            buffer.buffer(newBytes);
+        }
+
+        public void onSelectorEnd() {
+            for (NioChannelHandler handler : handlers) {
+                handler.onSelectorEnd();
+            }
+        }
+
+        public boolean onSelect(NioBatchExecutor exec, NioFiberImpl fiber, NioControls controls, SelectionKey key) {
+            for (int i = 0; i < handlers.size(); i++) {
+                final NioChannelHandler handler = this.handlers.get(i);
+                final boolean interested = (key.readyOps() & handler.getInterestSet()) != 0;
+                if (interested) {
+                    boolean result = exec.runOnSelect(fiber, handler, controls, key);
+                    if (!result) {
+                        key.interestOps(key.interestOps() & ~handler.getInterestSet());
+                        handlers.remove(i);
+                        handler.onEnd();
+                        break;
+                    }
+                }
+            }
+            return !handlers.isEmpty();
+        }
+
+        public void onEnd() {
+            for (NioChannelHandler handler : handlers) {
+                handler.onEnd();
+            }
+        }
+
+        public void updateInterest(int interestSet) {
+            key.interestOps(key.interestOps() | interestSet);
+        }
+    }
+
+    public static class BufferedWrite implements NioChannelHandler {
+        private final SocketChannel channel;
+        private final WriteFailure writeFailed;
+        private final OnBuffer onBuffer;
+        NioState state;
+        ByteBuffer data;
+
+        public BufferedWrite(SocketChannel channel, WriteFailure writeFailed, OnBuffer onBuffer) {
+            this.channel = channel;
+            this.writeFailed = writeFailed;
+            this.onBuffer = onBuffer;
+        }
+
+        @Override
+        public boolean onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
+            try {
+                writeAll(channel, data);
+            } catch (IOException e) {
+                writeFailed.onFailure(e, channel, data);
+                return false;
+            }
+            final boolean b = data.remaining() > 0;
+            if (!b) {
+                onBuffer.onBufferEnd(channel);
+            }
+            return b;
+        }
+
+        @Override
+        public SelectableChannel getChannel() {
+            return channel;
+        }
+
+        @Override
+        public int getInterestSet() {
+            return SelectionKey.OP_WRITE;
+        }
+
+        @Override
+        public void onEnd() {
+            state.buffer = null;
+            state = null;
+        }
+
+        @Override
+        public void onSelectorEnd() {
+            onEnd();
+        }
+
+        public void buffer(ByteBuffer buffer) {
+            data = addTo(data, buffer);
+            assert data.remaining() > 0 : channel + " " + data;
+            onBuffer.onBuffer(channel, data);
+        }
+
+    }
+
+    public interface WriteFailure {
+
+        void onFailure(IOException e, SocketChannel channel, ByteBuffer data);
+    }
+
+    public static class NoOpWriteFailure implements WriteFailure {
+
+        @Override
+        public void onFailure(IOException e, SocketChannel channel, ByteBuffer data) {
+
+        }
+    }
+
+    public static class NoOpBuffer implements OnBuffer {
+
+        @Override
+        public void onBufferEnd(SocketChannel channel) {
+
+        }
+
+        @Override
+        public void onBuffer(SocketChannel channel, ByteBuffer data) {
+
+        }
+    }
+
+    public NioFiberImpl(){
+        this(new NioBatchExecutorImpl(), Collections.<NioChannelHandler>emptyList());
+    }
+
+    public NioFiberImpl(final NioBatchExecutor executor, Collection<NioChannelHandler> handlers) {
+        this(executor, handlers, "nioFiber", true, new NoOpWriteFailure(), new NoOpBuffer());
+    }
+
+    public NioFiberImpl(final NioBatchExecutor executor, Collection<NioChannelHandler> nioHandlers, String threadName, boolean isDaemonThread, WriteFailure writeFailed, OnBuffer onBuffer) {
+        this.executor = executor;
+        this.writeFailed = writeFailed;
+        this.onBuffer = onBuffer;
+        this.scheduler = new SchedulerImpl(this);
         try {
             this.selector = Selector.open();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        synchronousAdd(pipe);
         for (NioChannelHandler nioHandler : nioHandlers) {
             synchronousAdd(nioHandler);
         }
-        queue = new NioQueueSwapper(pipe.sink);
+        queue = new QueueSwapper(selector);
+        thread = new Thread(this, threadName);
+        thread.setDaemon(isDaemonThread);
     }
 
+    public static ByteBuffer addTo(ByteBuffer data, ByteBuffer buffer) {
+        final int size = buffer.remaining();
+        if (data == null) {
+            data = ByteBuffer.allocate(size);
+            data.put(buffer);
+            data.flip();
+        } else {
+            data.compact();
+            if (data.position() + size > data.capacity()) {
+                ByteBuffer b = ByteBuffer.allocate(data.capacity() + size);
+                data.flip();
+                b.put(data);
+                data = b;
+            }
+            data.put(buffer);
+            data.flip();
+        }
+        return data;
+    }
+
+    @Override
     public void execute(Runnable command) {
         queue.put(command);
     }
 
+    @Override
     public void addHandler(final NioChannelHandler handler) {
         execute(new Runnable() {
+            @Override
             public void run() {
-                synchronousAdd(handler);
+                NioFiberImpl.this.synchronousAdd(handler);
             }
         });
     }
 
-    private void synchronousAdd(final NioChannelHandler handler) {
+    @Override
+    public void execute(final Callback<NioControls> asyncWrite) {
+        execute(new Runnable() {
+            @Override
+            public void run() {
+                asyncWrite.onMessage(controls);
+            }
+        });
+    }
+
+    private NioState synchronousAdd(final NioChannelHandler handler) {
         try {
             final SelectableChannel channel = handler.getChannel();
             channel.configureBlocking(false);
+            final NioState nioState = handlers.get(channel);
+            if (nioState != null) {
+                nioState.handlers.add(handler);
+                nioState.updateInterest(handler.getInterestSet());
+                return nioState;
+            }
             final int interestSet = handler.getInterestSet();
-            channel.register(selector, interestSet, handler);
-            handlers.add(handler);
+            final NioState value = new NioState(channel);
+            value.handlers.add(handler);
+            value.key = channel.register(selector, interestSet, value);
+            handlers.put(channel, value);
+            return value;
         } catch (IOException failed) {
             throw new RuntimeException(failed);
         }
     }
 
+    @Override
     public void add(Disposable disposable) {
         _disposables.add(disposable);
     }
 
+    @Override
     public boolean remove(Disposable disposable) {
         return _disposables.remove(disposable);
     }
 
+    @Override
     public int size() {
         return queue.size();
     }
 
+    @Override
     public Disposable schedule(Runnable command, long delay, TimeUnit unit) {
         return scheduler.schedule(command, delay, unit);
     }
 
+    @Override
     public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         return scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
+    @Override
     public Disposable scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
         return scheduler.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
+    @Override
     public void dispose() {
-        scheduler.dispose();
         synchronized (_disposables) {
             //copy list to prevent concurrent mod
             for (Disposable r : _disposables.toArray(new Disposable[_disposables.size()])) {
                 r.dispose();
             }
         }
+        scheduler.dispose();
         try {
             selector.close();
         } catch (IOException e) {
@@ -124,30 +369,32 @@ public class NioFiberImpl implements Runnable, NioFiber {
     }
 
 
+    @Override
     public void start() {
-        if (started.compareAndSet(false, true)) {
-            final Thread thread = new Thread(this, threadName);
-            thread.setDaemon(isDaemonThread);
-            thread.start();
-        } else {
-            throw new RuntimeException("Fiber already started");
-        }
+        thread.start();
     }
 
+    @Override
     public void run() {
+        EventBuffer buffer = new EventBuffer();
         while (true) {
             try {
-                selector.select();
-                Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                for (SelectionKey key : selectedKeys) {
-                    final NioChannelHandler attachment = (NioChannelHandler) key.attachment();
-                    boolean running = attachment.onSelect(key);
-                    if(!running){
-                        handlers.remove(attachment);
-                        attachment.onEnd();
+                final int select = selector.select();
+                if (select > 0) {
+                    Set<SelectionKey> selectedKeys = selector.selectedKeys();
+                    for (SelectionKey key : selectedKeys) {
+                        final NioState attachment = (NioState) key.attachment();
+                        if (!key.isValid() || !attachment.onSelect(executor, this, controls, key)) {
+                            handlers.remove(attachment.channel);
+                            key.cancel();
+                            attachment.onEnd();
+                        }
                     }
+                    selectedKeys.clear();
                 }
-                selectedKeys.clear();
+                buffer = queue.swap(buffer);
+                executor.execute(buffer);
+                buffer.clear();
             } catch (ClosedSelectorException closed) {
                 queue.setRunning(false);
                 break;
@@ -156,8 +403,8 @@ public class NioFiberImpl implements Runnable, NioFiber {
             }
 
         }
-        for (NioChannelHandler handler : handlers) {
-            handler.onEnd();
+        for (NioState nioState : handlers.values()) {
+            nioState.onSelectorEnd();
         }
         handlers.clear();
     }
