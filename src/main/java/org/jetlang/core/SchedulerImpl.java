@@ -27,6 +27,8 @@ public class SchedulerImpl implements Scheduler {
 
     public static ScheduledThreadPoolExecutor createSchedulerThatIgnoresEventsAfterStop(ThreadFactory fact) {
         ScheduledThreadPoolExecutor s = new ScheduledThreadPoolExecutor(1, fact);
+        s.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+        s.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         RejectedExecutionHandler handler = new RejectedExecutionHandler() {
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                 if (!executor.isShutdown()) {
