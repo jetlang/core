@@ -1,6 +1,7 @@
 package org.jetlang.fibers;
 
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SocketChannel;
 
 public interface NioControls {
@@ -8,5 +9,5 @@ public interface NioControls {
 
     void write(SocketChannel accept, ByteBuffer buffer);
 
-    boolean close(SocketChannel channel);
+    boolean close(SelectableChannel channel);
 }

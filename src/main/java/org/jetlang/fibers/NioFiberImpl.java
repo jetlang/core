@@ -77,7 +77,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
 
         @Override
-        public boolean close(SocketChannel channel) {
+        public boolean close(SelectableChannel channel) {
             try {
                 channel.close();
             } catch (IOException e) {
