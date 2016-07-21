@@ -29,6 +29,7 @@ public class MulticastReceive {
             int count = 0;
             long duration = 0;
             int maxLoops = 0;
+            long maxDur = 0;
 
             @Override
             public boolean onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
@@ -43,14 +44,17 @@ public class MulticastReceive {
                         loops++;
                         byteBuffer.flip();
                         long timestamp = byteBuffer.getLong();
-                        duration += System.nanoTime() - timestamp;
+                        final long currentDur = System.nanoTime() - timestamp;
+                        duration += currentDur;
                         count++;
                         maxLoops = Math.max(loops, maxLoops);
+                        maxDur = Math.max(currentDur, maxDur);
                         if (count == 100000) {
-                            System.out.println(duration / count + " " + count + " " + duration + " " + maxLoops);
+                            System.out.println(duration / count + " " + count + " " + duration + " " + maxLoops + " " + maxDur);
                             duration = 0;
                             count = 0;
                             maxLoops = 0;
+                            maxDur = 0;
                         }
                     } catch (IOException e) {
                         return false;
