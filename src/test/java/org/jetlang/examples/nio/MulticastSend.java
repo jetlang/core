@@ -25,9 +25,6 @@ public class MulticastSend {
             byteBuffer.flip();
             channel.send(byteBuffer, addr);
             byteBuffer.clear();
-            if (i % 100000 == 0) {
-                Thread.sleep(1);
-            }
         }
         channel.close();
         System.out.println("done");

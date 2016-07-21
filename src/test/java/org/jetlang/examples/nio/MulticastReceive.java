@@ -46,7 +46,7 @@ public class MulticastReceive {
                         duration += System.nanoTime() - timestamp;
                         count++;
                         maxLoops = Math.max(loops, maxLoops);
-                        if (count == 10000) {
+                        if (count == 100000) {
                             System.out.println(duration / count + " " + count + " " + duration + " " + maxLoops);
                             duration = 0;
                             count = 0;
