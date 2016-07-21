@@ -18,15 +18,14 @@ public class MulticastSend {
         channel.configureBlocking(true);
         final String group = "239.8.128.3";
         final int port = 9999;
-        final NetworkInterface nic = NetworkInterface.getByName("eth1");
         final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(8);
         InetSocketAddress addr = new InetSocketAddress(group, port);
-        for (int i = 0; i < 2000000; i++) {
+        for (int i = 0; i < 5000000; i++) {
             byteBuffer.putLong(System.nanoTime());
             byteBuffer.flip();
             channel.send(byteBuffer, addr);
             byteBuffer.clear();
-            if (i % 100 == 0) {
+            if (i % 100000 == 0) {
                 Thread.sleep(1);
             }
         }
