@@ -12,7 +12,7 @@ import java.nio.channels.ClosedSelectorException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,9 +35,9 @@ public class NioFiberImpl implements Runnable, NioFiber {
 
     public interface OnBuffer {
 
-        void onBufferEnd(SocketChannel channel);
+        <T extends SelectableChannel & WritableByteChannel> void onBufferEnd(T channel);
 
-        void onBuffer(SocketChannel channel, ByteBuffer data);
+        <T extends SelectableChannel & WritableByteChannel> void onBuffer(T channel, ByteBuffer data);
     }
 
     private final OnBuffer onBuffer;
@@ -48,7 +48,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
 
         @Override
-        public void write(SocketChannel accept, ByteBuffer buffer) {
+        public <T extends SelectableChannel & WritableByteChannel> void write(T accept, ByteBuffer buffer) {
             NioState key = handlers.get(accept);
             try {
                 if (key == null || key.buffer == null) {
@@ -62,12 +62,12 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 return;
             }
             if (key == null) {
-                final BufferedWrite handler = new BufferedWrite(accept, writeFailed, onBuffer);
+                final BufferedWrite handler = new BufferedWrite<>(accept, writeFailed, onBuffer);
                 key = synchronousAdd(handler);
                 key.buffer = handler;
                 handler.state = key;
             } else if (key.buffer == null) {
-                final BufferedWrite handler = new BufferedWrite(accept, writeFailed, onBuffer);
+                final BufferedWrite handler = new BufferedWrite<>(accept, writeFailed, onBuffer);
                 handler.state = key;
                 key.buffer = handler;
                 key.handlers.add(handler);
@@ -91,7 +91,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
     };
 
-    private static void writeAll(SocketChannel channel, ByteBuffer data) throws IOException {
+    private static void writeAll(WritableByteChannel channel, ByteBuffer data) throws IOException {
         int write;
         do {
             write = channel.write(data);
@@ -147,14 +147,14 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
     }
 
-    public static class BufferedWrite implements NioChannelHandler {
-        private final SocketChannel channel;
+    public static class BufferedWrite<T extends SelectableChannel & WritableByteChannel> implements NioChannelHandler {
+        private final T channel;
         private final WriteFailure writeFailed;
         private final OnBuffer onBuffer;
         NioState state;
         ByteBuffer data;
 
-        public BufferedWrite(SocketChannel channel, WriteFailure writeFailed, OnBuffer onBuffer) {
+        public BufferedWrite(T channel, WriteFailure writeFailed, OnBuffer onBuffer) {
             this.channel = channel;
             this.writeFailed = writeFailed;
             this.onBuffer = onBuffer;
@@ -205,14 +205,13 @@ public class NioFiberImpl implements Runnable, NioFiber {
     }
 
     public interface WriteFailure {
-
-        void onFailure(IOException e, SocketChannel channel, ByteBuffer data);
+        <T extends SelectableChannel & WritableByteChannel> void onFailure(IOException e, T channel, ByteBuffer data);
     }
 
     public static class NoOpWriteFailure implements WriteFailure {
 
         @Override
-        public void onFailure(IOException e, SocketChannel channel, ByteBuffer data) {
+        public <T extends SelectableChannel & WritableByteChannel> void onFailure(IOException e, T channel, ByteBuffer data) {
 
         }
     }
@@ -220,12 +219,12 @@ public class NioFiberImpl implements Runnable, NioFiber {
     public static class NoOpBuffer implements OnBuffer {
 
         @Override
-        public void onBufferEnd(SocketChannel channel) {
+        public <T extends SelectableChannel & WritableByteChannel> void onBufferEnd(T channel) {
 
         }
 
         @Override
-        public void onBuffer(SocketChannel channel, ByteBuffer data) {
+        public <T extends SelectableChannel & WritableByteChannel> void onBuffer(T channel, ByteBuffer data) {
 
         }
     }

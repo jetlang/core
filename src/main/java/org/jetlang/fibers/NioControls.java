@@ -2,12 +2,12 @@ package org.jetlang.fibers;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.WritableByteChannel;
 
 public interface NioControls {
     void addHandler(NioChannelHandler handler);
 
-    void write(SocketChannel accept, ByteBuffer buffer);
+    <T extends SelectableChannel & WritableByteChannel> void write(T channel, ByteBuffer buffer);
 
     boolean close(SelectableChannel channel);
 }
