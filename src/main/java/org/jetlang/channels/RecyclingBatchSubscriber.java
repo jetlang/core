@@ -19,8 +19,8 @@ public class RecyclingBatchSubscriber<T> extends BaseSubscription<T> {
     private final Callback<MessageReader<T>> _receive;
     private final int _interval;
     private final TimeUnit _timeUnit;
-    private MessageBuffer<T> _pending = new MessageBuffer<T>();
-    private MessageBuffer<T> _active = new MessageBuffer<T>();
+    private MessageBuffer<T> _pending = new MessageBuffer<>();
+    private MessageBuffer<T> _active = new MessageBuffer<>();
     private final Runnable _flushRunnable;
 
     public RecyclingBatchSubscriber(Fiber queue, Callback<MessageReader<T>> receive,

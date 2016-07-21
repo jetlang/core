@@ -52,7 +52,7 @@ public class BatchSubscriber<T> extends BaseSubscription<T> {
     protected void onMessageOnProducerThread(T msg) {
         synchronized (_lock) {
             if (_pending == null) {
-                _pending = new ArrayList<T>();
+                _pending = new ArrayList<>();
                 _queue.schedule(_flushRunnable, _interval, _timeUnit);
             }
             _pending.add(msg);

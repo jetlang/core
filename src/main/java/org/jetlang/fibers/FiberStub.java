@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class FiberStub implements Fiber {
 
-    public List<Disposable> Disposables = new ArrayList<Disposable>();
-    public List<Runnable> Pending = new ArrayList<Runnable>();
-    public List<ScheduledEvent> Scheduled = new ArrayList<ScheduledEvent>();
+    public List<Disposable> Disposables = new ArrayList<>();
+    public List<Runnable> Pending = new ArrayList<>();
+    public List<ScheduledEvent> Scheduled = new ArrayList<>();
 
     public void start() {
     }
@@ -64,14 +64,14 @@ public class FiberStub implements Fiber {
     }
 
     public void executeAllPending() {
-        for (Runnable runnable : new ArrayList<Runnable>(Pending)) {
+        for (Runnable runnable : new ArrayList<>(Pending)) {
             runnable.run();
             Pending.remove(runnable);
         }
     }
 
     public void executeAllScheduled() {
-        for (ScheduledEvent event : new ArrayList<ScheduledEvent>(Scheduled)) {
+        for (ScheduledEvent event : new ArrayList<>(Scheduled)) {
             event.getRunnable().run();
             if (!event.isRecurring()) {
                 Scheduled.remove(event);

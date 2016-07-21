@@ -9,7 +9,7 @@ import java.util.List;
 
 class BatchCallback<R, V> implements Callback<V>, Runnable, Disposable {
     private final Object lock = new Object();
-    private final List<V> results = new ArrayList<V>();
+    private final List<V> results = new ArrayList<>();
     private final int responses;
     private final Callback<List<V>> onComplete;
     private final BatchTimeout<V> timeout;

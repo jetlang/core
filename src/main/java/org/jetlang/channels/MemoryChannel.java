@@ -14,7 +14,7 @@ import org.jetlang.core.DisposingExecutor;
  */
 public class MemoryChannel<T> implements Channel<T> {
 
-    private final SubscriberList<T> _subscribers = new SubscriberList<T>();
+    private final SubscriberList<T> _subscribers = new SubscriberList<>();
 
     public int subscriberCount() {
         return _subscribers.size();
@@ -25,7 +25,7 @@ public class MemoryChannel<T> implements Channel<T> {
     }
 
     public Disposable subscribe(DisposingExecutor queue, Callback<T> onReceive) {
-        ChannelSubscription<T> subber = new ChannelSubscription<T>(queue, onReceive);
+        ChannelSubscription<T> subber = new ChannelSubscription<>(queue, onReceive);
         return subscribe(subber);
     }
 

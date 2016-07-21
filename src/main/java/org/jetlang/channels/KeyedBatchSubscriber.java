@@ -60,7 +60,7 @@ public class KeyedBatchSubscriber<K, T> extends BaseSubscription<T> {
         synchronized (_batchLock) {
             K key = _keyResolver.convert(msg);
             if (_pending == null) {
-                _pending = new HashMap<K, T>();
+                _pending = new HashMap<>();
                 _context.schedule(_flushRunner, _flushIntervalInMs, _timeUnit);
             }
             _pending.put(key, msg);

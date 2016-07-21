@@ -72,8 +72,8 @@ public class SubscriberList<T> {
     }
 
     private static <V> void executeAll(final V msg, final Callback<V>[] cbs) {
-        for (int i = 0; i < cbs.length; i++) {
-            cbs[i].onMessage(msg);
+        for (Callback<V> cb : cbs) {
+            cb.onMessage(msg);
         }
     }
 }

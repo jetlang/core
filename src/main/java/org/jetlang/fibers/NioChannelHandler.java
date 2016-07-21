@@ -1,7 +1,5 @@
 package org.jetlang.fibers;
 
-import java.io.IOException;
-import java.nio.channels.Pipe;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 

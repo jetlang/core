@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class MemoryRequestChannel<R, V> implements RequestChannel<R, V> {
 
-    private final MemoryChannel<Request<R, V>> channel = new MemoryChannel<Request<R, V>>();
-    private final MemoryChannel<SessionClosed<R>> endChannel = new MemoryChannel<SessionClosed<R>>();
+    private final MemoryChannel<Request<R, V>> channel = new MemoryChannel<>();
+    private final MemoryChannel<SessionClosed<R>> endChannel = new MemoryChannel<>();
 
     public Disposable subscribe(DisposingExecutor fiber, Callback<Request<R, V>> onRequest) {
         return channel.subscribe(fiber, onRequest);
@@ -37,7 +37,7 @@ public class MemoryRequestChannel<R, V> implements RequestChannel<R, V> {
         return new Disposable() {
             public void dispose() {
                 if (req.dispose()) {
-                    SessionClosed<R> end = new SessionClosedImpl<R>(request, req.getSession());
+                    SessionClosed<R> end = new SessionClosedImpl<>(request, req.getSession());
                     endChannel.publish(end);
                 }
             }

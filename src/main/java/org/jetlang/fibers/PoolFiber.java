@@ -22,7 +22,7 @@ class PoolFiber implements Fiber {
 
     private final SynchronizedQueue _queue = new SynchronizedQueue();
     private final Executor _flushExecutor;
-    private final AtomicReference<ExecutionState> _started = new AtomicReference<ExecutionState>(ExecutionState.Created);
+    private final AtomicReference<ExecutionState> _started = new AtomicReference<>(ExecutionState.Created);
     private final BatchExecutor _commandExecutor;
     private final Collection<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
     private final SchedulerImpl _scheduler;

@@ -16,7 +16,7 @@ class SingleReply {
 
     public static <R, V> Disposable publish(Fiber fiber,
                                             RequestChannel<R, V> channel, R request, final Callback<V> reply) {
-        AsyncRequest<R, V> async = new AsyncRequest<R, V>(fiber);
+        AsyncRequest<R, V> async = new AsyncRequest<>(fiber);
         async.setResponseCount(1);
 
         Callback<List<V>> onMsg = new Callback<List<V>>() {
@@ -30,7 +30,7 @@ class SingleReply {
     public static <R, V> Disposable publish(Fiber fiber,
                                             RequestChannel<R, V> channel, R request, final Callback<V> reply,
                                             long timeout, TimeUnit unit, final Runnable onTimeout) {
-        AsyncRequest<R, V> async = new AsyncRequest<R, V>(fiber);
+        AsyncRequest<R, V> async = new AsyncRequest<>(fiber);
         async.setResponseCount(1);
         final Callback<List<V>> onListTimeout = new Callback<List<V>>() {
             public void onMessage(List<V> message) {

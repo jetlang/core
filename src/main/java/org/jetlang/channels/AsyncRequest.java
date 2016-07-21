@@ -22,7 +22,7 @@ public class AsyncRequest<R, V> {
     }
 
     public AsyncRequest<R, V> setTimeout(Callback<List<V>> onTimeout, long time, TimeUnit unit) {
-        timeout = new BatchTimeout<V>(onTimeout, time, unit);
+        timeout = new BatchTimeout<>(onTimeout, time, unit);
         return this;
     }
 
@@ -36,7 +36,7 @@ public class AsyncRequest<R, V> {
     }
 
     public Disposable publish(RequestChannel<R, V> channel, R req, Callback<List<V>> onResponse) {
-        BatchCallback<R, V> callback = new BatchCallback<R, V>(responses, onResponse, timeout);
+        BatchCallback<R, V> callback = new BatchCallback<>(responses, onResponse, timeout);
         callback.send(channel, req, target);
         return callback;
     }
