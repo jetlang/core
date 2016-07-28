@@ -7,7 +7,7 @@ import org.jetlang.core.DisposingExecutor;
 /**
  * Conduit for exchanging messages between threads. Objects references will be delivered
  * between threads without any serialization or object copying.
- * <p/>
+ *
  * Provides method for publishing and subscribing to events.
  *
  * @author mrettig

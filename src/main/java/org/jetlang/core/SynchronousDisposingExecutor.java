@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * A synchronous execute typically used for testing.
- * <p/>
+ *
  * Events will be executed immediately, rather than queued and executed on another thread
  */
 public class SynchronousDisposingExecutor implements RunnableExecutor {

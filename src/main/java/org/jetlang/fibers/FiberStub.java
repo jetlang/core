@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Provides a deterministic fiber implementation for testing.
- * <p/>
+ *
  * FOR TESTING ONLY
  */
 public class FiberStub implements Fiber {

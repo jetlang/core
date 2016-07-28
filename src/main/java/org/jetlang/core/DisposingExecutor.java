@@ -24,7 +24,7 @@ public interface DisposingExecutor extends Executor {
 
     /**
      * Return the number of {@link Disposable} instances registered with this instance.
-     * <p/>
+     *
      * This method is typically used for testing and debugging purposes.
      *
      * @return Number of {@link Disposable} instances registered.
