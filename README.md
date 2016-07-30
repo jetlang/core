@@ -73,6 +73,8 @@ Channel Example
 
 Jetlang is in the central maven repository as of 0.2.9
 
+https://repo1.maven.org/maven2/org/jetlang/jetlang/
+
 To use Jetlang, add the following dependency. Replace _DESIRED_VERSION_HERE_ with the version you would like to use.
 
         <project>
