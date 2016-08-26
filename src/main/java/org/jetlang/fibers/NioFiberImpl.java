@@ -120,16 +120,17 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
 
         public boolean onSelect(NioBatchExecutor exec, NioFiberImpl fiber, NioControls controls, SelectionKey key) {
-            for (int i = 0; i < handlers.size(); i++) {
+            int size = handlers.size();
+            for (int i = 0; i < size; i++) {
                 final NioChannelHandler handler = this.handlers.get(i);
                 final boolean interested = (key.readyOps() & handler.getInterestSet()) != 0;
                 if (interested) {
                     boolean result = exec.runOnSelect(fiber, handler, controls, key);
                     if (!result) {
                         key.interestOps(key.interestOps() & ~handler.getInterestSet());
-                        handlers.remove(i);
+                        handlers.remove(i--);
                         handler.onEnd();
-                        break;
+                        size--;
                     }
                 }
             }
