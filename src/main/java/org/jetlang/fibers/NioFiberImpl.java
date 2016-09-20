@@ -8,6 +8,7 @@ import org.jetlang.core.SchedulerImpl;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.CancelledKeyException;
 import java.nio.channels.ClosedSelectorException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
@@ -127,8 +128,15 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 if (interested) {
                     boolean result = exec.runOnSelect(fiber, handler, controls, key);
                     if (!result) {
-                        key.interestOps(key.interestOps() & ~handler.getInterestSet());
                         handlers.remove(i--);
+                        if(!handlers.isEmpty()) {
+                            //if no handlers left then the key is going to be cancelled and removed
+                            try {
+                                key.interestOps(key.interestOps() & ~handler.getInterestSet());
+                            } catch (CancelledKeyException cancelledAlready) {
+                                //if the key is already cancelled, then the interest ops don't need to be updated
+                            }
+                        }
                         handler.onEnd();
                         size--;
                     }
