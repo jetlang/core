@@ -134,16 +134,20 @@ public class NioFiberImpl implements Runnable, NioFiber {
                     boolean result = exec.runOnSelect(fiber, handler, controls, key);
                     if (!result) {
                         handlers.remove(i--);
+                        handler.onEnd();
+                        size--;
                         if(!handlers.isEmpty()) {
                             //if no handlers left then the key is going to be cancelled and removed
                             try {
                                 key.interestOps(key.interestOps() & ~handler.getInterestSet());
                             } catch (CancelledKeyException cancelledAlready) {
                                 //if the key is already cancelled, then the interest ops don't need to be updated
+                                //key is dead so cleanup.
+                                onEnd();
+                                handlers.clear();
+                                size = 0;
                             }
                         }
-                        handler.onEnd();
-                        size--;
                     }
                 }
             }
