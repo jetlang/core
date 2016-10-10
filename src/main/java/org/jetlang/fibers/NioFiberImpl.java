@@ -278,6 +278,10 @@ public class NioFiberImpl implements Runnable, NioFiber {
         thread.setDaemon(isDaemonThread);
     }
 
+    public Thread getThread() {
+        return thread;
+    }
+
     public static ByteBuffer addTo(ByteBuffer data, ByteBuffer buffer) {
         final int size = buffer.remaining();
         if (data == null) {
