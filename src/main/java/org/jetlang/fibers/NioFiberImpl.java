@@ -49,6 +49,11 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
 
         @Override
+        public boolean isRegistered(SelectableChannel channel) {
+            return handlers.containsKey(channel);
+        }
+
+        @Override
         public void addHandler(NioChannelHandler handler) {
             synchronousAdd(handler);
         }

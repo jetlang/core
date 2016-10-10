@@ -13,5 +13,7 @@ public interface NioControls {
 
     <T extends SelectableChannel & WritableByteChannel> void write(T channel, ByteBuffer buffer);
 
+    boolean isRegistered(SelectableChannel channel);
+
     boolean close(SelectableChannel channel);
 }
