@@ -63,12 +63,12 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 return;
             }
             if (key == null) {
-                final BufferedWrite handler = new BufferedWrite<>(accept, writeFailed, onBuffer);
+                final NioStateWrite handler = new NioStateWrite<>(accept, writeFailed, onBuffer);
                 key = synchronousAdd(handler);
                 key.buffer = handler;
                 handler.state = key;
             } else if (key.buffer == null) {
-                final BufferedWrite handler = new BufferedWrite<>(accept, writeFailed, onBuffer);
+                final NioStateWrite handler = new NioStateWrite<>(accept, writeFailed, onBuffer);
                 handler.state = key;
                 key.buffer = handler;
                 key.handlers.add(handler);
@@ -92,7 +92,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
     };
 
-    private static void writeAll(WritableByteChannel channel, ByteBuffer data) throws IOException {
+    public static void writeAll(WritableByteChannel channel, ByteBuffer data) throws IOException {
         int write;
         do {
             write = channel.write(data);
@@ -156,11 +156,26 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
     }
 
+    private static class NioStateWrite<T extends SelectableChannel & WritableByteChannel> extends BufferedWrite<T>{
+
+        NioState state;
+
+        public NioStateWrite(T channel, WriteFailure writeFailed, OnBuffer onBuffer) {
+            super(channel, writeFailed, onBuffer);
+        }
+
+        @Override
+        public void onEnd() {
+            state.buffer = null;
+            state = null;
+        }
+
+    }
+
     public static class BufferedWrite<T extends SelectableChannel & WritableByteChannel> implements NioChannelHandler {
         private final T channel;
         private final WriteFailure writeFailed;
         private final OnBuffer onBuffer;
-        NioState state;
         ByteBuffer data;
 
         public BufferedWrite(T channel, WriteFailure writeFailed, OnBuffer onBuffer) {
@@ -196,8 +211,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
 
         @Override
         public void onEnd() {
-            state.buffer = null;
-            state = null;
+
         }
 
         @Override
