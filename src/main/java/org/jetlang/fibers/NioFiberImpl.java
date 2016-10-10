@@ -219,10 +219,11 @@ public class NioFiberImpl implements Runnable, NioFiber {
             onEnd();
         }
 
-        public void buffer(ByteBuffer buffer) {
+        public int buffer(ByteBuffer buffer) {
             data = addTo(data, buffer);
             assert data.remaining() > 0 : channel + " " + data;
             onBuffer.onBuffer(channel, data);
+            return data.remaining();
         }
 
     }
