@@ -42,7 +42,12 @@ public class NioFiberImpl implements Runnable, NioFiber {
     }
 
     private final OnBuffer onBuffer;
-    private NioControls controls = new NioControls() {
+    private final NioControls controls = new NioControls() {
+        @Override
+        public Selector getSelector() {
+            return selector;
+        }
+
         @Override
         public void addHandler(NioChannelHandler handler) {
             synchronousAdd(handler);
