@@ -227,6 +227,10 @@ public class NioFiberImpl implements Runnable, NioFiber {
         public void onEnd() {
 
         }
+        
+        public ByteBuffer getBuffer(){
+            return data;
+        }
 
         @Override
         public void onSelectorEnd() {
