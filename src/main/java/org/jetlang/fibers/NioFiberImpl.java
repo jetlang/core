@@ -141,17 +141,9 @@ public class NioFiberImpl implements Runnable, NioFiber {
                         handlers.remove(i--);
                         handler.onEnd();
                         size--;
-                        if(!handlers.isEmpty()) {
+                        if (!handlers.isEmpty()) {
                             //if no handlers left then the key is going to be cancelled and removed
-                            try {
-                                key.interestOps(key.interestOps() & ~handler.getInterestSet());
-                            } catch (CancelledKeyException cancelledAlready) {
-                                //if the key is already cancelled, then the interest ops don't need to be updated
-                                //key is dead so cleanup.
-                                onEnd();
-                                handlers.clear();
-                                size = 0;
-                            }
+                            key.interestOps(key.interestOps() & ~handler.getInterestSet());
                         }
                     }
                 }
@@ -170,7 +162,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
     }
 
-    private static class NioStateWrite<T extends SelectableChannel & WritableByteChannel> extends BufferedWrite<T>{
+    private static class NioStateWrite<T extends SelectableChannel & WritableByteChannel> extends BufferedWrite<T> {
 
         NioState state;
 
@@ -227,8 +219,8 @@ public class NioFiberImpl implements Runnable, NioFiber {
         public void onEnd() {
 
         }
-        
-        public ByteBuffer getBuffer(){
+
+        public ByteBuffer getBuffer() {
             return data;
         }
 
@@ -271,7 +263,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
     }
 
-    public NioFiberImpl(){
+    public NioFiberImpl() {
         this(new NioBatchExecutorImpl(), Collections.<NioChannelHandler>emptyList());
     }
 
@@ -429,7 +421,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
                     Set<SelectionKey> selectedKeys = selector.selectedKeys();
                     for (SelectionKey key : selectedKeys) {
                         final NioState attachment = (NioState) key.attachment();
-                        if (!key.isValid() || !attachment.onSelect(executor, this, controls, key)) {
+                        if (execEvent(key, attachment)) {
                             handlers.remove(attachment.channel);
                             key.cancel();
                             attachment.onEnd();
@@ -452,6 +444,17 @@ public class NioFiberImpl implements Runnable, NioFiber {
             nioState.onSelectorEnd();
         }
         handlers.clear();
+    }
+
+    /**
+     * @return true if key is finished
+     */
+    private boolean execEvent(SelectionKey key, NioState attachment) {
+        try {
+            return !attachment.onSelect(executor, this, controls, key);
+        } catch (CancelledKeyException invalid) {
+            return true;
+        }
     }
 
 }
