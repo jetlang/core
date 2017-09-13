@@ -328,6 +328,20 @@ public class NioFiberImpl implements Runnable, NioFiber {
         });
     }
 
+    public void close(final SelectableChannel channel){
+        if(Thread.currentThread() == thread){
+            controls.close(channel);
+        }
+        else {
+            execute(new Callback<NioControls>() {
+                @Override
+                public void onMessage(NioControls message) {
+                    controls.close(channel);
+                }
+            });
+        }
+    }
+
     @Override
     public void execute(final Callback<NioControls> asyncWrite) {
         execute(new Runnable() {
