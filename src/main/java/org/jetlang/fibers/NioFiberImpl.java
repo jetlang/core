@@ -109,6 +109,10 @@ public class NioFiberImpl implements Runnable, NioFiber {
         } while (write != 0 && data.remaining() > 0);
     }
 
+    public static void removeInterestFrom(NioChannelHandler handler, SelectionKey key) {
+        key.interestOps(key.interestOps() & ~handler.getInterestSet());
+    }
+
     private static class NioState {
         private final SelectableChannel channel;
         private final List<NioChannelHandler> handlers = new ArrayList<>(1);
@@ -142,8 +146,8 @@ public class NioFiberImpl implements Runnable, NioFiber {
                         handler.onEnd();
                         size--;
                         if (!handlers.isEmpty()) {
+                            removeInterestFrom(handler, key);
                             //if no handlers left then the key is going to be cancelled and removed
-                            key.interestOps(key.interestOps() & ~handler.getInterestSet());
                         }
                     }
                 }
@@ -320,19 +324,37 @@ public class NioFiberImpl implements Runnable, NioFiber {
 
     @Override
     public void addHandler(final NioChannelHandler handler) {
-        execute(new Runnable() {
-            @Override
-            public void run() {
-                NioFiberImpl.this.synchronousAdd(handler);
-            }
-        });
+        if (onSelectorThread()) {
+            NioFiberImpl.this.synchronousAdd(handler);
+        } else {
+            execute(new Runnable() {
+                @Override
+                public void run() {
+                    NioFiberImpl.this.synchronousAdd(handler);
+                }
+            });
+        }
     }
 
-    public void close(final SelectableChannel channel){
-        if(Thread.currentThread() == thread){
-            controls.close(channel);
+    @Override
+    public void removehandler(final NioChannelHandler handler) {
+        if (onSelectorThread()) {
+            NioFiberImpl.this.synchronousRemove(handler);
+        } else {
+            execute(new Runnable() {
+                @Override
+                public void run() {
+                    NioFiberImpl.this.synchronousRemove(handler);
+                }
+            });
         }
-        else {
+    }
+
+    @Override
+    public void close(final SelectableChannel channel) {
+        if (onSelectorThread()) {
+            controls.close(channel);
+        } else {
             execute(new Callback<NioControls>() {
                 @Override
                 public void onMessage(NioControls message) {
@@ -340,6 +362,11 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onSelectorThread() {
+        return Thread.currentThread() == thread;
     }
 
     @Override
@@ -372,6 +399,29 @@ public class NioFiberImpl implements Runnable, NioFiber {
             throw new RuntimeException(failed);
         }
     }
+
+    private void synchronousRemove(final NioChannelHandler handler) {
+        final SelectableChannel channel = handler.getChannel();
+        final NioState nioState = handlers.get(channel);
+        if (nioState == null) {
+            //already closed
+            return;
+        }
+        boolean remove = nioState.handlers.remove(handler);
+        if(remove) {
+            handler.onEnd();
+            if (!nioState.handlers.isEmpty()) {
+                try {
+                    removeInterestFrom(handler, channel.keyFor(selector));
+                }catch(Exception failed){
+                    //if the channel is already closed
+                }
+            } else {
+                close(channel);
+            }
+        }
+    }
+
 
     @Override
     public void add(Disposable disposable) {
