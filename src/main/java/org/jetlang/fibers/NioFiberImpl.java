@@ -75,14 +75,21 @@ public class NioFiberImpl implements Runnable, NioFiber {
             if (key == null) {
                 final NioStateWrite handler = new NioStateWrite<>(accept, writeFailed, onBuffer);
                 key = synchronousAdd(handler);
+                if(key == null){
+                    return;
+                }
                 key.buffer = handler;
                 handler.state = key;
             } else if (key.buffer == null) {
                 final NioStateWrite handler = new NioStateWrite<>(accept, writeFailed, onBuffer);
-                handler.state = key;
-                key.buffer = handler;
-                key.handlers.add(handler);
-                key.updateInterest(handler.getInterestSet());
+                if(key.attemptUpdateInterest(handler.getInterestSet())) {
+                    handler.state = key;
+                    key.buffer = handler;
+                    key.handlers.add(handler);
+                }
+                else {
+                    return;
+                }
             }
             key.addToBuffer(buffer);
         }
@@ -161,8 +168,16 @@ public class NioFiberImpl implements Runnable, NioFiber {
             }
         }
 
-        public void updateInterest(int interestSet) {
-            key.interestOps(key.interestOps() | interestSet);
+        /**
+         * @return true if successful, false if it failed due to an already cancelled key
+         */
+        public boolean attemptUpdateInterest(int interestSet) {
+            try {
+                key.interestOps(key.interestOps() | interestSet);
+                return true;
+            }catch(CancelledKeyException failed){
+                return false;
+            }
         }
     }
 
@@ -383,20 +398,23 @@ public class NioFiberImpl implements Runnable, NioFiber {
         try {
             final SelectableChannel channel = handler.getChannel();
             channel.configureBlocking(false);
+            final int interestSet = handler.getInterestSet();
             final NioState nioState = handlers.get(channel);
             if (nioState != null) {
+                if(!nioState.attemptUpdateInterest(interestSet)){
+                    return null;
+                }
                 nioState.handlers.add(handler);
-                nioState.updateInterest(handler.getInterestSet());
                 return nioState;
             }
-            final int interestSet = handler.getInterestSet();
             final NioState value = new NioState(channel);
-            value.handlers.add(handler);
             value.key = channel.register(selector, interestSet, value);
+            value.handlers.add(handler);
             handlers.put(channel, value);
             return value;
         } catch (IOException failed) {
-            throw new RuntimeException(failed);
+            //already closed/cancelled
+            return null;
         }
     }
 
