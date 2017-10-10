@@ -107,4 +107,9 @@ public class ThreadFiber implements Fiber {
     public Disposable scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         return _scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
+
+    @Override
+    public String toString() {
+        return "ThreadFiber{" + _thread + '}';
+    }
 }
