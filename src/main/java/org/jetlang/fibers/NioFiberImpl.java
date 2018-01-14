@@ -402,6 +402,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
             final NioState nioState = handlers.get(channel);
             if (nioState != null) {
                 if(!nioState.attemptUpdateInterest(interestSet)){
+                    handler.onEnd();
                     return null;
                 }
                 nioState.handlers.add(handler);
@@ -413,6 +414,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
             handlers.put(channel, value);
             return value;
         } catch (IOException failed) {
+            handler.onEnd();
             //already closed/cancelled
             return null;
         }
