@@ -75,19 +75,18 @@ public class NioFiberImpl implements Runnable, NioFiber {
             if (key == null) {
                 final NioStateWrite handler = new NioStateWrite<>(accept, writeFailed, onBuffer);
                 key = synchronousAdd(handler);
-                if(key == null){
+                if (key == null) {
                     return;
                 }
                 key.buffer = handler;
                 handler.state = key;
             } else if (key.buffer == null) {
                 final NioStateWrite handler = new NioStateWrite<>(accept, writeFailed, onBuffer);
-                if(key.attemptUpdateInterest(handler.getInterestSet())) {
+                if (key.attemptUpdateInterest(handler.getInterestSet())) {
                     handler.state = key;
                     key.buffer = handler;
                     key.handlers.add(handler);
-                }
-                else {
+                } else {
                     return;
                 }
             }
@@ -147,15 +146,21 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 final NioChannelHandler handler = this.handlers.get(i);
                 final boolean interested = (key.readyOps() & handler.getInterestSet()) != 0;
                 if (interested) {
-                    boolean result = exec.runOnSelect(fiber, handler, controls, key);
-                    if (!result) {
-                        handlers.remove(i--);
-                        handler.onEnd();
-                        size--;
-                        if (!handlers.isEmpty()) {
-                            removeInterestFrom(handler, key);
-                            //if no handlers left then the key is going to be cancelled and removed
-                        }
+                    NioChannelHandler.Result result = exec.runOnSelect(fiber, handler, controls, key);
+                    switch (result) {
+                        case RemoveHandler:
+                            if (handlers.size() > 1) {
+                                handlers.remove(i--);
+                                handler.onEnd();
+                                size--;
+                                removeInterestFrom(handler, key);
+                            } else {
+                                //if no handlers left then the key is going to be cancelled and removed
+                                return true;
+                            }
+                            break;
+                        case CloseSocket:
+                            return true;
                     }
                 }
             }
@@ -175,7 +180,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
             try {
                 key.interestOps(key.interestOps() | interestSet);
                 return true;
-            }catch(CancelledKeyException failed){
+            } catch (CancelledKeyException failed) {
                 return false;
             }
         }
@@ -210,18 +215,18 @@ public class NioFiberImpl implements Runnable, NioFiber {
         }
 
         @Override
-        public boolean onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
+        public NioChannelHandler.Result onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
             try {
                 writeAll(channel, data);
             } catch (IOException e) {
                 writeFailed.onFailure(e, channel, data);
-                return false;
+                return Result.CloseSocket;
             }
-            final boolean b = data.remaining() > 0;
-            if (!b) {
+            if (data.remaining() < 1) {
                 onBuffer.onBufferEnd(channel);
+                return Result.RemoveHandler;
             }
-            return b;
+            return Result.Continue;
         }
 
         @Override
@@ -401,7 +406,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
             final int interestSet = handler.getInterestSet();
             final NioState nioState = handlers.get(channel);
             if (nioState != null) {
-                if(!nioState.attemptUpdateInterest(interestSet)){
+                if (!nioState.attemptUpdateInterest(interestSet)) {
                     handler.onEnd();
                     return null;
                 }
@@ -428,12 +433,12 @@ public class NioFiberImpl implements Runnable, NioFiber {
             return;
         }
         boolean remove = nioState.handlers.remove(handler);
-        if(remove) {
+        if (remove) {
             handler.onEnd();
             if (!nioState.handlers.isEmpty()) {
                 try {
                     removeInterestFrom(handler, channel.keyFor(selector));
-                }catch(Exception failed){
+                } catch (Exception failed) {
                     //if the channel is already closed
                 }
             } else {

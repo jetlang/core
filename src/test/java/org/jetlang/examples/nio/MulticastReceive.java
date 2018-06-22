@@ -32,14 +32,14 @@ public class MulticastReceive {
             long maxDur = 0;
 
             @Override
-            public boolean onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
+            public Result onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
                 int maxPackets = 10000000;
                 int loops = 0;
                 while (maxPackets-- > 0) {
                     try {
                         byteBuffer.clear();
                         if (channel.receive(byteBuffer) == null) {
-                            return true;
+                            return Result.Continue;
                         }
                         loops++;
                         byteBuffer.flip();
@@ -57,10 +57,10 @@ public class MulticastReceive {
                             maxDur = 0;
                         }
                     } catch (IOException e) {
-                        return false;
+                        return Result.CloseSocket;
                     }
                 }
-                return true;
+                return Result.Continue;
             }
 
             @Override

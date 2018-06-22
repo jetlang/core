@@ -6,5 +6,5 @@ import java.nio.channels.SelectionKey;
 
 public interface NioBatchExecutor extends BatchExecutor {
 
-    boolean runOnSelect(NioFiber fiber, NioChannelHandler handler, NioControls controls, SelectionKey key);
+    NioChannelHandler.Result runOnSelect(NioFiber fiber, NioChannelHandler handler, NioControls controls, SelectionKey key);
 }

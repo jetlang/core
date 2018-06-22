@@ -100,7 +100,7 @@ public class NioFiberTest {
             private ByteBuffer buffer = ByteBuffer.allocate(4);
 
             @Override
-            protected boolean onData(Pipe.SourceChannel source) {
+            protected Result onData(Pipe.SourceChannel source) {
                 try {
                     source.read(buffer);
                     if (buffer.position() == 4) {
@@ -110,7 +110,7 @@ public class NioFiberTest {
                         buffer.clear();
                         latch.countDown();
                     }
-                    return true;
+                    return Result.Continue;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

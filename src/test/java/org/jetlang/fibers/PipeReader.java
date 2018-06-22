@@ -22,11 +22,11 @@ public abstract class PipeReader implements NioChannelHandler {
     }
 
     @Override
-    public boolean onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
+    public Result onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key) {
         return onData(source);
     }
 
-    protected abstract boolean onData(Pipe.SourceChannel source);
+    protected abstract Result onData(Pipe.SourceChannel source);
 
     @Override
     public SelectableChannel getChannel() {

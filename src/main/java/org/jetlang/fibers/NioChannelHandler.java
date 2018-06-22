@@ -4,7 +4,12 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 
 public interface NioChannelHandler {
-    boolean onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key);
+
+    enum Result {
+        Continue, CloseSocket, RemoveHandler,
+    }
+
+    Result onSelect(NioFiber nioFiber, NioControls controls, SelectionKey key);
 
     SelectableChannel getChannel();
 
