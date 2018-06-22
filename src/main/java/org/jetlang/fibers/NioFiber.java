@@ -21,7 +21,6 @@ public interface NioFiber extends Fiber {
     boolean onSelectorThread();
 
     void addHandler(NioChannelHandler handler);
-    void removeHandler(NioChannelHandler handler);
 
     /**
      * Asynchronously executes an event on the selector thread. The controls
