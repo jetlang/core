@@ -357,7 +357,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
     }
 
     @Override
-    public void removehandler(final NioChannelHandler handler) {
+    public void removeHandler(final NioChannelHandler handler) {
         if (onSelectorThread()) {
             NioFiberImpl.this.synchronousRemove(handler);
         } else {
