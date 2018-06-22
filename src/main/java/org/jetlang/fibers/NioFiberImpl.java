@@ -508,13 +508,14 @@ public class NioFiberImpl implements Runnable, NioFiber {
         handlers.clear();
     }
 
-    /**
-     * @return true if key is finished
-     */
     private NioChannelHandler.Result execEvent(SelectionKey key, NioState attachment) {
         try {
             return attachment.onSelect(executor, this, controls, key);
         } catch (CancelledKeyException invalid) {
+            //key is cancelled, so remove all handlers.
+            //this won't close the socket, but it is assumed that
+            //the code that initiated the cancel knows whether the socket
+            //should be closed
             return NioChannelHandler.Result.RemoveHandler;
         }
     }
