@@ -156,11 +156,11 @@ public class NioFiberImpl implements Runnable, NioFiber {
                                 removeInterestFrom(handler, key);
                             } else {
                                 //if no handlers left then the key is going to be cancelled and removed
-                                return true;
+                                return false;
                             }
                             break;
                         case CloseSocket:
-                            return true;
+                            return false;
                     }
                 }
             }
