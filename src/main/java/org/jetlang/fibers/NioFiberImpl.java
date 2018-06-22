@@ -95,10 +95,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
 
         @Override
         public boolean close(SelectableChannel channel) {
-            try {
-                channel.close();
-            } catch (IOException e) {
-            }
+            closeQuietly(channel);
             final NioState nioState = handlers.remove(channel);
             if (nioState != null) {
                 nioState.onEnd();
@@ -107,6 +104,13 @@ public class NioFiberImpl implements Runnable, NioFiber {
             return false;
         }
     };
+
+    private void closeQuietly(SelectableChannel channel) {
+        try {
+            channel.close();
+        } catch (IOException e) {
+        }
+    }
 
     public static void writeAll(WritableByteChannel channel, ByteBuffer data) throws IOException {
         int write;
@@ -140,7 +144,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
             }
         }
 
-        public boolean onSelect(NioBatchExecutor exec, NioFiberImpl fiber, NioControls controls, SelectionKey key) {
+        public NioChannelHandler.Result onSelect(NioBatchExecutor exec, NioFiberImpl fiber, NioControls controls, SelectionKey key) {
             int size = handlers.size();
             for (int i = 0; i < size; i++) {
                 final NioChannelHandler handler = this.handlers.get(i);
@@ -156,15 +160,16 @@ public class NioFiberImpl implements Runnable, NioFiber {
                                 removeInterestFrom(handler, key);
                             } else {
                                 //if no handlers left then the key is going to be cancelled and removed
-                                return false;
+                                //does not automatically close the socket
+                                return NioChannelHandler.Result.RemoveHandler;
                             }
                             break;
                         case CloseSocket:
-                            return false;
+                            return NioChannelHandler.Result.CloseSocket;
                     }
                 }
             }
-            return !handlers.isEmpty();
+            return handlers.isEmpty() ? NioChannelHandler.Result.RemoveHandler : NioChannelHandler.Result.Continue;
         }
 
         public void onEnd() {
@@ -473,10 +478,15 @@ public class NioFiberImpl implements Runnable, NioFiber {
                     Set<SelectionKey> selectedKeys = selector.selectedKeys();
                     for (SelectionKey key : selectedKeys) {
                         final NioState attachment = (NioState) key.attachment();
-                        if (execEvent(key, attachment)) {
-                            handlers.remove(attachment.channel);
-                            key.cancel();
-                            attachment.onEnd();
+                        NioChannelHandler.Result result = execEvent(key, attachment);
+                        switch (result){
+                            case CloseSocket:
+                                closeQuietly(attachment.channel);
+                            case RemoveHandler:
+                                handlers.remove(attachment.channel);
+                                key.cancel();
+                                attachment.onEnd();
+                                break;
                         }
                     }
                     selectedKeys.clear();
@@ -501,11 +511,11 @@ public class NioFiberImpl implements Runnable, NioFiber {
     /**
      * @return true if key is finished
      */
-    private boolean execEvent(SelectionKey key, NioState attachment) {
+    private NioChannelHandler.Result execEvent(SelectionKey key, NioState attachment) {
         try {
-            return !attachment.onSelect(executor, this, controls, key);
+            return attachment.onSelect(executor, this, controls, key);
         } catch (CancelledKeyException invalid) {
-            return true;
+            return NioChannelHandler.Result.RemoveHandler;
         }
     }
 
