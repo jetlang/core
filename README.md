@@ -94,3 +94,7 @@ To use Jetlang, add the following dependency. Replace _DESIRED_VERSION_HERE_ wit
 ##Dev Mailing List
 
 https://groups.google.com/forum/#!forum/jetlang-dev
+
+Releasing with Maven
+
+mvn release:prepare release:perform
