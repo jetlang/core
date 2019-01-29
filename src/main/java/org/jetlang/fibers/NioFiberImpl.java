@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class NioFiberImpl implements Runnable, NioFiber {
 
     private final SchedulerImpl scheduler;
+    private boolean selectorRunning = true;
     private final Selector selector;
     private final Map<SelectableChannel, NioState> handlers = new IdentityHashMap<>();
     private final List<Disposable> _disposables = Collections.synchronizedList(new ArrayList<Disposable>());
@@ -455,11 +456,12 @@ public class NioFiberImpl implements Runnable, NioFiber {
             }
         }
         scheduler.dispose();
-        try {
-            selector.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        execute(new Runnable() {
+            @Override
+            public void run() {
+                selectorRunning = false;
+            }
+        });
     }
 
 
@@ -471,7 +473,7 @@ public class NioFiberImpl implements Runnable, NioFiber {
     @Override
     public void run() {
         EventBuffer buffer = new EventBuffer();
-        while (true) {
+        while (selectorRunning) {
             try {
                 final int select = selector.select();
                 if (select > 0) {
@@ -495,17 +497,21 @@ public class NioFiberImpl implements Runnable, NioFiber {
                 executor.execute(buffer);
                 buffer.clear();
             } catch (ClosedSelectorException closed) {
-                queue.setRunning(false);
                 break;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         }
+        queue.setRunning(false);
         for (NioState nioState : handlers.values()) {
             nioState.onSelectorEnd();
         }
         handlers.clear();
+        try {
+            selector.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private NioChannelHandler.Result execEvent(SelectionKey key, NioState attachment) {
