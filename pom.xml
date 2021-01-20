@@ -5,7 +5,7 @@
     <artifactId>jetlang</artifactId>
     <packaging>bundle</packaging>
 
-    <version>0.2.24-SNAPSHOT</version>
+    <version>0.2.25-SNAPSHOT</version>
     <name>Jetlang</name>
     <url>https://github.com/jetlang/core</url>
 
