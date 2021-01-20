@@ -1,0 +1,7 @@
+resource "target/jetlang-0.2.24.jar"
+resource "target/jetlang-0.2.24-sources.jar"
+
+config default
+  append CLASSPATH=@/target//jetlang-0.2.24.jar
+  append SOURCEPATH=@/target//jetlang-0.2.24-sources.jar
+end
