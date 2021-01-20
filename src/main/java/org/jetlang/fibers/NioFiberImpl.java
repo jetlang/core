@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class NioFiberImpl implements Runnable, NioFiber {
 
@@ -473,26 +474,22 @@ public class NioFiberImpl implements Runnable, NioFiber {
     @Override
     public void run() {
         EventBuffer buffer = new EventBuffer();
+        final Consumer<SelectionKey> onSelect = key -> {
+            final NioState attachment = (NioState) key.attachment();
+            NioChannelHandler.Result result = execEvent(key, attachment);
+            switch (result){
+                case CloseSocket:
+                    closeQuietly(attachment.channel);
+                case RemoveHandler:
+                    handlers.remove(attachment.channel);
+                    key.cancel();
+                    attachment.onEnd();
+                    break;
+            }
+        };
         while (selectorRunning) {
             try {
-                final int select = selector.select();
-                if (select > 0) {
-                    Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                    for (SelectionKey key : selectedKeys) {
-                        final NioState attachment = (NioState) key.attachment();
-                        NioChannelHandler.Result result = execEvent(key, attachment);
-                        switch (result){
-                            case CloseSocket:
-                                closeQuietly(attachment.channel);
-                            case RemoveHandler:
-                                handlers.remove(attachment.channel);
-                                key.cancel();
-                                attachment.onEnd();
-                                break;
-                        }
-                    }
-                    selectedKeys.clear();
-                }
+                selector.select(onSelect);
                 buffer = queue.swap(buffer);
                 executor.execute(buffer);
                 buffer.clear();
